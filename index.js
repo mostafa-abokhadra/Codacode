@@ -11,6 +11,10 @@ app.use(express.urlencoded({extended: true}))
 
 app.use('/', homeRoute)
 
+app.get('/test', (req, res) => {
+    res.status(200).json({"message": "i'm deployed"})
+})
+
 app.listen(3000 || process.env.PORT, () => {
     console.log("i'm listening")
 })
