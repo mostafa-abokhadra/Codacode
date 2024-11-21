@@ -9,9 +9,9 @@ app.set('views', path.join(__dirname, '/src/views'));
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-app.use('/', homeRoute)
+// app.use('/', homeRoute)
 
-app.get('/test', (req, res) => {
+app.get('/', (req, res) => {
     res.status(200).json({"message": "i'm deployed"})
 })
 
