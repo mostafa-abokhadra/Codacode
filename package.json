@@ -1,0 +1,20 @@
+{
+  "name": "codacode",
+  "version": "1.0.0",
+  "description": "codacode website",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "Mosatafa abokhadra",
+  "engines": {
+    "node": "20.14.0"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.21.1"
+  }
+}

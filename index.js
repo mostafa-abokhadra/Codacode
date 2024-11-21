@@ -11,6 +11,6 @@ app.use(express.urlencoded({extended: true}))
 
 app.use('/', homeRoute)
 
-app.listen(3000, () => {
+app.listen(3000 || process.env.PORT, () => {
     console.log("i'm listening")
 })
