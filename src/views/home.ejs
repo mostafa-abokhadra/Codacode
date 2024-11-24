@@ -13,32 +13,44 @@
     <nav class="bg-white shadow-md">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
-          <!-- Logo -->
-          <div class="flex-shrink-0">
-            <a href="/Codacode" class="text-xl font-bold text-blue-600"
+          <!-- Left Section: Logo and Links -->
+          <div class="flex items-center space-x-8">
+            <!-- Logo -->
+            <a href="/Codacode" class="text-xl font-bold text-green-600"
               >Codacode</a
             >
+            <!-- Links beside the logo -->
+            <div class="hidden md:flex space-x-6">
+              <a
+                href="/Codacode/projects"
+                class="text-gray-800 hover:text-blue-600"
+                >Projects</a
+              >
+              <a
+                href="/Codacode/about"
+                class="text-gray-800 hover:text-blue-600"
+                >About</a
+              >
+            </div>
           </div>
 
-          <!-- Menu for larger screens -->
-          <div class="hidden md:flex space-x-8">
+          <!-- Right Section: Sign Up and Login -->
+          <div class="hidden md:flex items-center space-x-4">
             <a
-              href="/Codacode/projects"
-              class="text-gray-800 hover:text-blue-600"
-              >Projects</a
+              href="/Codacode/signup"
+              class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
             >
-            <a href="/Codacode/about" class="text-gray-800 hover:text-blue-600"
-              >About</a
+              Sign Up
+            </a>
+            <a
+              href="/Codacode/login"
+              class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
             >
-            <a href="/Codacode/signup" class="text-gray-800 hover:text-blue-600"
-              >Sign Up</a
-            >
-            <a href="/Codacode/login" class="text-gray-800 hover:text-blue-600"
-              >Login</a
-            >
+              Login
+            </a>
           </div>
 
-          <!-- Hamburger Button -->
+          <!-- Hamburger Menu Button -->
           <div class="md:hidden">
             <button id="menu-button" class="text-gray-800 focus:outline-none">
               <svg
@@ -61,30 +73,31 @@
       </div>
 
       <!-- Mobile Menu -->
-      <div id="mobile-menu" class="hidden md:hidden">
+      <div id="mobile-menu" class="hidden md:hidden bg-white shadow-md">
         <a
           href="/Codacode/projects"
-          class="block px-4 py-2 text-gray-800 hover:bg-blue-100"
+          class="block px-4 py-2 text-gray-800 hover:bg-blue-100 border-b border-gray-300"
           >Projects</a
         >
         <a
           href="/Codacode/about"
-          class="block px-4 py-2 text-gray-800 hover:bg-blue-100"
+          class="block px-4 py-2 text-gray-800 hover:bg-blue-100 border-b border-gray-300"
           >About</a
         >
         <a
           href="/Codacode/signup"
-          class="block px-4 py-2 text-gray-800 hover:bg-blue-100"
-          >Sign Up</a
+          class="block px-4 py-2 hover:bg-green-600 border-b border-gray-300"
         >
+          Sign Up
+        </a>
         <a
-          href="/Codacode/Login"
-          class="block px-4 py-2 text-gray-800 hover:bg-blue-100"
-          >Login</a
+          href="/Codacode/login"
+          class="block px-4 py-2 hover:bg-green-600 border-b border-gray-300 shadow-md"
         >
+          Login
+        </a>
       </div>
     </nav>
-
     <script>
       // JavaScript to toggle the mobile menu
       const menuButton = document.getElementById("menu-button");
