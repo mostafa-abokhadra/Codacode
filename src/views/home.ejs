@@ -3,9 +3,96 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
     <title>Codacode</title>
   </head>
   <body>
-    <h1>CodaCode Home Page</h1>
+    <nav class="bg-white shadow-md">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <!-- Logo -->
+          <div class="flex-shrink-0">
+            <a href="/Codacode" class="text-xl font-bold text-blue-600"
+              >Codacode</a
+            >
+          </div>
+
+          <!-- Menu for larger screens -->
+          <div class="hidden md:flex space-x-8">
+            <a
+              href="/Codacode/projects"
+              class="text-gray-800 hover:text-blue-600"
+              >Projects</a
+            >
+            <a href="/Codacode/about" class="text-gray-800 hover:text-blue-600"
+              >About</a
+            >
+            <a href="/Codacode/signup" class="text-gray-800 hover:text-blue-600"
+              >Sign Up</a
+            >
+            <a href="/Codacode/login" class="text-gray-800 hover:text-blue-600"
+              >Login</a
+            >
+          </div>
+
+          <!-- Hamburger Button -->
+          <div class="md:hidden">
+            <button id="menu-button" class="text-gray-800 focus:outline-none">
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M4 6h16M4 12h16M4 18h16"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="hidden md:hidden">
+        <a
+          href="/Codacode/projects"
+          class="block px-4 py-2 text-gray-800 hover:bg-blue-100"
+          >Projects</a
+        >
+        <a
+          href="/Codacode/about"
+          class="block px-4 py-2 text-gray-800 hover:bg-blue-100"
+          >About</a
+        >
+        <a
+          href="/Codacode/signup"
+          class="block px-4 py-2 text-gray-800 hover:bg-blue-100"
+          >Sign Up</a
+        >
+        <a
+          href="/Codacode/Login"
+          class="block px-4 py-2 text-gray-800 hover:bg-blue-100"
+          >Login</a
+        >
+      </div>
+    </nav>
+
+    <script>
+      // JavaScript to toggle the mobile menu
+      const menuButton = document.getElementById("menu-button");
+      const mobileMenu = document.getElementById("mobile-menu");
+
+      menuButton.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden");
+      });
+    </script>
   </body>
 </html>
