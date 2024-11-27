@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+model Profile {
+	id Int @id @default(autoincrement())
+	image String?
+  gender gender?
+  createdAT DateTime @default(now())
+	UpdatedAt DateTime @default(now()) @updatedAt
+  user User @relation(name: "UserProfile", fields: [user_id], references: [id])
+	user_id Int @unique
+}
+model User {
+	id Int @id @default(autoincrement())
+	fullName String @db.VarChar(50)
+	email String @unique @db.VarChar(255)
+	password String
+
+	profile Profile? @relation(name: "UserProfile")
+  profile_id Int
+
+	posts Post[] @relation(name: "UserPosts")
+
+  ownedProjects Project[] @relation(name: "owner_fk")
+  teams Team[] @relation()
+  collabProjects Project[] @relation()
+  messages message[]
+  groups Group[]
+  requests Request[]
+}
+model Post {
+	id Int @id @default(autoincrement())
+	user User @relation(name: "UserPosts", fields: [user_id], references: [id])
+	user_id Int
+	title String @db.VarChar(50)
+	content String @db.VarChar(200)
+	repo String
+	createdAt DateTime @default(now())
+	updatedAt DateTime @default(now()) @updatedAt
+  roles Role[] @relation()
+}
+model Role {
+	id Int @id @default(autoincrement())
+	position String
+	needed Int
+  applied Int @default(0)
+  accepted Int @default(0)
+  post Post @relation(fields: [post_id], references: [id])
+	post_id Int
+  requests Request[]
+}
+model Request {
+  id Int @id @default(autoincrement())
+  role Role @relation(fields: [role_id], references: [id])
+  role_id Int
+  userApplied User @relation(fields: [userApplied_id], references: [id])
+  userApplied_id Int
+}
+model Team {
+  id Int @id @default(autoincrement())
+  team User[] @relation()
+  project Project? @relation()
+  group Group? @relation()
+}
+model Project {
+	id Int @id @default(autoincrement())
+  Owner User @relation(name: "owner_fk", fields: [owner_id], references: [id])
+  owner_id Int
+	repo String
+  team Team @relation(fields: [team_id], references: [id])
+  team_id Int @unique
+  Users User[]
+}
+model Group {
+	id Int @id @default(autoincrement())
+	team Team @relation(fields: [team_id], references: [id])
+  team_id Int @unique
+	messages message[]
+  user User @relation(fields: [user_id], references: [id])
+  user_id Int
+}
+model message {
+	id Int @id @default(autoincrement())
+	group Group @relation(fields: [group_id], references: [id])
+	group_id Int
+	content String
+  user User @relation(fields: [user_id], references: [id])
+  user_id Int
+}
+
+//  users behaviors data table for each page {
+//  how many time each page get visitor
+//  duration of which each user stays in each page
+//  how many users signedUp
+//  how many projects
+//  returned visitor
+//  unique visitor
+//  }
+
+enum gender {
+  male
+  female
+}
+enum requestStatus {
+	waiting
+	accepted
+	rejected
+	completed
+}
+enum projectStatus {
+	waitingForTeam
+	completed // if completed don't show in projects only in profile
+	workOn // show for the team applied only instead of completed
+}
