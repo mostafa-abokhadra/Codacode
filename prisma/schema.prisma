@@ -21,7 +21,6 @@ model User {
 	password String
 
 	profile Profile? @relation(name: "UserProfile")
-  profile_id Int
 
 	posts Post[] @relation(name: "UserPosts")
 
