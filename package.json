@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "build": "prisma generate && next build"
+    "build": "npx prisma generate"
   },
   "keywords": [],
   "author": "Mosatafa abokhadra",
