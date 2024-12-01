@@ -4,6 +4,7 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+  //shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 model Profile {
 	id Int @id @default(autoincrement())
@@ -114,4 +115,18 @@ enum projectStatus {
 	waitingForTeam
 	completed // if completed don't show in projects only in profile
 	workOn // show for the team applied only instead of completed
+}
+model TeamToUser {
+  id Int @id @default(autoincrement()) // Add an explicit primary key
+  teamId Int
+  userId Int
+
+  @@unique([teamId, userId])
+}
+model ProjectToUser {
+  id Int @id @default(autoincrement()) // Add an explicit primary key
+  projectId Int
+  userId Int
+
+  @@unique([projectId, userId])
 }
