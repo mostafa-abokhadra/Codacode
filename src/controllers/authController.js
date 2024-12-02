@@ -50,9 +50,7 @@ class authController {
                     if (error){
                         return res.status(500).json({"message": "error while login user"})
                     }
-                    res.redirect('/dashboard')
-                    // return res.status(200).json({
-                    //     "message": "sign Up successfully", user: user})
+                    res.redirect(`/${user.fullName}/dashboard`)
                 })
             } else {
                 return res.status(500).json({
@@ -75,12 +73,10 @@ class authController {
             }
             req.logIn(user, (error) => {
                 if (error) {
-                    console.log(error)
                     return res.status(500).json({"message": "error in login"})
                 }
-                return res.status(200).json({"message": "loged in successfully", user: user})
+                res.redirect(`/${user.fullName}/dashboard`)
             });
-            console.log("from login\n", req.user)
         })(req, res, next)
     }
 
