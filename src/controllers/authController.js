@@ -83,6 +83,53 @@ class authController {
             console.log("from login\n", req.user)
         })(req, res, next)
     }
+
+    static async getGoogleLogin(req, res) {
+        return res.status(200).json({"message": "googleAuthConsentPage"})
+    }
+
+    static async redirectGoogle(req, res, next) {
+        passport.authenticate('google', async (err, user, info) => {
+            if (err) 
+                return res.status(500).json({ error: 'Authentication failed. Please try again.' });
+            if (!user) 
+                return res.status(401).json({ error: 'User not found or authentication denied.' });
+            try {
+                const newUser = await prisma.user.findFirst({
+                    where: {email: user.email}
+                })
+                let currentUser = {}
+                if (newUser)
+                    currentUser = await utils.getUpdatedUser(newUser.email)
+                if (!newUser) {
+                    currentUser = await prisma.user.create({
+                        data: {
+                            email: user.email,
+                            password: await new Promise((resolve, reject) => {
+                                bcrypt.hash(`google-${user.displayName}`, process.env.SALT || 10, (error, hashed) => {
+                                    if (error)
+                                        return reject(error)
+                                    resolve(hashed)
+                                })
+                            }),
+                            fullName: user.fullName
+                        }
+                    })
+                    currentUser = await utils.getUpdatedUser(currentUser.email)
+                }
+                req.logIn(currentUser, (loginErr) => {
+                    if (loginErr)
+                        return res.status(500).json({ error: 'Login failed. Please try again.' });
+                    res.redirect(`/${currentUser.fullName}/dashboard`);
+                });
+            }catch(err){
+                console.log(err)
+                return res.status(500).json({"message": "an error has occured"})
+            }   
+        })(req, res, next);
+        
+    }
+
     static async logout(req, res){
         req.logout((err) => {
             if (err) {

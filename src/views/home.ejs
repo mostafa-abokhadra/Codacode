@@ -3,13 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css"
-      rel="stylesheet"
-    />
     <title>Codacode</title>
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body>
+  <body class="bg-gray-100">
     <nav class="bg-white shadow-md">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
@@ -33,19 +30,17 @@
             <a
               href="/auth/signup"
               class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+              >Sign Up</a
             >
-              Sign Up
-            </a>
             <a
               href="/auth/login"
               class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+              >Login</a
             >
-              Login
-            </a>
           </div>
 
           <!-- Hamburger Menu Button -->
-          <div class="md:hidden">
+          <div class="md:hidden relative z-50">
             <button id="menu-button" class="text-gray-800 focus:outline-none">
               <svg
                 class="w-6 h-6"
@@ -67,7 +62,10 @@
       </div>
 
       <!-- Mobile Menu -->
-      <div id="mobile-menu" class="hidden md:hidden bg-white shadow-md">
+      <div
+        id="mobile-menu"
+        class="hidden bg-white shadow-md absolute top-0 left-0 w-full z-40"
+      >
         <a
           href="/projects"
           class="block px-4 py-2 text-gray-800 hover:bg-blue-100 border-b border-gray-300"
@@ -79,27 +77,228 @@
           >About</a
         >
         <a
-          href="/signup"
+          href="/auth/signup"
           class="block px-4 py-2 hover:bg-green-600 border-b border-gray-300"
+          >Sign Up</a
         >
-          Sign Up
-        </a>
         <a
-          href="/login"
-          class="block px-4 py-2 hover:bg-green-600 border-b border-gray-300 shadow-md"
+          href="/auth/login"
+          class="block px-4 py-2 hover:bg-green-600 border-b border-gray-300"
+          >Login</a
         >
-          Login
-        </a>
       </div>
     </nav>
+
+    <section class="bg-green-500 text-white py-20 relative">
+      <!-- Background Image with Low Opacity -->
+      <div
+        class="absolute inset-0 bg-cover bg-center"
+        style="background-image: url('imgs/wallpaper.webp'); opacity: 0.2"
+      ></div>
+
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10"
+      >
+        <h1 class="text-4xl font-extrabold">
+          We Help People Collaborate on Projects
+        </h1>
+        <p class="mt-4 text-lg">
+          Increase your network, enhance your chances, and strengthen your
+          portfolio.
+        </p>
+      </div>
+    </section>
+
+    <!-- Collaborate on Projects Section -->
+    <section class="py-16 bg-white">
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-center"
+      >
+        <div>
+          <h2 class="text-3xl font-extrabold text-gray-900">
+            Collaborate on Projects
+          </h2>
+          <p class="mt-4 text-lg text-gray-600">
+            Work with peers to tackle real-world challenges and create impactful
+            solutions.
+          </p>
+
+          <h2 class="text-3xl font-extrabold text-gray-900">
+            Increase Your Network
+          </h2>
+          <p class="mt-4 text-lg text-gray-600">
+            Connect with industry professionals and grow your professional
+            circle.
+          </p>
+
+          <h2 class="text-3xl font-extrabold text-gray-900">
+            Strengthen Your Portfolio
+          </h2>
+          <p class="mt-4 text-lg text-gray-600">
+            Showcase your work with real-world projects to impress potential
+            employers.
+          </p>
+          <button id="get-started-btn" class="mt-6 bg-green-600 text-white px-6 py-3 rounded-md text-lg flex items-center hover:bg-green-700">
+            Get Started
+        </div>
+        <div>
+          <img
+            src="imgs/protfolio.webp"
+            alt="Collaborate on Projects"
+            class="rounded-lg shadow-md"
+          />
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-green-50 py-16">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-bold text-green-700">
+          Your Automated Portfolio
+        </h2>
+        <p class="mt-4 text-lg text-gray-700">
+          Showcase your skills effortlessly! Our platform generates a stunning
+          portfolio from your real-world projects, helping you stand out to
+          recruiters and collaborators.
+        </p>
+        <div class="mt-8 flex justify-center">
+          <div class="bg-white shadow-lg rounded-lg overflow-hidden max-w-sm">
+            <img
+              src="https://via.placeholder.com/400x300"
+              alt="Portfolio Example"
+              class="w-full"
+            />
+            <div class="p-6">
+              <h3 class="text-xl font-bold text-green-700">
+                See Your Portfolio in Action
+              </h3>
+              <p class="mt-2 text-gray-600">
+                Each project you collaborate on will be neatly documented in
+                your professional portfolio.
+              </p>
+              <a
+                href="#"
+                class="mt-4 inline-block bg-green-600 text-white px-6 py-3 rounded-md text-lg hover:bg-green-700"
+              >
+                View Example
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="bg-gray-800 text-white py-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <!-- Feedback Section -->
+        <div class="text-center">
+          <h2 class="text-3xl font-bold text-green-400">
+            Your Feedback Matters
+          </h2>
+          <p class="mt-2 text-gray-400">
+            Help us improve! Report bugs, suggest enhancements, or share your
+            thoughts.
+          </p>
+        </div>
+
+        <!-- Actions Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Bug Report Section -->
+          <div class="bg-gray-700 p-6 rounded-lg shadow-lg text-center">
+            <h3 class="text-xl font-bold text-red-400">Report a Bug</h3>
+            <p class="mt-2 text-gray-400">
+              Encountered an issue? Let us know so we can fix it promptly.
+            </p>
+            <a
+              href="#"
+              class="mt-4 inline-block bg-red-500 text-white px-6 py-3 rounded-md text-lg hover:bg-red-600 transition"
+            >
+              Report Bug
+            </a>
+          </div>
+          <!-- Enhancement Suggestion Section -->
+          <div class="bg-gray-700 p-6 rounded-lg shadow-lg text-center">
+            <h3 class="text-xl font-bold text-blue-400">
+              Suggest an Enhancement
+            </h3>
+            <p class="mt-2 text-gray-400">
+              Have an idea to improve our platform? Share it with us!
+            </p>
+            <a
+              href="#"
+              class="mt-4 inline-block bg-blue-500 text-white px-6 py-3 rounded-md text-lg hover:bg-blue-600 transition"
+            >
+              Suggest Enhancement
+            </a>
+          </div>
+        </div>
+
+        <!-- Follow, Contact, Hire Section -->
+        <div class="space-y-8 text-left">
+          <!-- Follow Us -->
+          <div>
+            <h3 class="text-lg font-bold text-green-400">Follow Us</h3>
+            <ul class="mt-4 space-y-2">
+              <li>
+                <a href="#" class="hover:underline text-gray-300">Facebook</a>
+              </li>
+              <li><a href="#" class="hover:underline text-gray-300">X</a></li>
+            </ul>
+          </div>
+          <!-- Contact Us -->
+          <div>
+            <h3 class="text-lg font-bold text-green-400">Contact Us</h3>
+            <ul class="mt-4 space-y-2">
+              <li>
+                <span class="text-gray-300">Email: </span>
+                <a
+                  href="mailto:contact@example.com"
+                  class="hover:underline text-green-400"
+                  >contact@example.com</a
+                >
+              </li>
+              <li><span class="text-gray-300">Phone: </span>+123 456 7890</li>
+            </ul>
+          </div>
+          <!-- Hire Me -->
+          <div>
+            <h3 class="text-lg font-bold text-green-400">Hire Me</h3>
+            <ul class="mt-4 space-y-2">
+              <li>
+                <a href="#" class="hover:underline text-gray-300">LinkedIn</a>
+              </li>
+              <li>
+                <a href="#" class="hover:underline text-gray-300">GitHub</a>
+              </li>
+              <li>
+                <a
+                  href="mailto:hireme@example.com"
+                  class="hover:underline text-gray-300"
+                  >Email</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Bottom Note -->
+        <div class="text-center text-gray-500 text-sm">
+          &copy; 2024 Codacode. All rights reserved.
+        </div>
+      </div>
+    </footer>
+
     <script>
-      // JavaScript to toggle the mobile menu
+      // JavaScript to toggle the mobile menu visibility
       const menuButton = document.getElementById("menu-button");
       const mobileMenu = document.getElementById("mobile-menu");
 
       menuButton.addEventListener("click", () => {
-        mobileMenu.classList.toggle("hidden");
+        mobileMenu.classList.toggle("hidden"); // Toggle the visibility of the mobile menu
       });
+      document.getElementById('get-started-btn').addEventListener('click', function() {
+    window.location.href = '/auth/signup'; // Redirect to sign-up page
+  });
     </script>
   </body>
 </html>
