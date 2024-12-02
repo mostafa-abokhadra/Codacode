@@ -10,7 +10,7 @@ async function checkSession(req, res, next) {
 }
 async function checkHomeOrDashboard(req, res, next) {
     if (req.isAuthenticated())
-        res.redirect('dashboard')
+        res.redirect(`/${req.user.fullName}/dashboard`)
     next()
 }
 module.exports = {
