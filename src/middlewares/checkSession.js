@@ -1,20 +1,21 @@
-async function checkAuthenticated(req, res, next) {
+async function blockAuthenticatedUsers(req, res, next) {
     if (req.user)
         return res.status(401).json({"message": "user already logged in"})
-    next()
+    return next()
 }
-async function checkSession(req, res, next) {
+async function ensureAuthenticated (req, res, next) {
     if (!req.isAuthenticated())
-        return res.status(401).json({"message": "unAuthorized"})
-    next()
+        return res.status(403).json({ message: "Access forbidden: Authentication required" })
+    return next()
 }
-async function checkHomeOrDashboard(req, res, next) {
-    if (req.isAuthenticated())
+function redirectToDashboardIfAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
         res.redirect(`/${req.user.fullName}/dashboard`)
-    next()
+    }
+    return next()
 }
 module.exports = {
-    checkAuthenticated,
-    checkSession,
-    checkHomeOrDashboard
+    blockAuthenticatedUsers,
+    ensureAuthenticated,
+    redirectToDashboardIfAuthenticated
 }

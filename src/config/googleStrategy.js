@@ -8,16 +8,19 @@ passport.use(new googleStrategy({
     callbackURL: '/auth/google/redirect',
     scope: [ 'profile', 'email'] 
 }, function verify(issuer, profile, cb) {
+    console.log("profile", profile)
     const user = {
         email: profile.emails[0].value,
         fullName: profile.displayName
     };
+    
     return cb(null, user);
 }
 ))
 
 passport.serializeUser(function(user, cb) {
     process.nextTick(function() {
+        console.log("serialized", user)
         cb(null, user);
     });
 });

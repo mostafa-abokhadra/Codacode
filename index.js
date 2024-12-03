@@ -26,6 +26,6 @@ app.use('/', homeRoute)
 app.use('/auth', authRoute)
 app.use('/', dashboardRoute)
 
-app.listen(3000 || process.env.PORT, () => {
-    console.log("i'm listening")
-})
+// app.listen(process.env.PORT)
+
+module.exports = app

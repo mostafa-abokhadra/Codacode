@@ -1,7 +1,7 @@
 const router = require("express").Router()
 const homeController = require('../controllers/homeController')
-const checkHomeOrDashboard = require("../middlewares/checkSession").checkHomeOrDashboard
+const redirectToDashboardIfAuthenticated = require("../middlewares/checkSession").redirectToDashboardIfAuthenticated
 
-router.get('/', checkHomeOrDashboard, homeController.getHome)
+router.get('/', redirectToDashboardIfAuthenticated, homeController.getHome)
 
 module.exports = router

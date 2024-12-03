@@ -1,19 +1,20 @@
 const router = require("express").Router()
 const passport = require('../config/googleStrategy')
 
-const checkSession = require('../middlewares/checkSession').checkSession
-const checkAuthenticated = require('../middlewares/checkSession').checkAuthenticated
+const ensureAuthenticated = require('../middlewares/checkSession').ensureAuthenticated
+const blockAuthenticatedUsers = require('../middlewares/checkSession').blockAuthenticatedUsers
 
 const authController = require("../controllers/authController")
 
-router.get('/signup', checkAuthenticated, authController.getSignup)
-router.post('/signup', checkAuthenticated, authController.postSignup)
+router.get('/signup', blockAuthenticatedUsers, authController.getSignup)
+router.post('/signup', blockAuthenticatedUsers, authController.postSignup)
 
-router.get('/login', checkAuthenticated, authController.getLogin)
-router.post('/login', checkAuthenticated, authController.postLogin)
+router.get('/login', blockAuthenticatedUsers, authController.getLogin)
+router.post('/login', blockAuthenticatedUsers, authController.postLogin)
 
 router.get(
     '/google',
+    blockAuthenticatedUsers,
     passport.authenticate('google',  { scope: ['profile', 'email'] }),
     authController.getGoogleLogin
 )
@@ -22,6 +23,6 @@ router.get(
     authController.redirectGoogle
 );
 
-router.post('/logout', checkSession, authController.logout)
+router.post('/logout', ensureAuthenticated, authController.logout)
 
 module.exports = router
