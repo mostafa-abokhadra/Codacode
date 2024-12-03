@@ -26,6 +26,6 @@ app.use('/', homeRoute)
 app.use('/auth', authRoute)
 app.use('/', dashboardRoute)
 
-// app.listen(process.env.PORT)
+app.listen(process.env.PORT)
 
 module.exports = app

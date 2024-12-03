@@ -4,7 +4,6 @@
   "description": "codacode website",
   "main": "index.js",
   "scripts": {
-    "build": "npm install && npx prisma generate",
     "start": "node index.js",
     "postinstall": "prisma generate"
   },
