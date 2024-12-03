@@ -86,8 +86,6 @@ class authController {
 
     static async redirectGoogle(req, res, next) {
         passport.authenticate('google', async (err, user, info) => {
-            console.log("from redirect", user)
-            console.log(err)
             if (err) 
                 return res.status(500).json({ error: 'Authentication failed. Please try again.' });
             if (!user) 
@@ -121,7 +119,6 @@ class authController {
                     res.redirect(`/${currentUser.fullName}/dashboard`);
                 });
             }catch(err){
-                console.log(err)
                 return res.status(500).json({"message": "an error has occured"})
             }   
         })(req, res, next);
