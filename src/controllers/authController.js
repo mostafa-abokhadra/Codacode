@@ -50,7 +50,8 @@ class authController {
                     if (error){
                         return res.status(500).json({"message": "error while login user"})
                     }
-                    res.redirect(`/${user.fullName}/dashboard`)
+                    const urlUserName = user.fullName.replaceAll(" ", '-')
+                    res.redirect(`/${urlUserName}/dashboard`)
                 })
             } else {
                 return res.status(500).json({
@@ -59,7 +60,6 @@ class authController {
                 })
             }
         } catch(error) {
-            console.log(error)
             return res.status(500).json({"message": "an error has occured"})
         }
     }
@@ -76,7 +76,8 @@ class authController {
                 if (error) {
                     return res.status(500).json({"message": "error in login"})
                 }
-                res.redirect(`/${user.fullName}/dashboard`)
+                const urlUserName = user.fullName.replaceAll(" ", '-')
+                res.redirect(`/${urlUserName}/dashboard`)
             });
         })(req, res, next)
     }
@@ -117,7 +118,8 @@ class authController {
                 req.logIn(currentUser, (loginErr) => {
                     if (loginErr)
                         return res.status(500).json({ error: 'Login failed. Please try again.' });
-                    res.redirect(`/${currentUser.fullName}/dashboard`);
+                    const urlUserName = currentUser.fullName.replaceAll(" ", '-')
+                    res.redirect(`/${urlUserName}/dashboard`);
                 });
             }catch(err){
                 return res.status(500).json({"message": "an error has occured"})
