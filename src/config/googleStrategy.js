@@ -11,22 +11,21 @@ passport.use(new googleStrategy({
     const user = {
         email: profile.emails[0].value,
         fullName: profile.displayName
-    };
-    
+    };   
     return cb(null, user);
 }
 ))
 
-passport.serializeUser(function(user, cb) {
-    process.nextTick(function() {
-        cb(null, user);
-    });
-});
+// passport.serializeUser(function(user, cb) {
+//     process.nextTick(function() {
+//         cb(null, user);
+//     });
+// });
 
-passport.deserializeUser(function(user, cb) {
-    process.nextTick(function() {
-        return cb(null, user);
-    });
-});
+// passport.deserializeUser(function(user, cb) {
+//     process.nextTick(function() {
+//         return cb(null, user);
+//     });
+// });
 
 module.exports = passport

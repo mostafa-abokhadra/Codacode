@@ -2,6 +2,7 @@ require('dotenv').config()
 const express = require("express")
 const path = require("path")
 const app = express()
+const flash = require('express-flash');
 
 const session = require('./src/middlewares/session')
 const homeRoute = require('./src/routes/homeRoute')
@@ -19,8 +20,10 @@ app.use(express.static(path.join(__dirname, '/src/public')));
 
 
 app.use(session)
+app.use(flash()); 
 app.use(passport.initialize())
 app.use(passport.session())
+
 
 app.use('/', homeRoute)
 app.use('/auth', authRoute)

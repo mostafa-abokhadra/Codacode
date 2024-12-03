@@ -4,7 +4,6 @@ const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
 const utils  = require("../utils/utils")
 const { promises } = require("dns");
-
 class authController {
 
     static async getSignup(req, res){
@@ -12,7 +11,9 @@ class authController {
     }
 
     static async getLogin(req, res){
-        res.render('login')
+        let message = req.session.info
+        req.session.info = null
+        res.render('login', {message: message});
     }
 
     static async postSignup(req, res){
@@ -24,8 +25,10 @@ class authController {
                 where: {email: email}
             })
 
-            if (user)
-                return res.status(401).json({"message": "user already exist"})
+            if (user) {
+                req.session.info = "user already has an account, please login"
+                return res.redirect('login');
+            }
 
             let newUser = await prisma.user.create({
 
@@ -50,8 +53,10 @@ class authController {
                     if (error){
                         return res.status(500).json({"message": "error while login user"})
                     }
-                    const urlUserName = user.fullName.replaceAll(" ", '-')
-                    res.redirect(`/${user.fullName}/dashboard`)
+                    req.session.save(() => {
+                        const urlUserName = user.fullName.replaceAll(" ", '-')
+                        res.redirect(`/${urlUserName}/dashboard`)
+                    });
                 })
             } else {
                 return res.status(500).json({
@@ -77,7 +82,8 @@ class authController {
                     return res.status(500).json({"message": "error in login"})
                 }
                 const urlUserName = user.fullName.replaceAll(" ", '-')
-                res.redirect(`/${user.fullName}/dashboard`)
+                res.redirect(`/${urlUserName}/dashboard`)
+                
             });
         })(req, res, next)
     }
@@ -118,10 +124,9 @@ class authController {
                 req.logIn(currentUser, (loginErr) => {
                     if (loginErr)
                         return res.status(500).json({ error: 'Login failed. Please try again.' });
-                    const urlUserName = currentUser.fullName.replaceAll(" ", '-')
-                    res.redirect(`/${currentUser.fullName}/dashboard`);
+                    const urlUserName = user.fullName.replaceAll(" ", '-')
+                    res.redirect(`/${urlUserName}/dashboard`)
                 });
-                
             }catch(err){
                 return res.status(500).json({"message": "an error has occured"})
             }   
