@@ -51,7 +51,7 @@ class authController {
                         return res.status(500).json({"message": "error while login user"})
                     }
                     const urlUserName = user.fullName.replaceAll(" ", '-')
-                    res.redirect(`/${urlUserName}/dashboard`)
+                    res.redirect(`/${user.fullName}/dashboard`)
                 })
             } else {
                 return res.status(500).json({
@@ -77,7 +77,7 @@ class authController {
                     return res.status(500).json({"message": "error in login"})
                 }
                 const urlUserName = user.fullName.replaceAll(" ", '-')
-                res.redirect(`/${urlUserName}/dashboard`)
+                res.redirect(`/${user.fullName}/dashboard`)
             });
         })(req, res, next)
     }
@@ -119,7 +119,7 @@ class authController {
                     if (loginErr)
                         return res.status(500).json({ error: 'Login failed. Please try again.' });
                     const urlUserName = currentUser.fullName.replaceAll(" ", '-')
-                    res.redirect(`/${urlUserName}/dashboard`);
+                    res.redirect(`/${currentUser.fullName}/dashboard`);
                 });
                 
             }catch(err){
