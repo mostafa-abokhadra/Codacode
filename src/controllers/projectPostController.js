@@ -4,7 +4,7 @@ const prisma = new PrismaClient()
 const utils = require("../utils/utils")
 
 class projectPostController {
-    static async createProject(req, res) {
+    static async createPost(req, res) {
         try {
             const { title, description, repo, roles} = req.body
 
@@ -89,6 +89,25 @@ class projectPostController {
                 "user": updatedUser
             })
 
+        } catch(error) {
+            console.log(error)
+            return res.status(500).json({"message": "an error occured"})
+        }
+    }
+
+    static async getPosts(req, res) {
+        try {
+            const username = req.param.username
+            const posts = await prisma.post.findMany({
+                where: {
+                    user: {
+                        fullName: username
+                    }
+                }
+            })
+            if (!posts)
+                return res.status(203).json({"message": "user don't have any posts yet"})
+            return res.status(200).json({"message": "posts retrieved successfully", posts: posts})
         } catch(error) {
             console.log(error)
             return res.status(500).json({"message": "an error occured"})
