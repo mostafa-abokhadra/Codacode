@@ -33,6 +33,7 @@ passport.use(new LocalStrategy({
         user = await utils.getUpdatedUser(email)
         return done(null, user)
     } catch(error) {
+        console.log(error)
         return done(null, false, {message: "an error occured"})
     }
 }))
