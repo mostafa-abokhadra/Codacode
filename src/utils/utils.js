@@ -7,7 +7,9 @@ async function getUpdatedUser(email) {
             where: {email},
             include: {
                 profile: true,
-                posts: true,
+                posts: {
+                    roles: true
+                },
                 teams: true,
                 collabProjects: true,
                 messages: true,

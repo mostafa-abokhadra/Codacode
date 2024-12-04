@@ -4,7 +4,7 @@ const ensureAuthenticated = require('../middlewares/checkSession').ensureAuthent
 
 // http://localhost:8080/mostafa abokhadra/project
 router.post(
-    '/:username/project',
+    '/:username/projects',
     ensureAuthenticated,
     projectPostController.createPost
 
@@ -15,4 +15,15 @@ router.get('/:username/projects',
     projectPostController.getPosts
 )
 
+router.get(
+    "/:username/projects/:projectId",
+    ensureAuthenticated,
+    projectPostController.getPostById
+)
+
+router.put(
+    '/:username/projects/:projectId',
+    ensureAuthenticated,
+    projectPostController.updatePost
+)
 module.exports = router

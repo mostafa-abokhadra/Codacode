@@ -46,7 +46,6 @@ class projectPostController {
                         post: {
                             connect: {id: projectPost.id}
                         }
-                        // post_id: projectPost.id
                     }
                 })
 
@@ -97,7 +96,9 @@ class projectPostController {
 
     static async getPosts(req, res) {
         try {
-            const username = req.param.username
+
+            const {username} = req.param
+
             const posts = await prisma.post.findMany({
                 where: {
                     user: {
@@ -105,13 +106,152 @@ class projectPostController {
                     }
                 }
             })
+
             if (!posts)
                 return res.status(203).json({"message": "user don't have any posts yet"})
+
             return res.status(200).json({"message": "posts retrieved successfully", posts: posts})
+
         } catch(error) {
+
+            console.log(error)
+            return res.status(500).json({"message": "an error occured"})
+        }
+    }
+
+    static async getPostById(req, res) {
+        try {
+
+            const {username, projectId} = req.params
+
+            const project = await prisma.post.findFirst({
+                where: {
+                    user: {
+                        fullName: username
+                    },
+                    id: parseInt(projectId)
+                }
+            })
+
+            if (!project)
+                return res.status(403).json({"message": "no project exist with given id for the given user"})
+
+            return res.status(200).json({
+                "message": "project retrieved scucessfully",
+                project: project
+            })
+        } catch(error) {
+
+            console.log(error)
+            return res.status(500).josn({"message": "an error occured"})
+        }
+    }
+
+    static async updatePost(req, res) {
+        try {
+            const { username, projectId } = req.params
+            const { title, description, repo, roles } = req.body
+
+            // getting the post to be updated
+            const post = await prisma.post.findFirst({
+                where: {
+                    user: {
+                        fullName: username
+                    },
+                    id: parseInt(projectId),
+                },
+                include: {
+                    roles: true,
+                    user: true
+                }
+            })
+
+            if(!post)
+                return res.status({"message": "post don't exist for the user"})
+
+            // create the new roles
+            let createdRoles = []
+
+            for (let i = 0; i < roles.length; i++) {
+                let createRole = await prisma.role.create({
+                    data: {
+                        position: roles[i].role,
+                        needed: roles[i].no,
+                        post: {
+                            connect: {
+                                id: post.id
+                            }
+                        },
+                    }
+                })
+                if (createRole) {
+                    createdRoles.push(createRole)
+                    continue
+                } else {
+                    // if one role hasn't been created successfully for any reason
+                    // the whole new roles will be deleted because in this case
+                    // the post roles are not complete, so can't associate some roles
+                    // to the project without the remaining ones that couldn't be created
+                    if (createdRoles) {
+                        for (let i = 0; i < createdRoles.length; i++) {
+                            const deletedRole = await prisma.role.delete({
+                                where: {
+                                    id: createdRoles[i].id
+                                }
+                            })
+                            if (!deletedRole) {
+                                return res.status(500).json({
+                                    "message": "can't update post",
+                                    "problem": "some roles created but not all of them",
+                                    "solve": "delete created roles manually",
+                                    "rolesToBeDeletedManually": createdRoles
+                                })
+                            }
+                        }
+                    }
+                    return res.status(500).json({"message": "couldn't create a new role"})
+                }
+            }
+            // updating the post before deleting the old roles
+            // because if any problems happend during update operation
+            // the post will remain as it old version
+            const updatedPost = await prisma.post.update({
+                where: {
+                    id: parseInt(projectId)
+                },
+                data: {
+                    title: title,
+                    content: description,
+                    repo: repo,
+                    updatedAt: new Date(),
+                }
+            })
+            if (!updatedPost)
+                return res.status(500).json({"message": "can't update post"})
+
+            // post is updated successfully
+            // so delete older roles associated with it
+            for(let i = 0; i < post.roles.length; i++){
+                let role = await prisma.role.delete({
+                    where: {
+                        id: post.roles[i].id
+                    }
+                })
+                if (!role)
+                    return res.status(500).json({"message": "can't delete old roles"})
+            }
+
+            const user = await utils.getUpdatedUser(post.user.email)
+            return res.status(200).json({
+                "message": "project updated successfully",
+                user: user
+            })
+        } catch(error) {
+
             console.log(error)
             return res.status(500).json({"message": "an error occured"})
         }
     }
 }
+
 module.exports = projectPostController
