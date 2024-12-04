@@ -2,8 +2,8 @@ const session = require('express-session')
 module.exports = session({
     name: 'sessionCookie',
     secret: process.env.SESSION_SECRET || "messi",
-    resave: false,
-    saveUninitialized: false,
+    resave: true,
+    saveUninitialized: true,
     cookie: {
         secure: process.env.NODE_ENV === "production" ? true : false,
         // sameSite: 'strict',

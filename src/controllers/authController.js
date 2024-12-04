@@ -65,6 +65,7 @@ class authController {
                 })
             }
         } catch(error) {
+            console.log(error)
             return res.status(500).json({"message": "an error has occured"})
         }
     }
@@ -128,6 +129,7 @@ class authController {
                     res.redirect(`/${urlUserName}/dashboard`)
                 });
             }catch(err){
+                console.log(err)
                 return res.status(500).json({"message": "an error has occured"})
             }   
         })(req, res, next);
