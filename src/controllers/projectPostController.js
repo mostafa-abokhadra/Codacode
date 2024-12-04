@@ -252,6 +252,37 @@ class projectPostController {
             return res.status(500).json({"message": "an error occured"})
         }
     }
+
+    static async deletePost(req, res) {
+        try {
+
+            const {username, projectId} = req.params
+
+            const post = await prisma.post.delete({
+                where: {
+                    id: parseInt(projectId),
+                    user: {
+                        fullName: username
+                    }
+                },
+                include: {user: true}
+            })
+
+            if (!post)
+                return res.status(500).json({"message": "cant' delete post"})
+
+            const user = await utils.getUpdatedUser(post.user.email)
+            return res.status(200).json({
+                "message": "post deleted successfully",
+                user: user
+            })
+
+        } catch(error) {
+            
+            console.log(error)
+            return res.status(500).json({"message": "an error occured"})
+        }
+    }
 }
 
 module.exports = projectPostController

@@ -8,7 +8,9 @@ async function getUpdatedUser(email) {
             include: {
                 profile: true,
                 posts: {
-                    roles: true
+                    include: {
+                        roles: true
+                    }
                 },
                 teams: true,
                 collabProjects: true,
