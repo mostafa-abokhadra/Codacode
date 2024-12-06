@@ -27,6 +27,30 @@ async function getUpdatedUser(email) {
         return {"message": "an error occured", "error": error}
     }
 }
+async function deleteGarbageRequest(requestId) {
+    try {
+        const deleted = await prisma.request.delete({
+            where: {id: parseInt(requestId)}
+        })
+        if (!deleted) {
+            return {
+                "error": "can't delete garbage request",
+                "solve": "delete it mannually",
+                "requestId": parseInt(requestId)
+            }
+        }
+        return {
+            "message": "garbage request deleted successfully",
+            "problem": "update operation can't be done for role or user"
+        }
+    } catch(error) {
+        console.log(error)
+        return {
+            "error": "an error has orccured, check the console" 
+        }
+    }
+}
 module.exports = {
     getUpdatedUser,
+    deleteGarbageRequest
 }

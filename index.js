@@ -10,6 +10,7 @@ const homeRoute = require('./src/routes/homeRoute')
 const authRoute = require('./src/routes/authRoutes')
 const dashboardRoute = require('./src/routes/dashboard')
 const projectPostRoute = require('./src/routes/projectPostRoute')
+const applyRoute = require("./src/routes/applyRoute")
 
 
 app.set('view engine', 'ejs')
@@ -30,6 +31,7 @@ app.use('/', homeRoute)
 app.use('/auth', authRoute)
 app.use('/', dashboardRoute)
 app.use('/', projectPostRoute)
+app.use('/', applyRoute)
 
 app.listen(process.env.PORT)
 
