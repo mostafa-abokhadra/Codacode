@@ -4,15 +4,17 @@ const router = require("express").Router()
 const requestValidator = require("../validators/requestsValidators")
 const handleValidationErrors = require("../middlewares/validationErrorHandler")
 
+// apply to a position
 router.post(
-    "/:userAppliedName/roles/:roleId",
+    "/:username/roles/:roleId",
     ensureAuthenticated,
+    requestValidator.validateUserName,
     requestValidator.validateRoleId,
     handleValidationErrors,
     applyController.postApplyRequest
 )
 
-// send to me requests
+// get send-to-me requests
 router.get(
     "/:username/requests",
     ensureAuthenticated,

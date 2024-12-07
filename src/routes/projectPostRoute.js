@@ -1,13 +1,24 @@
 const router = require('express').Router()
-const projectPostController = require('../controllers/projectPostController')
+
 const ensureAuthenticated = require('../middlewares/checkSession').ensureAuthenticated
 
+const postValidtor = require('../validators/postValidator')
+const handleValidationError = require('../middlewares/validationErrorHandler')
+
+const projectPostController = require('../controllers/projectPostController')
+
+
 // http://localhost:8080/mostafa abokhadra/projects
+// creating a new post
 router.post(
     '/:username/projects',
+    postValidtor.titleValidator,
+    postValidtor.descriptionValidator,
+    postValidtor.rolesValidator,
+    postValidtor.repoUrlValidator,
+    handleValidationError,
     ensureAuthenticated,
     projectPostController.createPost
-
 )
 
 //http://localhost:8080/mostafa abokhadra/projects

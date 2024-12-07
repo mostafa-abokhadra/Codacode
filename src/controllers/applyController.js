@@ -13,7 +13,8 @@ class applyController {
                         include: {
                             user: true
                         }
-                    }
+                    },
+                    requests: true
                 }
             })
             if (!role)
@@ -25,6 +26,14 @@ class applyController {
             })
             if (!userApplied)
                 return res.status(403).json({"message": "can't find user"})
+            let exist = false;
+            for (let i = 0; i < role.requests.length; i++) {
+                if (req.user.id === role.requests[i].userApplied_id) {
+                    exist = true; break;
+                }
+            }
+            if (exist)
+                return res.status(403).json({"message": "user already have applied to this position"})
             const createRequest = await prisma.request.create({
                 data: {
                     role: {

@@ -84,7 +84,6 @@ class authController {
                 }
                 const urlUserName = user.fullName.replaceAll(" ", '-')
                 res.redirect(`/${urlUserName}/dashboard`)
-                
             });
         })(req, res, next)
     }
