@@ -62,6 +62,45 @@ class applyController {
             return res.status(500).json("an error occured, look in console")
         }
     }
+
+    static async getSendToMeRequests(req, res) {
+        try {
+            console.log(req.user)
+            const {username} = req.params
+            const user = await prisma.user.findFirst({
+                where: {fullName: username},
+                include: {
+                    posts: {
+                        include: {
+                            roles: {
+                                include: {
+                                    requests: true
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+            if (!user)
+                return res.status(403).json({"message": "user don't have any requests"})
+            let requests = []
+            for (let i = 0; i < user.posts.length; i++) {
+                for (let j = 0; j < user.posts[i].roles.length; j++) {
+                    for (let k = 0; k < user.posts[i].roles[j].requests.length; k++) {
+                        requests.push(user.posts[i].roles[j].requests[k])
+                    }
+                }
+            }
+            return res.status(200).json({
+                "message": "requests retrieved successfully",
+                "requests": requests
+            })
+
+        } catch(error) {
+            console.log(error)
+            return res.status(500).json({"meessage": "an error occured, check the console"})
+        }
+    }
 }
 
 module.exports = applyController
