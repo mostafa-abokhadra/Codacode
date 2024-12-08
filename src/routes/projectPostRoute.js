@@ -12,29 +12,32 @@ const projectPostController = require('../controllers/projectPostController')
 // creating a new post
 router.post(
     '/:username/projects',
+    ensureAuthenticated,
     postValidtor.titleValidator,
     postValidtor.descriptionValidator,
     postValidtor.rolesValidator,
     postValidtor.repoUrlValidator,
     handleValidationError,
-    ensureAuthenticated,
     projectPostController.createPost
 )
 
 //http://localhost:8080/mostafa abokhadra/projects
+// getting all user post
 router.get('/:username/projects',
-    ensureAuthenticated,
+    // ensureAuthenticated, // route don't need authentication
     projectPostController.getPosts
 )
 
 // http://localhost:8080/mostafa abokhadra/projects/3
+// get specific post by id
 router.get(
     "/:username/projects/:projectId",
-    ensureAuthenticated,
+    // ensureAuthenticated, // don't need authentication
     projectPostController.getPostById
 )
 
 // http://localhost:8080/mostafa abokhadra/projects/3
+// update a project post
 router.put(
     '/:username/projects/:projectId',
     ensureAuthenticated,
@@ -42,6 +45,7 @@ router.put(
 )
 
 // http://localhost:8080/mostafa abokhadra/projects/3
+// delete a project post
 router.delete(
     '/:username/projects/:projectId',
     ensureAuthenticated,

@@ -1,5 +1,5 @@
 const { ensureAuthenticated } = require("../middlewares/checkSession")
-const applyController = require("../controllers/applyController")
+const requestsController = require("../controllers/requestsController")
 const router = require("express").Router()
 const requestValidator = require("../validators/requestsValidators")
 const handleValidationErrors = require("../middlewares/validationErrorHandler")
@@ -11,7 +11,7 @@ router.post(
     requestValidator.validateUserName,
     requestValidator.validateRoleId,
     handleValidationErrors,
-    applyController.postApplyRequest
+    requestsController.postApplyRequest
 )
 
 // get send-to-me requests
@@ -20,7 +20,7 @@ router.get(
     ensureAuthenticated,
     requestValidator.validateUserName,
     handleValidationErrors,
-    applyController.getSendToMeRequests
+    requestsController.getSendToMeRequests
 )
 
 module.exports = router

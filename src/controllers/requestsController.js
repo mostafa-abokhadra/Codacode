@@ -1,11 +1,11 @@
 const {PrismaClient} = require("@prisma/client")
 const prisma = new PrismaClient()
 const utils = require('../utils/utils')
-class applyController {
+class requestsController {
 
     static async postApplyRequest(req, res) {
         try {
-            const {userAppliedName, roleId} = req.params
+            const {username, roleId} = req.params
             const role = await prisma.role.findFirst({
                 where: {id: parseInt(roleId)},
                 include: {
@@ -22,10 +22,10 @@ class applyController {
             if (role.post.user.id === req.user.id)
                 return res.status(403).json({"message": "can't apply to your own porject"})
             const userApplied = await prisma.user.findFirst({
-                where: {fullName: userAppliedName}
+                where: {fullName: username}
             })
             if (!userApplied)
-                return res.status(403).json({"message": "can't find user"})
+                return res.status(403).json({"message": "user want to apply not found"})
             let exist = false;
             for (let i = 0; i < role.requests.length; i++) {
                 if (req.user.id === role.requests[i].userApplied_id) {
@@ -53,7 +53,8 @@ class applyController {
                         connect: {
                             id: createRequest.id
                         }
-                    }
+                    },
+                    applied: parseInt(role.applied) + 1
                 }
             })
             if (!updateRole) {
@@ -61,10 +62,9 @@ class applyController {
                 const deleteGarbageRequest = await utils.deleteGarbageRequest(createRequest.id)
                 return res.status(500).json({"message": "can't update the role request"})
             }
-            const updatedUser = await utils.getUpdatedUser(userApplied.email)
+            // const updatedUser = await utils.getUpdatedUser(userApplied.email)
             return res.status(200).json({
-                "message": "request to role sent successfully",
-                user: updatedUser
+                "message": "request to role sent successfully"
             })
         } catch(error) {
             console.log(error)
@@ -74,7 +74,6 @@ class applyController {
 
     static async getSendToMeRequests(req, res) {
         try {
-            console.log(req.user)
             const {username} = req.params
             const user = await prisma.user.findFirst({
                 where: {fullName: username},
@@ -112,4 +111,4 @@ class applyController {
     }
 }
 
-module.exports = applyController
+module.exports = requestsController
