@@ -1,4 +1,6 @@
 const {body} = require('express-validator')
+const { ResultWithContextImpl } = require('express-validator/lib/chain')
+const { nextTick } = require('process')
 
 const titleValidator = [
     body('title')
@@ -40,10 +42,37 @@ const rolesValidator = [
 ]
 const repoUrlValidator = [
     body('repo')
-    .trim()
-    .escape()
     .notEmpty().withMessage('Repository URL is required')
     .isURL().withMessage('Repository URL must be a valid URL')
+    .custom(async (api) => {
+        const apiParts = api.split('/')
+
+        if (apiParts.length < 5 || (apiParts.length === 5 && apiParts[apiParts.length - 1] === ''))
+            throw new Error("API URL is not complete");
+
+        if (apiParts[0] !== 'https:' && apiParts[0] !== 'http:') 
+            throw new Error('Please enter a valid "repo" URL');
+        
+        if (apiParts[2] !== "github.com")
+            throw new Error('Invalid GitHub domain');
+
+        const finalApi = `${apiParts[0]}//api.${apiParts[2]}/repos/${apiParts[3]}/${apiParts[4]}`
+        
+        try {
+            const res = await fetch(finalApi)
+            if (!res.ok) {
+                if (res.status === 404) {
+                    throw new Error("repo not found");
+                } else {
+                    throw new Error("Failed to fetch the repo");
+                }
+            }
+            await res.json(); // ignore the result, just validate existence
+            return true;
+        } catch(error) {
+            throw new Error(error.message)
+        }
+    })
 ]
 
 module.exports = {

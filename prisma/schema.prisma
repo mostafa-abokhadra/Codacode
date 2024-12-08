@@ -37,7 +37,7 @@ model Post {
 	user User @relation(name: "UserPosts", fields: [user_id], references: [id], onDelete: Cascade)
 	user_id Int
 	title String @db.VarChar(50)
-	content String @db.VarChar(200)
+	content String @db.VarChar(350)
 	repo String
 	createdAt DateTime @default(now())
 	updatedAt DateTime @default(now()) @updatedAt
