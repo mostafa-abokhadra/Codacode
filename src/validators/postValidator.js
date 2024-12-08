@@ -1,6 +1,6 @@
 const {body} = require('express-validator')
-const { ResultWithContextImpl } = require('express-validator/lib/chain')
-const { nextTick } = require('process')
+const {PrismaClient} = require('@prisma/client')
+const prisma = new PrismaClient()
 
 const titleValidator = [
     body('title')
@@ -45,8 +45,17 @@ const repoUrlValidator = [
     .notEmpty().withMessage('Repository URL is required')
     .isURL().withMessage('Repository URL must be a valid URL')
     .custom(async (api) => {
-        const apiParts = api.split('/')
 
+        try {
+            const post = await prisma.post.findFirst({
+                where: {repo: api}
+            })
+            if (post)
+                throw new Error("Repo URL Already Belong to Another Project")
+        } catch(error) {
+            throw new Error(error.message)
+        }
+        const apiParts = api.split('/')
         if (apiParts.length < 5 || (apiParts.length === 5 && apiParts[apiParts.length - 1] === ''))
             throw new Error("API URL is not complete");
 
@@ -67,7 +76,7 @@ const repoUrlValidator = [
                     throw new Error("Failed to fetch the repo");
                 }
             }
-            await res.json(); // ignore the result, just validate existence
+            await res.json(); // ignore the result, i'm just validate existence
             return true;
         } catch(error) {
             throw new Error(error.message)
