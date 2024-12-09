@@ -112,6 +112,7 @@ class requestsController {
 
     static async getPendingRequests(req, res) {
         try {
+            console.log("i got here")
             const {username} = req.params
             const user = await prisma.user.findFirst({
                 where: {fullName: username}
@@ -127,6 +128,46 @@ class requestsController {
                 "message": "pending requests retrieved successfully",
                 pending: pending
             })
+        } catch(error) {
+            console.log(error)
+            return res.status(500).json({"message": "an error has occured"})
+        }
+    }
+
+    static async cancelRequest(req, res) {
+        try {
+            const {username, requestId} = req.params
+            const checkRequest = await prisma.request.findFirst({
+                where: {id: parseInt(requestId), userApplied_id: req.user.id}
+            })
+            if (!checkRequest)
+                return res.status(403).json({"message": "request doesn't exist for given user"})
+
+            const request = await prisma.request.delete({
+                where: {
+                    id: parseInt(requestId),
+                    userApplied_id: req.user.id
+                },
+                include: {
+                    role: true
+                }
+            })
+            if (!request)
+                return res.status(403).json({"message": "can't cancel request"})
+            const updateRole = await prisma.role.update({
+                where: {id: request.role_id},
+                data: {
+                    applied: request.role.applied - 1
+                }
+            })
+            if (!updateRole) {
+                return res.status(500).json({
+                    "message": "can't update role after deletion",
+                    solve: "delete it manually",
+                    roleId: request.role.id
+                })
+            }
+            return res.redirect(`/${username}/requests/pending`)
         } catch(error) {
             console.log(error)
             return res.status(500).json({"message": "an error has occured"})

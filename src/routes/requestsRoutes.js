@@ -31,4 +31,13 @@ router.get(
     handleValidationErrors,
     requestsController.getPendingRequests
 )
+
+// cancel sended request
+router.delete(
+    '/:username/requests/:requestId',
+    ensureAuthenticated,
+    requestValidator.validateRequestId,
+    handleValidationErrors,
+    requestsController.cancelRequest
+)
 module.exports = router
