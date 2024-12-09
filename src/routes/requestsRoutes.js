@@ -23,4 +23,12 @@ router.get(
     requestsController.getSendToMeRequests
 )
 
+// get i-send-requests
+router.get(
+    '/:username/requests/pending',
+    ensureAuthenticated,
+    requestValidator.validateUserName,
+    handleValidationErrors,
+    requestsController.getPendingRequests
+)
 module.exports = router

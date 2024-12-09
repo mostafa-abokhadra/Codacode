@@ -109,6 +109,29 @@ class requestsController {
             return res.status(500).json({"meessage": "an error occured, check the console"})
         }
     }
+
+    static async getPendingRequests(req, res) {
+        try {
+            const {username} = req.params
+            const user = await prisma.user.findFirst({
+                where: {fullName: username}
+            })
+            if (!user)
+                return res.status(403).json({"message": "can't find user"})
+            const pending = await prisma.request.findMany({
+                where: {userApplied_id: user.id}
+            })
+            if (!pending)
+                return res.status(403).json({"message": "user has no pending requests"})
+            return res.status(200).json({
+                "message": "pending requests retrieved successfully",
+                pending: pending
+            })
+        } catch(error) {
+            console.log(error)
+            return res.status(500).json({"message": "an error has occured"})
+        }
+    }
 }
 
 module.exports = requestsController
