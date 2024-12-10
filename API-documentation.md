@@ -6,7 +6,8 @@
 
 - POST http://localhost:8080/auth/signup
 
-    **body example**
+    - **body example**
+
         {
         "fullName":"mostafa abokhadra",
         "email": "mostafa@gmail.com",
@@ -18,11 +19,12 @@
 
 - POST http://localhost:8080/auth/login
 
-    **body example**
-    {
-    "email": "mbukhadra@gmail.com",
-    "password": "mostafa123",
-    }
+    - **body example**
+    
+        {
+        "email": "mbukhadra@gmail.com",
+        "password": "mostafa123",
+        }
 
 - GET http://localhost:8080/auth/google
 - GET http://localhost:8080/auth/google/redirect
@@ -32,7 +34,8 @@
 
 - POST http://localhost:8080/:username/posts
 
-    **body example**
+    - **body example**
+
         {
         "title": "e-commerce",
         "description": "i'm planning to work on an e-commerce project as it has so many customer in the market, i'm a frontend develpoer so i want 1 more front end develpoer with me, a UIUX designer and backend developers, who is ready to mingle?!",
@@ -44,7 +47,8 @@
 - GET http://localhost:8080/:username/posts/:postId
 - PUT http://localhost:8080/:username/posts/:postId
 
-    **body example**
+    - **body example**
+
         {
         "title": "e-commerce",
         "description": "i'm planning to work on an e-commerce project as it has so many customer in the market, i'm a frontend develpoer so i want 1 more front end develpoer with me, a UIUX designer and backend developers, who is ready to mingle?!",
