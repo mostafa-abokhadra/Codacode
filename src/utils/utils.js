@@ -13,16 +13,15 @@ async function getUpdatedUser(email) {
                     }
                 },
                 teams: true,
-                collabProjects: true,
                 messages: true,
-                groups: true,
-                requests: true
+                requests: true,
+                Projects: true,
+                assignedProjects: true
             }
         })
         if (!user)
             return {"message": "couldn't fetch user"}
-        const {password, ...userWithoutSensetiveData} = user
-        return userWithoutSensetiveData
+        return user
     } catch(error) {
         return {"message": "an error occured", "error": error}
     }
@@ -44,13 +43,62 @@ async function deleteGarbageRequest(requestId) {
             "problem": "update operation can't be done for role or user"
         }
     } catch(error) {
-        console.log(error)
         return {
             "error": "an error has orccured, check the console" 
         }
     }
 }
+async function getSendToMeRequests(username) {
+    try {
+        const user = await prisma.user.findFirst({
+                where: {fullName: username},
+                include: {
+                    posts: {
+                        include: {
+                            roles: {
+                                include: {
+                                    requests: true
+                                }
+                            }
+                        }
+                    }
+                }
+            })
+            if (!user)
+                return {"error": "can't find user"}
+            let requests = []
+            for (let i = 0; i < user.posts.length; i++) {
+                for (let j = 0; j < user.posts[i].roles.length; j++) {
+                    for (let k = 0; k < user.posts[i].roles[j].requests.length; k++) {
+                        requests.push(user.posts[i].roles[j].requests[k])
+                    }
+                }
+            }
+            return {
+                "message": "requests retrieved successfully",
+                "requests": requests
+            }
+    } catch(error) {
+        console.log(error)
+        return {"error": "an error occur in utils"}
+    }
+}
+async function getPendingRequests(username) {
+    try {
+        const user = await prisma.user.findFirst({
+            where: {fullName: username},
+            include: {requests: true}
+        })
+        if (!user)
+            return {"error": "can't find user"}
+        return {"message": "pending requests retrieved successfully", pending: user.requests}
+    } catch(error) {
+        return {"error": "an error occured"}
+    }
+}
 module.exports = {
     getUpdatedUser,
-    deleteGarbageRequest
+    deleteGarbageRequest,
+    getSendToMeRequests,
+    getPendingRequests
 }

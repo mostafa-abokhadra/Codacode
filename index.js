@@ -9,7 +9,7 @@ const session = require('./src/middlewares/session')
 const homeRoute = require('./src/routes/homeRoute')
 const authRoute = require('./src/routes/authRoutes')
 const dashboardRoute = require('./src/routes/dashboard')
-const projectPostRoute = require('./src/routes/projectPostRoute')
+const postRoute = require('./src/routes/postRoutes')
 const requestsRoute = require("./src/routes/requestsRoutes")
 
 
@@ -30,7 +30,7 @@ app.use(passport.session())
 app.use('/', homeRoute)
 app.use('/auth', authRoute)
 app.use('/', dashboardRoute)
-app.use('/', projectPostRoute)
+app.use('/', postRoute)
 app.use('/', requestsRoute)
 
 app.listen(process.env.PORT)

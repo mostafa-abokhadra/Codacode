@@ -17,21 +17,16 @@ class authController {
     }
 
     static async postSignup(req, res){
-
         const {fullName, email, password} = req.body
-
         try {
             let user = await prisma.user.findFirst({
                 where: {email: email}
             })
-
             if (user) {
                 req.session.info = "user already has an account, please login"
                 return res.redirect('login');
             }
-
             let newUser = await prisma.user.create({
-
                 data: {
                     email: email,
                     fullName: fullName,
@@ -44,19 +39,14 @@ class authController {
                     })
                 }
             })
-
             user = await utils.getUpdatedUser(email)
-
             if (!user.hasOwnProperty('message')) {
-
                 req.logIn(user, (error) => {
                     if (error){
                         return res.status(500).json({"message": "error while login user"})
                     }
-                    req.session.save(() => {
-                        const urlUserName = user.fullName.replaceAll(" ", '-')
-                        res.redirect(`/${urlUserName}/dashboard`)
-                    });
+                    const urlUserName = user.fullName.replaceAll(" ", '-')
+                    res.redirect(`/${urlUserName}/dashboard`)
                 })
             } else {
                 return res.status(500).json({
@@ -65,7 +55,6 @@ class authController {
                 })
             }
         } catch(error) {
-            console.log(error)
             return res.status(500).json({"message": "an error has occured"})
         }
     }
@@ -93,42 +82,44 @@ class authController {
     }
 
     static async redirectGoogle(req, res, next) {
-        passport.authenticate('google', async (err, user, info) => {
+        passport.authenticate('google', async (err, googleUser, info) => {
             if (err) 
-                return res.status(500).json({ error: 'Authentication failed. Please try again.' });
-            if (!user) 
+                return res.status(500).json({ error: 'Authentication failed. Please try again.'});
+            if (!googleUser) 
                 return res.status(401).json({ error: 'User not found or authentication denied.' });
             try {
-                const newUser = await prisma.user.findFirst({
-                    where: {email: user.email}
+                let user = await prisma.user.findFirst({
+                    where: {email: googleUser.email}
                 })
-                let currentUser = {}
-                if (newUser)
-                    currentUser = await utils.getUpdatedUser(newUser.email)
-                if (!newUser) {
-                    currentUser = await prisma.user.create({
+                if (!user) {
+                    user  = await prisma.user.create({
                         data: {
-                            email: user.email,
+                            email: googleUser.email,
                             password: await new Promise((resolve, reject) => {
-                                bcrypt.hash(`google-${user.displayName}`, process.env.SALT || 10, (error, hashed) => {
+                                bcrypt.hash(`google-${googleUser.displayName}`, process.env.SALT || 10, (error, hashed) => {
                                     if (error)
                                         return reject(error)
                                     resolve(hashed)
                                 })
                             }),
-                            fullName: user.fullName
+                            fullName: googleUser.fullName
                         }
                     })
-                    currentUser = await utils.getUpdatedUser(currentUser.email)
                 }
-                req.logIn(currentUser, (loginErr) => {
-                    if (loginErr)
+                user = await utils.getUpdatedUser(user.email)
+                if (user.hasOwnProperty("message")) {
+                    return res.status(500).json({
+                        "message": "an error occure while fetching updted user",
+                        "info": user.message
+                    })
+                }
+                req.logIn(user, (error) => {
+                    if (error)
                         return res.status(500).json({ error: 'Login failed. Please try again.' });
                     const urlUserName = user.fullName.replaceAll(" ", '-')
                     res.redirect(`/${urlUserName}/dashboard`)
                 });
             }catch(err){
-                console.log(err)
                 return res.status(500).json({"message": "an error has occured"})
             }   
         })(req, res, next);
@@ -140,7 +131,7 @@ class authController {
             if (err) {
                 return res.status(500).json({"message": "logout failed"})
             }
-            res.clearCookie()
+            res.clearCookie("sessionCookie")
             res.redirect("/")
         })
     }

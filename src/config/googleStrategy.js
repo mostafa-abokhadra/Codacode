@@ -1,32 +1,21 @@
 const passport = require("passport")
-const googleStrategy = require("passport-google-oidc")
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
-
-passport.use(new googleStrategy({
+passport.use(new GoogleStrategy({
     clientID: process.env['GOOGLE_CLIENT_ID'],
-    state: false,
     clientSecret: process.env['GOOGLE_CLIENT_SECRET'],
     callbackURL: '/auth/google/redirect',
-    scope: [ 'profile', 'email'] 
-}, function verify(issuer, profile, cb) {
-    const user = {
-        email: profile.emails[0].value,
-        fullName: profile.displayName
-    };   
-    return cb(null, user);
+}, function verify(accessToken, refreshToken, profile, cb) {
+    try {
+        const user = {
+            email: profile.emails[0].value,
+            fullName: profile.displayName
+        };
+        return cb(null, user);
+    } catch(error) {
+        return cb(error);
+    }
 }
 ))
-
-// passport.serializeUser(function(user, cb) {
-//     process.nextTick(function() {
-//         cb(null, user);
-//     });
-// });
-
-// passport.deserializeUser(function(user, cb) {
-//     process.nextTick(function() {
-//         return cb(null, user);
-//     });
-// });
 
 module.exports = passport

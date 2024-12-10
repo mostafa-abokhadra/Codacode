@@ -62,12 +62,12 @@ class requestsController {
                 const deleteGarbageRequest = await utils.deleteGarbageRequest(createRequest.id)
                 return res.status(500).json({"message": "can't update the role request"})
             }
-            // const updatedUser = await utils.getUpdatedUser(userApplied.email)
+            const updatedUser = await utils.getUpdatedUser(userApplied.email)
             return res.status(200).json({
-                "message": "request to role sent successfully"
+                "message": "request to role sent successfully",
+                user: updatedUser
             })
         } catch(error) {
-            console.log(error)
             return res.status(500).json("an error occured, look in console")
         }
     }
@@ -75,61 +75,23 @@ class requestsController {
     static async getSendToMeRequests(req, res) {
         try {
             const {username} = req.params
-            const user = await prisma.user.findFirst({
-                where: {fullName: username},
-                include: {
-                    posts: {
-                        include: {
-                            roles: {
-                                include: {
-                                    requests: true
-                                }
-                            }
-                        }
-                    }
-                }
-            })
-            if (!user)
-                return res.status(403).json({"message": "user don't have any requests"})
-            let requests = []
-            for (let i = 0; i < user.posts.length; i++) {
-                for (let j = 0; j < user.posts[i].roles.length; j++) {
-                    for (let k = 0; k < user.posts[i].roles[j].requests.length; k++) {
-                        requests.push(user.posts[i].roles[j].requests[k])
-                    }
-                }
-            }
-            return res.status(200).json({
-                "message": "requests retrieved successfully",
-                "requests": requests
-            })
-
+            const sendToMe = await utils.getSendToMeRequests(username)
+            if (sendToMe.hasOwnProperty("error"))
+                return res.status(500).json(sendToMe)
+            return res.status(200).json(sendToMe)
         } catch(error) {
-            console.log(error)
             return res.status(500).json({"meessage": "an error occured, check the console"})
         }
     }
 
     static async getPendingRequests(req, res) {
         try {
-            console.log("i got here")
             const {username} = req.params
-            const user = await prisma.user.findFirst({
-                where: {fullName: username}
-            })
-            if (!user)
-                return res.status(403).json({"message": "can't find user"})
-            const pending = await prisma.request.findMany({
-                where: {userApplied_id: user.id}
-            })
-            if (!pending)
-                return res.status(403).json({"message": "user has no pending requests"})
-            return res.status(200).json({
-                "message": "pending requests retrieved successfully",
-                pending: pending
-            })
+            const pending = await utils.getPendingRequests(username)
+            if (pending.hasOwnProperty("error"))
+                return res.status(500).json(pending)
+            return res.status(200).json(pending)
         } catch(error) {
-            console.log(error)
             return res.status(500).json({"message": "an error has occured"})
         }
     }
@@ -142,7 +104,6 @@ class requestsController {
             })
             if (!checkRequest)
                 return res.status(403).json({"message": "request doesn't exist for given user"})
-
             const request = await prisma.request.delete({
                 where: {
                     id: parseInt(requestId),
@@ -163,11 +124,11 @@ class requestsController {
             if (!updateRole) {
                 return res.status(500).json({
                     "message": "can't update role after deletion",
-                    solve: "delete it manually",
+                    solve: "upate applied field manually",
                     roleId: request.role.id
                 })
             }
-            return res.redirect(`/${username}/requests/pending`)
+            return res.redirect(`/${username}/pending`)
         } catch(error) {
             console.log(error)
             return res.status(500).json({"message": "an error has occured"})

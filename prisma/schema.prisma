@@ -22,25 +22,29 @@ model User {
 	password String
 
 	profile Profile? @relation(name: "UserProfile")
-
 	posts Post[] @relation(name: "UserPosts")
+  requests Request[] // request i sent
 
-  ownedProjects Project[] @relation(name: "owner_fk")
-  teams Team[] @relation()
-  collabProjects Project[] @relation()
-  messages message[]
-  groups Group[]
-  requests Request[]
+  teams Team[] @relation("userTeams")
+  messages message[] @relation("userMessages")
+
+  //Projects owned by the user
+  Projects  Project[] @relation(name: "userProjects")
+
+  // Many-to-many relation with Project
+  assignedProjects Project[] @relation("ProjectUsers")
 }
 model Post {
 	id Int @id @default(autoincrement())
-	user User @relation(name: "UserPosts", fields: [user_id], references: [id], onDelete: Cascade)
-	user_id Int
-	title String @db.VarChar(50)
+  title String @db.VarChar(50)
 	content String @db.VarChar(350)
 	repo String
 	createdAt DateTime @default(now())
 	updatedAt DateTime @default(now()) @updatedAt
+
+	user User @relation(name: "UserPosts", fields: [user_id], references: [id], onDelete: Cascade)
+	user_id Int
+
   roles Role[] @relation()
 }
 model Role {
@@ -49,46 +53,59 @@ model Role {
 	needed Int
   applied Int @default(0)
   accepted Int @default(0)
+  status roleStatus?
+
   post Post @relation(fields: [post_id], references: [id], onDelete: Cascade)
 	post_id Int
+
   requests Request[]
 }
 model Request {
   id Int @id @default(autoincrement())
-  role Role @relation(fields: [role_id], references: [id])
+  status requestStatus?
+
+  role Role @relation(fields: [role_id], references: [id], onDelete: Cascade)
   role_id Int
-  userApplied User @relation(fields: [userApplied_id], references: [id])
+
+  userApplied User @relation(fields: [userApplied_id], references: [id], onDelete: Cascade)
   userApplied_id Int
 }
 model Team {
   id Int @id @default(autoincrement())
-  team User[] @relation()
-  project Project? @relation()
-  group Group? @relation()
-}
+
+  team User[] @relation("userTeams")
+  project Project? @relation("projectTeam")
+  group Group? @relation("teamGroup")
+ }
 model Project {
-	id Int @id @default(autoincrement())
-  Owner User @relation(name: "owner_fk", fields: [owner_id], references: [id])
+  id Int @id @default(autoincrement())
+  repo String
+  status projectStatus?
+
+  Owner User @relation("userProjects", fields: [owner_id], references: [id])
   owner_id Int
-	repo String
-  team Team @relation(fields: [team_id], references: [id])
+
+  team Team @relation("projectTeam", fields: [team_id], references: [id], onDelete: Cascade)
   team_id Int @unique
-  Users User[]
+  
+  Users User[] @relation("ProjectUsers")
 }
 model Group {
 	id Int @id @default(autoincrement())
-	team Team @relation(fields: [team_id], references: [id])
+  
+	team Team @relation("teamGroup", fields: [team_id], references: [id])
   team_id Int @unique
-	messages message[]
-  user User @relation(fields: [user_id], references: [id])
-  user_id Int
+  messages message[] @relation("groupMessages")
 }
 model message {
 	id Int @id @default(autoincrement())
-	group Group @relation(fields: [group_id], references: [id])
+  sendedAt DateTime @default(now())
+  content String
+
+	group Group @relation("groupMessages", fields: [group_id], references: [id])
 	group_id Int
-	content String
-  user User @relation(fields: [user_id], references: [id])
+	
+  user User @relation("userMessages", fields: [user_id], references: [id])
   user_id Int
 }
 
@@ -105,6 +122,10 @@ enum gender {
   male
   female
 }
+enum roleStatus {
+  completed
+  available
+}
 enum requestStatus {
 	waiting
 	accepted
@@ -116,17 +137,18 @@ enum projectStatus {
 	completed // if completed don't show in projects only in profile
 	workOn // show for the team applied only instead of completed
 }
-model TeamToUser {
-  id Int @id @default(autoincrement()) // Add an explicit primary key
-  teamId Int
-  userId Int
-
-  @@unique([teamId, userId])
-}
-model ProjectToUser {
-  id Int @id @default(autoincrement()) // Add an explicit primary key
-  projectId Int
-  userId Int
-
-  @@unique([projectId, userId])
-}
+//model TeamToUser {
+//  id Int @id @default(autoincrement()) // Add an explicit primary key
+//  teamId Int
+//  userId Int
+//
+//  @@unique([teamId, userId])
+//}
+//model ProjectToUser {
+//  id Int @id @default(autoincrement()) // Add an explicit primary key
+//  projectId Int
+//  userId Int
+//
+//  @@unique([projectId, userId])
+//}
+//

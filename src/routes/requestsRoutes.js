@@ -1,4 +1,4 @@
-const { ensureAuthenticated } = require("../middlewares/checkSession")
+const checksession = require("../middlewares/checkSession")
 const requestsController = require("../controllers/requestsController")
 const router = require("express").Router()
 const requestValidator = require("../validators/requestsValidators")
@@ -7,27 +7,27 @@ const handleValidationErrors = require("../middlewares/validationErrorHandler")
 // apply to a position
 router.post(
     "/:username/roles/:roleId",
-    ensureAuthenticated,
-    requestValidator.validateUserName,
+    checksession.ensureAuthenticated,
+    checksession.ensureValidUser,
     requestValidator.validateRoleId,
     handleValidationErrors,
     requestsController.postApplyRequest
 )
 
-// get send-to-me requests
+// get send to me requests
 router.get(
     "/:username/requests",
-    ensureAuthenticated,
-    requestValidator.validateUserName,
+    checksession.ensureAuthenticated,
+    checksession.ensureValidUser,
     handleValidationErrors,
     requestsController.getSendToMeRequests
 )
 
-// get i-send-requests
+// get pending requests
 router.get(
-    '/:username/requests/pending',
-    ensureAuthenticated,
-    requestValidator.validateUserName,
+    '/:username/pending',
+    checksession.ensureAuthenticated,
+    checksession.ensureValidUser,
     handleValidationErrors,
     requestsController.getPendingRequests
 )
@@ -35,9 +35,11 @@ router.get(
 // cancel sended request
 router.delete(
     '/:username/requests/:requestId',
-    ensureAuthenticated,
+    checksession.ensureAuthenticated,
+    checksession.ensureValidUser,
     requestValidator.validateRequestId,
     handleValidationErrors,
     requestsController.cancelRequest
 )
+
 module.exports = router
