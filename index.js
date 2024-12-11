@@ -11,6 +11,7 @@ const authRoute = require('./src/routes/authRoutes')
 const dashboardRoute = require('./src/routes/dashboard')
 const postRoute = require('./src/routes/postRoutes')
 const requestsRoute = require("./src/routes/requestsRoutes")
+const projectRoute = require("./src/routes/projectRoutes")
 
 
 app.set('view engine', 'ejs')
@@ -32,6 +33,7 @@ app.use('/auth', authRoute)
 app.use('/', dashboardRoute)
 app.use('/', postRoute)
 app.use('/', requestsRoute)
+app.use('/', projectRoute)
 
 app.listen(process.env.PORT)
 

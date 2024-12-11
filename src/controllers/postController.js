@@ -74,6 +74,7 @@ class projectPostController {
                 "user": updatedUser
             })
         } catch(error) {
+            console.log(error)
             return res.status(500).json({"message": "an error occured"})
         }
     }

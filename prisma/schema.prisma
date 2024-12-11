@@ -45,6 +45,9 @@ model Post {
 	user User @relation(name: "UserPosts", fields: [user_id], references: [id], onDelete: Cascade)
 	user_id Int
 
+  project Project? @relation("projectPost", fields: [project_id], references: [id], onDelete: Cascade)
+  project_id Int? @unique
+
   roles Role[] @relation()
 }
 model Role {
@@ -73,7 +76,7 @@ model Request {
 model Team {
   id Int @id @default(autoincrement())
 
-  team User[] @relation("userTeams")
+  members User[] @relation("userTeams")
   project Project? @relation("projectTeam")
   group Group? @relation("teamGroup")
  }
@@ -82,18 +85,20 @@ model Project {
   repo String
   status projectStatus?
 
-  Owner User @relation("userProjects", fields: [owner_id], references: [id])
+  owner User @relation("userProjects", fields: [owner_id], references: [id])
   owner_id Int
 
-  team Team @relation("projectTeam", fields: [team_id], references: [id], onDelete: Cascade)
+  post Post? @relation("projectPost")
+
+  team Team? @relation("projectTeam", fields: [team_id], references: [id], onDelete: Cascade)
   team_id Int @unique
   
-  Users User[] @relation("ProjectUsers")
+  users User[] @relation("ProjectUsers")
 }
 model Group {
 	id Int @id @default(autoincrement())
   
-	team Team @relation("teamGroup", fields: [team_id], references: [id])
+	team Team @relation("teamGroup", fields: [team_id], references: [id], onDelete: Cascade)
   team_id Int @unique
   messages message[] @relation("groupMessages")
 }
@@ -102,10 +107,10 @@ model message {
   sendedAt DateTime @default(now())
   content String
 
-	group Group @relation("groupMessages", fields: [group_id], references: [id])
+	group Group @relation("groupMessages", fields: [group_id], references: [id], onDelete: Cascade)
 	group_id Int
 	
-  user User @relation("userMessages", fields: [user_id], references: [id])
+  user User @relation("userMessages", fields: [user_id], references: [id], onDelete: Cascade)
   user_id Int
 }
 
@@ -137,18 +142,3 @@ enum projectStatus {
 	completed // if completed don't show in projects only in profile
 	workOn // show for the team applied only instead of completed
 }
-//model TeamToUser {
-//  id Int @id @default(autoincrement()) // Add an explicit primary key
-//  teamId Int
-//  userId Int
-//
-//  @@unique([teamId, userId])
-//}
-//model ProjectToUser {
-//  id Int @id @default(autoincrement()) // Add an explicit primary key
-//  projectId Int
-//  userId Int
-//
-//  @@unique([projectId, userId])
-//}
-//
