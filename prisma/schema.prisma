@@ -72,6 +72,8 @@ model Request {
 
   userApplied User @relation(fields: [userApplied_id], references: [id], onDelete: Cascade)
   userApplied_id Int
+
+  show Boolean @default(true)
 }
 model Team {
   id Int @id @default(autoincrement())
@@ -140,5 +142,5 @@ enum requestStatus {
 }
 enum projectStatus {
 	waitingForTeam
-	workOn // show for the team applied only instead of completed
+  completed
 }
