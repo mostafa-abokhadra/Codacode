@@ -14,7 +14,7 @@ async function getUpdatedUser(email) {
                 },
                 teams: true,
                 messages: true,
-                requests: true,
+                pending: true,
                 Projects: true,
                 assignedProjects: true
             }
@@ -57,7 +57,21 @@ async function getSendToMeRequests(username) {
                         include: {
                             roles: {
                                 include: {
-                                    requests: true
+                                    requests: {
+                                        where: {
+                                            status: {
+                                                notIn: ["accepted", "rejected"]
+                                            }
+                                        },
+                                        include: {
+                                            userApplied: {
+                                                select: {
+                                                    id: true,
+                                                }
+                                            },
+                                            role: true
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -87,11 +101,11 @@ async function getPendingRequests(username) {
     try {
         const user = await prisma.user.findFirst({
             where: {fullName: username},
-            include: {requests: true}
+            include: {pending: true}
         })
         if (!user)
             return {"error": "can't find user"}
-        return {"message": "pending requests retrieved successfully", pending: user.requests}
+        return {"message": "pending requests retrieved successfully", pending: user.pending}
     } catch(error) {
         return {"error": "an error occured"}
     }

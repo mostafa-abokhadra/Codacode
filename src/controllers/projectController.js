@@ -1,8 +1,6 @@
 const {PrismaClient} = require("@prisma/client")
 const prisma = new PrismaClient()
 const utils = require("../utils/utils")
-const { connect } = require("http2")
-const { use } = require("passport")
 
 class projectController {
     static async createProject(req, res) {
@@ -67,11 +65,7 @@ class projectController {
                             id: team.id
                         }
                     },
-                    owner: {
-                        connect: {
-                            id: post.user.id
-                        }
-                    }
+                    status: "waitingForTeam"
                 }
             })
             if (!project) {
