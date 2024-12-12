@@ -42,4 +42,14 @@ router.delete(
     requestsController.cancelRequest
 )
 
+// accept a reqeust send to me
+router.post(
+    '/:username/requests/:requestId',
+    checksession.ensureAuthenticated,
+    checksession.ensureValidUser,
+    requestValidator.validateRequestId,
+    handleValidationErrors,
+    requestsController.acceptRequest
+)
+
 module.exports = router

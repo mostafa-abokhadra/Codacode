@@ -40,7 +40,8 @@ class projectPostController {
                         needed: no,
                         post: {
                             connect: {id: projectPost.id}
-                        }
+                        },
+                        status: "available"
                     }
                 })
 
@@ -69,12 +70,12 @@ class projectPostController {
                 createdRoles.push(createRole)
             }
             const {password, ...updatedUser} = await utils.getUpdatedUser(user.email)
-            return res.status(200).json({
-                "message": "post created successfully",
-                "user": updatedUser
-            })
+            return res.redirect(307, `/${req.params.username}/posts/${projectPost.id}/projects`)
+            // return res.status(200).json({
+            //     "message": "post created successfully",
+            //     "user": updatedUser
+            // })
         } catch(error) {
-            console.log(error)
             return res.status(500).json({"message": "an error occured"})
         }
     }
@@ -134,11 +135,14 @@ class projectPostController {
                 },
                 include: {
                     roles: true,
-                    user: true
+                    user: true,
+                    project: true
                 }
             })
             if(!post)
                 return res.status({"message": "post don't exist for the user"})
+            if (post.project.status == "workOn")
+                return res.status(401).json({"message": "project is already in action"})
             // create the new roles
             let createdRoles = []
             for (let i = 0; i < roles.length; i++) {

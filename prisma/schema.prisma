@@ -23,7 +23,7 @@ model User {
 
 	profile Profile? @relation(name: "UserProfile")
 	posts Post[] @relation(name: "UserPosts")
-  requests Request[] // request i sent
+  pending Request[] // request i sent
 
   teams Team[] @relation("userTeams")
   messages message[] @relation("userMessages")
@@ -77,7 +77,10 @@ model Team {
   id Int @id @default(autoincrement())
 
   members User[] @relation("userTeams")
-  project Project? @relation("projectTeam")
+
+  project Project? @relation("projectTeam", fields: [project_id], references: [id], onDelete: Cascade)
+  project_id Int? @unique
+
   group Group? @relation("teamGroup")
  }
 model Project {
@@ -90,8 +93,7 @@ model Project {
 
   post Post? @relation("projectPost")
 
-  team Team? @relation("projectTeam", fields: [team_id], references: [id], onDelete: Cascade)
-  team_id Int @unique
+  team Team? @relation("projectTeam")
   
   users User[] @relation("ProjectUsers")
 }
@@ -133,12 +135,10 @@ enum roleStatus {
 }
 enum requestStatus {
 	waiting
-	accepted
 	rejected
-	completed
+  accepted
 }
 enum projectStatus {
 	waitingForTeam
-	completed // if completed don't show in projects only in profile
 	workOn // show for the team applied only instead of completed
 }
