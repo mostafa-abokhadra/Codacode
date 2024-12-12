@@ -155,7 +155,9 @@ class requestsController {
                 return item.id === exist.id
             })
             if (!isInRequests)
-                return res.status(401).json({"message": "request doesn't belong to user"})
+                return res.status(401).json({"message": "request doesn't belong to user or already accepted or rejected"})
+            if (exist.role.accepted === exist.role.needed)
+                return res.status(401).json({"message": "role is already staisfied"})
             const request = await prisma.request.update({
                 where: {id: parseInt(requestId)},
                 data: {
@@ -184,9 +186,7 @@ class requestsController {
                 },
             })
             if (!request)
-                return res.status(500).json({"message": "can't find request"})
-            if (request.role.accepted === request.role.needed)
-                return res.status(401).json({"message": "role is already staisfied"})
+                return res.status(500).json({"message": "can't update request"})
             const updateTeam = await prisma.team.update({
                 where: {id: request.role.post.project.team.id},
                 data: {
@@ -223,6 +223,66 @@ class requestsController {
             return res.status(200).json({
                 "message": "you have accepted request successfully",
                 currentReqeusts: currentRequestsAfterAccept
+            })
+        } catch(error) {
+            console.log(error)
+            return res.status(500).json({"message": "an error has occured"})
+        }
+    }
+
+    static async rejectRequest(req, res) {
+        try {
+            const {username, requestId} = req.params
+            const exist = await prisma.request.findFirst({
+                where: {id: parseInt(requestId)},
+                include: {
+                    userApplied: true,
+                    role: true
+                }
+            })
+            if (!exist)
+                return res.status(401).json({"message": "no request exist with give id"})
+            const myRequests = await utils.getSendToMeRequests(username)
+            if (myRequests.hasOwnProperty("error"))
+                return res.status(500).json(myRequests)
+            const isInRequests = myRequests.requests.some((item) => {
+                return item.id === exist.id
+            })
+            if (!isInRequests)
+                return res.status(401).json({"message": "request doesn't belong to user"})
+            const request = await prisma.request.update({
+                where: {id: parseInt(requestId)},
+                data: {
+                    status: "rejected"
+                },
+                include: {
+                    userApplied: true,
+                    role: {
+                        include: {
+                            post: {
+                                include: {
+                                    project: {
+                                        include: {
+                                            team: {
+                                                include: { 
+                                                    group: true 
+                                                }
+                                            },
+                                            users: true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                },
+            })
+            if (!request)
+                return res.status(500).json({"message": "can't find request"})
+            const currentRequestsAfterReject = await utils.getSendToMeRequests(username) 
+            return res.status(200).json({
+                "message": "you have rejected request successfully",
+                currentReqeusts: currentRequestsAfterReject
             })
         } catch(error) {
             console.log(error)

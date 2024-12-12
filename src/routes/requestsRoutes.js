@@ -44,12 +44,21 @@ router.delete(
 
 // accept a reqeust send to me
 router.post(
-    '/:username/requests/:requestId',
+    '/:username/requests/:requestId/accept',
     checksession.ensureAuthenticated,
     checksession.ensureValidUser,
     requestValidator.validateRequestId,
     handleValidationErrors,
     requestsController.acceptRequest
+)
+
+router.delete(
+    "/:username/requests/:requestId/reject",
+    checksession.ensureAuthenticated,
+    checksession.ensureValidUser,
+    requestValidator.validateRequestId,
+    handleValidationErrors,
+    requestsController.rejectRequest
 )
 
 module.exports = router
