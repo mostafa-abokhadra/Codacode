@@ -42,4 +42,9 @@ router.get(
     ensureValidUser,
     projectController.getAllProjects
 )
+
+// still not sure if i will implement these routes beneath
+// router.put("/:username/project/:projectId")
+// router.delete("/:username/project/:projectId")
+
 module.exports = router
