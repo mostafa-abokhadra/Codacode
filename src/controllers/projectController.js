@@ -144,11 +144,26 @@ class projectController {
         try {
             const {username, projectId} = req.params
             const user = await prisma.user.findFirst({
-                where: {fullName: username}
+                where: {fullName: username},
+                include: {
+                    assignedProjects: {
+                        include: {
+                            team: {
+                                include: {
+                                    group: {
+                                        include: {
+                                            messages: true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             })
             if (!user)
                 return res.status(403).json({"message": "no user found"})
-            const project = await prisma.project.findFirst({
+            let project = await prisma.project.findFirst({
                 where: {id: parseInt(projectId), owner_id: user.id},
                 include: {
                     team: {
@@ -163,8 +178,15 @@ class projectController {
                     }
                 }
             })
-            if (!project)
-                return res.status(403).json({"message": "project not found"})
+            if (!project) {
+                project = user.assignedProjects.some((item) => {
+                    project = item
+                    return item.id === parseInt(projectId)
+                })
+                if (!project)
+                    return res.status(403).json({"message": "project not found"})
+                project = user.assignedProjects
+            }
             return res.status(200).json({"message": "project retrieved successfully", project: project})
         } catch(error) {
             console.log(error)
