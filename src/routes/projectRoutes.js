@@ -15,6 +15,8 @@ router.post(
 // getting my project (l am the owner)
 router.get(
     '/:username/projects',
+    ensureAuthenticated,
+    ensureValidUser,
     projectController.getProjects
 )
 
@@ -26,5 +28,12 @@ router.get(
     projectController.getAssignedProjects
 )
 
+// getting a project by id
+router.get(
+    '/:username/projects/:projectId',
+    ensureAuthenticated,
+    ensureValidUser,
+    projectController.getProjectById
+)
 
 module.exports = router
