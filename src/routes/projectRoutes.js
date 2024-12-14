@@ -36,4 +36,10 @@ router.get(
     projectController.getProjectById
 )
 
+router.get(
+    "/:username/all/projects",
+    ensureAuthenticated,
+    ensureValidUser,
+    projectController.getAllProjects
+)
 module.exports = router

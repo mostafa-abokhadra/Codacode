@@ -193,6 +193,28 @@ class projectController {
             return res.status(200).json({"message": "an error has occured, check the console"})
         }
     }
+
+    static async getAllProjects(req, res) {
+        try {
+            const {username} = req.params
+            const user = await prisma.user.findFirst({
+                where: {fullName: username},
+                include: {
+                    Projects: { include: { team: { include: { group: {include: {messages: true} },  members: true } } } },
+                    assignedProjects: { include: { team: { include: { group: {include: {messages: true}}, members: true} } } }
+                }
+            })
+            if (!user)
+                return res.status(401).json({"message": "can't find user projects"})
+            return res.status(200).json({
+                "message": "projects retrieved successfully",
+                projects: user.Projects, assigned: user.assignedProjects
+            })
+        } catch(error) {
+            console.log(error)
+            return res.status(500).json({"message": "an error has occured"})
+        }
+    }
 }
 
 module.exports = projectController
