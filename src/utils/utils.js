@@ -110,9 +110,38 @@ async function getPendingRequests(username) {
         return {"error": "an error occured"}
     }
 }
+
+async function checkProjectStatus(postId) {
+    try {
+        const post = await prisma.post.findFirst({
+            where: {
+                id: parseInt(postId)
+            },
+            include: {
+                project: true,
+                roles: true
+            }
+        })
+        if (!post)
+            return {"error": "can't get post in utils"}
+        let neededSum = 0;
+        let acceptedSum = 0;
+        for (let i = 0; i < post.roles.length; i++){
+            neededSum += post.roles[i].needed
+            acceptedSum += post.roles[i].accepted
+        }
+        if (neededSum === acceptedSum)
+            return {"status": "completed"}
+        return {"status": "waiting"}
+    } catch(error) {
+        console.log(error)
+        return {"error": "server error in utils"}
+    }
+}
 module.exports = {
     getUpdatedUser,
     deleteGarbageRequest,
     getSendToMeRequests,
-    getPendingRequests
+    getPendingRequests,
+    checkProjectStatus
 }
