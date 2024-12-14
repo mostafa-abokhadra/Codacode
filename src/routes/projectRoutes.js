@@ -18,4 +18,13 @@ router.get(
     projectController.getProjects
 )
 
+// getting projects that i particaipate in
+router.get(
+    "/:username/assigned/projects",
+    ensureAuthenticated,
+    ensureValidUser,
+    projectController.getAssignedProjects
+)
+
+
 module.exports = router
