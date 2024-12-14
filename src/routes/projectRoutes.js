@@ -12,4 +12,10 @@ router.post(
     projectController.createProject
 )
 
+// getting my project (l am the owner)
+router.get(
+    '/:username/projects',
+    projectController.getProjects
+)
+
 module.exports = router
