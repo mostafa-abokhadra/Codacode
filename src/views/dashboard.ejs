@@ -3,10 +3,277 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>dashboard</title>
+    <title>Professional Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        display: flex;
+        height: 100vh;
+        background-color: #f8f9fa;
+        color: #333;
+        flex-direction: column;
+      }
+
+      /* Sidebar Styling */
+      .sidebar {
+        width: 250px;
+        background-color: rgb(34 197 94 / var(--tw-bg-opacity, 1));
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        height: 100%;
+        transform: translateX(0); /* Always visible on desktop */
+        transition: transform 0.3s ease;
+        z-index: 1000;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .sidebar h2 {
+        margin-bottom: 40px;
+        text-align: center;
+        font-size: 1.5em;
+        letter-spacing: 1px;
+      }
+
+      .sidebar a {
+        color: #fff;
+        text-decoration: none;
+        padding: 12px 15px;
+        margin: 5px 0;
+        display: flex;
+        align-items: center;
+        border-radius: 5px;
+        font-size: 1em;
+        transition: background-color 0.3s;
+      }
+
+      .sidebar a i {
+        margin-right: 10px;
+        font-size: 1.2em;
+      }
+
+      .sidebar a:hover {
+        background-color: #2e7d32;
+      }
+
+      /* Main Content */
+      .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background-color: #fff;
+        margin-left: 250px;
+        transition: margin-left 0.3s ease;
+      }
+
+      /* Navbar */
+      .navbar {
+        background-color: rgb(34 197 94 / var(--tw-bg-opacity, 1));
+        color: #fff;
+        padding: 15px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: relative;
+        z-index: 1100;
+      }
+
+      .navbar a {
+        color: #fff;
+        text-decoration: none;
+        margin-left: 30px;
+        font-size: 1em;
+        transition: color 0.3s;
+      }
+
+      .navbar a:hover {
+        color: #c8e6c9;
+      }
+
+      .navbar a i {
+        margin-right: 8px;
+      }
+
+      .toggle-btn {
+        display: block; /* Show by default */
+        font-size: 1.5em;
+        cursor: pointer;
+        color: #fff;
+        z-index: 1100;
+      }
+      /* Content Section */
+      .content {
+        padding: 40px;
+        background-color: #f4f4f4;
+        flex: 1;
+        border-radius: 8px;
+        margin: 30px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .content h1 {
+        margin-bottom: 20px;
+        font-size: 2em;
+        color: #222;
+      }
+
+      .content p {
+        margin-bottom: 30px;
+        color: #555;
+      }
+
+      .dashboard-section {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+      .dashboard-card {
+        background-color: #fff;
+        padding: 25px;
+        border-radius: 8px;
+        width: calc(50% - 20px);
+        text-align: center;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+
+      .dashboard-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .dashboard-card i {
+        font-size: 2.5em;
+        color: rgb(34 197 94 / var(--tw-bg-opacity, 1));
+        margin-bottom: 15px;
+      }
+
+      .dashboard-card h3 {
+        margin-bottom: 10px;
+        font-size: 1.5em;
+        color: #444;
+      }
+
+      .dashboard-card button {
+        background-color: rgb(34 197 94 / var(--tw-bg-opacity, 1));
+        color: #fff;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 5px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .dashboard-card button:hover {
+        background-color: #2e7d32;
+      }
+      @media (max-width: 768px) {
+        .dashboard-section {
+          flex-direction: column; /* Stack the cards vertically on small screens */
+          align-items: center; /* Center the cards */
+        }
+
+        .dashboard-card {
+          width: 80%; /* Make the cards take up more space */
+          margin-bottom: 20px; /* Add space between the cards */
+        }
+      }
+      /* Hide the hamburger menu on desktop */
+      @media (min-width: 768px) {
+        .toggle-btn {
+          display: none; /* Hide on desktop and larger screens */
+        }
+      }
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .sidebar {
+          transform: translateX(-100%);
+        }
+
+        .sidebar.open {
+          transform: translateX(
+            0
+          ); /* Open on mobile when toggle button is clicked */
+        }
+
+        .main-content {
+          margin-left: 0; /* No space for sidebar on mobile */
+        }
+      }
+    </style>
   </head>
   <body>
-    <h4><%= JSON.stringify(user) %></h4>
-    <h1>dashboard page, مسا مسا</h1>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <h2>Dashboard</h2>
+      <a href="#"><i class="fas fa-folder"></i> Projects</a>
+      <a href="#"><i class="fas fa-clock"></i> Pending</a>
+      <a href="#"><i class="fas fa-tasks"></i> Assigned Projects</a>
+      <a href="#"><i class="fas fa-envelope"></i> Requests</a>
+      <a href="#"><i class="fas fa-lightbulb"></i> Project Idea Bank</a>
+      <a href="#"><i class="fas fa-comments"></i> Posts</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Navbar -->
+      <div class="navbar">
+        <span class="toggle-btn" id="toggle-btn"
+          ><i class="fas fa-bars"></i
+        ></span>
+        <div>
+          <a href="#"><i class="fas fa-user"></i> Profile</a>
+          <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+      </div>
+
+      <!-- Content Section -->
+      <div class="content">
+        <h1>Welcome to Your Dashboard</h1>
+        <p>Manage your projects and collaborations efficiently.</p>
+
+        <div class="dashboard-section">
+          <div class="dashboard-card">
+            <i class="fas fa-plus-circle"></i>
+            <h3>Create a Project</h3>
+            <button>Create</button>
+          </div>
+
+          <div class="dashboard-card">
+            <i class="fas fa-users"></i>
+            <h3>Start Collaboration</h3>
+            <button>Start</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const toggleBtn = document.getElementById("toggle-btn");
+      const sidebar = document.getElementById("sidebar");
+
+      toggleBtn.addEventListener("click", () => {
+        sidebar.classList.toggle("open");
+      });
+    </script>
   </body>
 </html>
