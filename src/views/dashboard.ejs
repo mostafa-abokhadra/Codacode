@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Professional Dashboard</title>
+    <title>Dashboard</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -186,6 +186,186 @@
       .dashboard-card button:hover {
         background-color: #2e7d32;
       }
+      /* Modal Background */
+      /* Modal Background */
+      /* Modal Background */
+      /* Modal Background */
+      /* Modal Background */
+      /* Modal Background */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1200;
+        padding-top: 60px;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+
+      /* Modal Content */
+      .modal-content {
+        background-color: #fff;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+        border-radius: 8px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        position: relative;
+      }
+
+      /* Close Button */
+      .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        color: #aaa;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .close-btn:hover,
+      .close-btn:focus {
+        color: #000;
+      }
+
+      /* Form Styling */
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+      }
+
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+
+      /* Hint Styling */
+      .hint {
+        font-size: 0.85em;
+        color: #888;
+      }
+
+      /* Role Input Styling */
+      .role-input {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .role-input select,
+      .role-input input {
+        flex: 1;
+      }
+
+      .add-role-btn,
+      .remove-role-btn {
+        background-color: rgb(34 197 94 / var(--tw-bg-opacity, 1));
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1em;
+      }
+
+      .add-role-btn:hover,
+      .remove-role-btn:hover {
+        background-color: #2e7d32;
+      }
+
+      .submit-btn {
+        background-color: rgb(34 197 94 / var(--tw-bg-opacity, 1));
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1em;
+      }
+
+      .submit-btn:hover {
+        background-color: #2e7d32;
+      }
+
+      /* Welcome Message Styling */
+      /* Welcome Message Styling */
+      /* Welcome Message Styling */
+      /* Welcome Message Styling */
+      /* Welcome Message Styling */
+      /* Welcome Message Styling */
+      .welcome-message {
+        font-size: 1.8em;
+        color: #333;
+        margin-bottom: 20px;
+        /* text-align: center; */
+      }
+
+      /* Username Styling */
+      .username {
+        color: rgb(34 197 94 / var(--tw-bg-opacity, 1)); /* Main theme color */
+        font-weight: 600;
+        font-size: 1.2em;
+        position: relative;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center; /* Align the heart vertically */
+        gap: 5px; /* Space between the name and the heart */
+        transition: color 0.3s ease;
+      }
+
+      /* Heart Styling */
+      .heart {
+        display: inline-block;
+        font-size: 1em;
+        opacity: 0;
+        transform: scale(0);
+        transition: transform 0.3s ease, opacity 0.3s ease;
+      }
+
+      /* Underline Effect */
+      .username::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -3px;
+        width: 100%;
+        height: 2px;
+        background-color: rgb(34 197 94 / var(--tw-bg-opacity, 1));
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+      }
+
+      /* Hover State */
+      .username:hover {
+        color: #2e7d32; /* Slightly darker green */
+      }
+
+      .username:hover::after {
+        transform: scaleX(1); /* Animate the underline */
+      }
+
+      .username:hover .heart {
+        opacity: 1;
+        transform: scale(1);
+        transition-delay: 0.3s; /* Delay to sync with the underline animation */
+      }
+
       @media (max-width: 768px) {
         .dashboard-section {
           flex-direction: column; /* Stack the cards vertically on small screens */
@@ -248,7 +428,14 @@
 
       <!-- Content Section -->
       <div class="content">
-        <h1>Welcome to Your Dashboard</h1>
+        <h1 class="welcome-message">
+          Welcome
+          <span class="username">
+            <%= user.fullName %>
+            <span class="heart">💚</span>
+          </span>
+        </h1>
+
         <p>Manage your projects and collaborations efficiently.</p>
 
         <div class="dashboard-section">
@@ -267,12 +454,160 @@
       </div>
     </div>
 
+    <!-- Create Project Modal -->
+    <div class="modal" id="createProjectModal">
+      <div class="modal-content">
+        <span class="close-btn" id="closeModal">&times;</span>
+        <h2>Create a Project</h2>
+
+        <form id="projectForm">
+          <div class="form-group">
+            <label for="projectTitle">Project Title</label>
+            <input
+              type="text"
+              id="projectTitle"
+              placeholder="e.g., e-commerce"
+              required
+            />
+            <small class="hint">Or choose from Idea Bank</small>
+          </div>
+
+          <div class="form-group">
+            <label for="ideaBank">Choose from Idea Bank</label>
+            <select id="ideaBank">
+              <option value="">Select an idea...</option>
+              <option value="ecommerce">E-commerce</option>
+              <option value="blog">Blog Website</option>
+              <option value="social">Social Media Platform</option>
+              <option value="portfolio">Portfolio Website</option>
+              <option value="crm">CRM System</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="languagePreference">Language Preference</label>
+            <select id="languagePreference">
+              <option value="">Select a language...</option>
+              <option value="javascript">JavaScript</option>
+              <option value="python">Python</option>
+              <option value="java">Java</option>
+              <option value="ruby">Ruby</option>
+              <option value="php">PHP</option>
+              <option value="typescript">TypeScript</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="yourRole">Your Role</label>
+            <select id="yourRole" required>
+              <option value="">Select your role...</option>
+              <option value="frontend">Frontend Developer</option>
+              <option value="backend">Backend Developer</option>
+              <option value="uiux">UI/UX Designer</option>
+              <option value="qa">QA Tester</option>
+              <option value="devops">DevOps Engineer</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Roles Needed</label>
+            <div id="rolesContainer">
+              <div class="role-input">
+                <select class="role-field">
+                  <option value="">Select role...</option>
+                  <option value="frontend">Frontend Developer</option>
+                  <option value="backend">Backend Developer</option>
+                  <option value="uiux">UI/UX Designer</option>
+                  <option value="qa">QA Tester</option>
+                  <option value="devops">DevOps Engineer</option>
+                  <option value="other">Other</option>
+                </select>
+                <input
+                  type="number"
+                  class="number-needed"
+                  placeholder="Number Needed"
+                  min="1"
+                />
+                <button type="button" class="add-role-btn">+</button>
+                <button type="button" class="remove-role-btn">-</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="repoLink">Repo Link</label>
+            <input
+              type="url"
+              id="repoLink"
+              placeholder="Prove you are serious by initiating your project repo and providing the link"
+              required
+            />
+          </div>
+
+          <button type="submit" class="submit-btn">Submit</button>
+        </form>
+      </div>
+    </div>
+
     <script>
       const toggleBtn = document.getElementById("toggle-btn");
       const sidebar = document.getElementById("sidebar");
 
       toggleBtn.addEventListener("click", () => {
         sidebar.classList.toggle("open");
+      });
+      ////
+      const createBtn = document.querySelector(".dashboard-card button");
+      const modal = document.getElementById("createProjectModal");
+      const closeModalBtn = document.getElementById("closeModal");
+      const rolesContainer = document.getElementById("rolesContainer");
+
+      // Open Modal
+      createBtn.addEventListener("click", () => {
+        modal.style.display = "block";
+      });
+
+      // Close Modal
+      closeModalBtn.addEventListener("click", () => {
+        modal.style.display = "none";
+      });
+
+      // Close Modal on Outside Click
+      window.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          modal.style.display = "none";
+        }
+      });
+
+      // Add or Remove Role Input Fields
+      rolesContainer.addEventListener("click", (e) => {
+        if (e.target.classList.contains("add-role-btn")) {
+          const roleInputDiv = document.createElement("div");
+          roleInputDiv.className = "role-input";
+          roleInputDiv.innerHTML = `
+      <select class="role-field">
+        <option value="">Select role...</option>
+        <option value="frontend">Frontend Developer</option>
+        <option value="backend">Backend Developer</option>
+        <option value="uiux">UI/UX Designer</option>
+        <option value="qa">QA Tester</option>
+        <option value="devops">DevOps Engineer</option>
+        <option value="other">Other</option>
+      </select>
+      <input type="number" class="number-needed" placeholder="Number Needed" min="1" />
+      <button type="button" class="add-role-btn">+</button>
+      <button type="button" class="remove-role-btn">-</button>
+    `;
+          rolesContainer.appendChild(roleInputDiv);
+        }
+
+        if (e.target.classList.contains("remove-role-btn")) {
+          const roleInput = e.target.parentElement;
+          if (rolesContainer.children.length > 1) {
+            rolesContainer.removeChild(roleInput);
+          }
+        }
       });
     </script>
   </body>
