@@ -10,10 +10,9 @@ passport.use(
     function(accessToken, freshToken, profile, done) {
         process.nextTick(function() {
             try {
-                console.log(profile)
                 const user = {
-                    email: profile.email,
-                    username: profile.username
+                    username: profile.username,
+                    token: accessToken
                 }
                 return done(null, user)
             } catch(error) {

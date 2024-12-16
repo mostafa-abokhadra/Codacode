@@ -47,18 +47,14 @@ router.get(
     authController.redirectGoogle
 );
 
+
 router.get(
     "/github",
     passportGithub.authenticate('github', {scope: ["repo", "user:email"]})
 )
 router.get(
     '/github/redirect',
-    (req, res, next) => {
-        passportGithub.authenticate('github', async(err, user, info)=> {
-            console.log("from redirect: ", err, user, info)
-            return res.status(200).json({"message": "tmam", user: user})
-        })(req, res, next);
-    }
+    authController.getGitHubRedirect
 )
 
 router.post('/logout', ensureAuthenticated, authController.logout)

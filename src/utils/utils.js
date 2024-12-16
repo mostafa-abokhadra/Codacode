@@ -1,29 +1,62 @@
 const {PrismaClient} = require("@prisma/client")
 const prisma = new PrismaClient()
+const crypto = require('crypto');
 
 async function getUpdatedUser(email) {
     try {
         const user = await prisma.user.findFirst({
-            where: {email},
-            include: {
+            where: { email },
+            select: {
+                id: true,
+                fullName: true,
+                email: true,
                 profile: true,
+                pending: true,
                 posts: {
                     include: {
-                        roles: true
+                        roles: {
+                            include: {
+                                requests: true
+                            }
+                        }
                     }
                 },
-                teams: true,
-                messages: true,
-                pending: true,
-                Projects: true,
-                assignedProjects: true
+                Projects: {
+                    include: {
+                        team: {
+                            include: {
+                                group: {
+                                    include: {
+                                        messages: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                assignedProjects: {
+                    include: {
+                        team: {
+                            include: {
+                                group: {
+                                    include: {
+                                        messages: true 
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                GitHub: true
             }
-        })
+        });
+        
         if (!user)
-            return {"message": "couldn't fetch user"}
+            return {"error": "couldn't fetch user"}
         return user
     } catch(error) {
-        return {"message": "an error occured", "error": error}
+        console.log("in utils: ", error)
+        return {"error": "an error occured", "error": error}
     }
 }
 async function deleteGarbageRequest(requestId) {
@@ -138,10 +171,36 @@ async function checkProjectStatus(postId) {
         return {"error": "server error in utils"}
     }
 }
+
+// Encrypt function
+async function encryptToken(token) {
+    require('dotenv').config(); // Load environment variables from .env file
+
+    const key = Buffer.from(process.env.ENCRYPTION_KEY, 'hex'); // Convert hex string to Buffer
+    const iv = Buffer.from(process.env.ENCRYPTION_IV, 'hex');   // Convert hex string to Buffer
+
+    const cipher = crypto.createCipheriv(process.env.CRYPTO_ALGORITHM, key, iv);
+    let encrypted = cipher.update(token, 'utf8', 'hex');
+    encrypted += cipher.final('hex');
+    return encrypted;
+}
+
+// Decrypt function
+async function decryptToken(encryptedToken) {
+    const key = Buffer.from(process.env.ENCRYPTION_KEY, 'hex'); // Convert hex string to Buffer
+    const iv = Buffer.from(process.env.ENCRYPTION_IV, 'hex');   // Convert hex string to Buffer
+    const decipher = crypto.createDecipheriv(process.env.CRYPTO_ALGORITHM, key, iv);
+    let decrypted = decipher.update(encryptedToken, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+    return decrypted;
+}
+
 module.exports = {
     getUpdatedUser,
     deleteGarbageRequest,
     getSendToMeRequests,
     getPendingRequests,
-    checkProjectStatus
+    checkProjectStatus,
+    encryptToken,
+    decryptToken
 }

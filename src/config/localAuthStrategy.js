@@ -10,16 +10,25 @@ passport.use(new LocalStrategy({
     passwordField: "password",
 }, async (email, password, done) => {
     try {
-        let user = await utils.getUpdatedUser(email)
-        if (user.hasOwnProperty("message")) {
-            return done(null, false, {message: "email or password is wrong"})
-        }
-        const validatePassword = await bcrypt.compare(password, user.password)
+        const userPassword = await prisma.user.findFirst({
+            where: {email},
+            select: {
+                password: true
+            }
+        })
+        if (!userPassword)
+            return done(null, false, {"message": "username or email is wrong"})
+        const validatePassword = await bcrypt.compare(password, userPassword.password)
         if (!validatePassword) {
             return done(null, false, {message: "wrong password or email"})
         }
+        let user = await utils.getUpdatedUser(email)
+        if (user.hasOwnProperty("error")) {
+            return done(null, false, {message: "email or password is wrong"})
+        }
         return done(null, user)
     } catch(error) {
+        console.log(error)
         return done(null, false, {message: "an error occured"})
     }
 }))

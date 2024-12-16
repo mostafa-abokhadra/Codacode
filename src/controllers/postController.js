@@ -6,7 +6,10 @@ const utils = require("../utils/utils")
 class projectPostController {
     static async createPost(req, res) {
         try {
-            const { title, description, repo, roles} = req.body
+            console.log(req.params)
+            console.log(req.body)
+            return 
+            const { title, description, language, repo, roles} = req.body
             const user = await prisma.user.findUnique({
                 where: {fullName: req.params.username},
                 include: {posts: true}

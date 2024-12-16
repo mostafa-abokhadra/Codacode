@@ -189,9 +189,6 @@
       /* Modal Background */
       /* Modal Background */
       /* Modal Background */
-      /* Modal Background */
-      /* Modal Background */
-      /* Modal Background */
       .modal {
         display: none;
         position: fixed;
@@ -246,7 +243,8 @@
       }
 
       .form-group input,
-      .form-group select {
+      .form-group select,
+      .form-group textarea {
         width: 100%;
         padding: 10px;
         border: 1px solid #ccc;
@@ -301,9 +299,6 @@
       .submit-btn:hover {
         background-color: #2e7d32;
       }
-
-      /* Welcome Message Styling */
-      /* Welcome Message Styling */
       /* Welcome Message Styling */
       /* Welcome Message Styling */
       /* Welcome Message Styling */
@@ -422,7 +417,18 @@
         ></span>
         <div>
           <a href="#"><i class="fas fa-user"></i> Profile</a>
-          <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          <a href="#" onclick="document.getElementById('logoutForm').submit();">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </a>
+
+          <form
+            id="logoutForm"
+            action="/auth/logout"
+            method="POST"
+            style="display: none"
+          >
+            <!-- Form data if needed -->
+          </form>
         </div>
       </div>
 
@@ -454,46 +460,58 @@
       </div>
     </div>
 
+    ///
     <!-- Create Project Modal -->
     <div class="modal" id="createProjectModal">
       <div class="modal-content">
         <span class="close-btn" id="closeModal">&times;</span>
         <h2>Create a Project</h2>
 
-        <form id="projectForm">
+        <form
+          id="projectForm"
+          action="/<%= user.fullName %>/posts"
+          method="post"
+        >
           <div class="form-group">
-            <label for="projectTitle">Project Title</label>
+            <label for="ideaBank">Project Title</label>
+            <select id="ideaBank">
+              <option value="">Select an idea...</option>
+              <option name="title" value="ecommerce">E-commerce</option>
+              <option name="title" value="blog">Blog Website</option>
+              <option name="title" value="social">Social Media Platform</option>
+              <option name="title" value="portfolio">Portfolio Website</option>
+              <option name="title" value="crm">CRM System</option>
+              <option name="title" value="other">Other</option>
+            </select>
             <input
               type="text"
-              id="projectTitle"
-              placeholder="e.g., e-commerce"
-              required
+              id="customIdea"
+              name="customeTitle"
+              placeholder="Enter your idea"
+              style="display: none; margin-top: 10px"
             />
-            <small class="hint">Or choose from Idea Bank</small>
           </div>
 
           <div class="form-group">
-            <label for="ideaBank">Choose from Idea Bank</label>
-            <select id="ideaBank">
-              <option value="">Select an idea...</option>
-              <option value="ecommerce">E-commerce</option>
-              <option value="blog">Blog Website</option>
-              <option value="social">Social Media Platform</option>
-              <option value="portfolio">Portfolio Website</option>
-              <option value="crm">CRM System</option>
-            </select>
+            <label for="projectDescription">Project Description</label>
+            <textarea
+              id="projectDescription"
+              name="description"
+              placeholder="Describe your project"
+              rows="2"
+            ></textarea>
           </div>
 
           <div class="form-group">
             <label for="languagePreference">Language Preference</label>
             <select id="languagePreference">
-              <option value="">Select a language...</option>
-              <option value="javascript">JavaScript</option>
-              <option value="python">Python</option>
-              <option value="java">Java</option>
-              <option value="ruby">Ruby</option>
-              <option value="php">PHP</option>
-              <option value="typescript">TypeScript</option>
+              <option name="language" value="">Select a language...</option>
+              <option name="language" value="javascript">JavaScript</option>
+              <option name="language" value="python">Python</option>
+              <option name="language" value="java">Java</option>
+              <option name="language" value="ruby">Ruby</option>
+              <option name="language" value="php">PHP</option>
+              <option name="language" value="typescript">TypeScript</option>
             </select>
           </div>
 
@@ -501,13 +519,19 @@
             <label for="yourRole">Your Role</label>
             <select id="yourRole" required>
               <option value="">Select your role...</option>
-              <option value="frontend">Frontend Developer</option>
-              <option value="backend">Backend Developer</option>
-              <option value="uiux">UI/UX Designer</option>
-              <option value="qa">QA Tester</option>
-              <option value="devops">DevOps Engineer</option>
-              <option value="other">Other</option>
+              <option name="myRole" value="frontend">Frontend Developer</option>
+              <option name="myRole" value="backend">Backend Developer</option>
+              <option name="myRole" value="uiux">UI/UX Designer</option>
+              <option name="myRole" value="qa">QA Tester</option>
+              <option name="myRole" value="devops">DevOps Engineer</option>
+              <option name="myRole" value="other">Other</option>
             </select>
+            <input
+              type="text"
+              id="customMyRole"
+              placeholder="Enter your role"
+              style="display: none; margin-top: 10px"
+            />
           </div>
 
           <div class="form-group">
@@ -515,16 +539,19 @@
             <div id="rolesContainer">
               <div class="role-input">
                 <select class="role-field">
-                  <option value="">Select role...</option>
-                  <option value="frontend">Frontend Developer</option>
-                  <option value="backend">Backend Developer</option>
-                  <option value="uiux">UI/UX Designer</option>
-                  <option value="qa">QA Tester</option>
-                  <option value="devops">DevOps Engineer</option>
-                  <option value="other">Other</option>
+                  <option name="role" value="">Select role...</option>
+                  <option name="role" value="frontend">
+                    Frontend Developer
+                  </option>
+                  <option name="role" value="backend">Backend Developer</option>
+                  <option name="role" value="uiux">UI/UX Designer</option>
+                  <option name="role" value="qa">QA Tester</option>
+                  <option name="role" value="devops">DevOps Engineer</option>
+                  <option name="role" value="other">Other</option>
                 </select>
                 <input
                   type="number"
+                  name="numberNeeded"
                   class="number-needed"
                   placeholder="Number Needed"
                   min="1"
@@ -532,6 +559,13 @@
                 <button type="button" class="add-role-btn">+</button>
                 <button type="button" class="remove-role-btn">-</button>
               </div>
+              <input
+                type="text"
+                name="customeRole"
+                class="custom-role-field"
+                placeholder="Enter custom role"
+                style="display: none; margin-top: 10px; margin-bottom: 10px"
+              />
             </div>
           </div>
 
@@ -539,6 +573,7 @@
             <label for="repoLink">Repo Link</label>
             <input
               type="url"
+              name="repo"
               id="repoLink"
               placeholder="Prove you are serious by initiating your project repo and providing the link"
               required
@@ -581,32 +616,71 @@
       });
 
       // Add or Remove Role Input Fields
+      // Event listener for rolesContainer to handle "Other" selection
+      rolesContainer.addEventListener("change", (e) => {
+        if (e.target.classList.contains("role-field")) {
+          const customRoleInput =
+            e.target.closest(".role-input").nextElementSibling;
+          if (e.target.value === "other") {
+            customRoleInput.style.display = "block";
+          } else {
+            customRoleInput.style.display = "none";
+          }
+        }
+      });
+
+      // Add or Remove Role Input Fields
       rolesContainer.addEventListener("click", (e) => {
         if (e.target.classList.contains("add-role-btn")) {
           const roleInputDiv = document.createElement("div");
-          roleInputDiv.className = "role-input";
+          roleInputDiv.classList.add("role-group"); // Grouping the role input and custom input
           roleInputDiv.innerHTML = `
-      <select class="role-field">
-        <option value="">Select role...</option>
-        <option value="frontend">Frontend Developer</option>
-        <option value="backend">Backend Developer</option>
-        <option value="uiux">UI/UX Designer</option>
-        <option value="qa">QA Tester</option>
-        <option value="devops">DevOps Engineer</option>
-        <option value="other">Other</option>
-      </select>
-      <input type="number" class="number-needed" placeholder="Number Needed" min="1" />
-      <button type="button" class="add-role-btn">+</button>
-      <button type="button" class="remove-role-btn">-</button>
+      <div class="role-input">
+        <select class="role-field">
+          <option value="">Select role...</option>
+          <option value="frontend">Frontend Developer</option>
+          <option value="backend">Backend Developer</option>
+          <option value="uiux">UI/UX Designer</option>
+          <option value="qa">QA Tester</option>
+          <option value="devops">DevOps Engineer</option>
+          <option value="other">Other</option>
+        </select>
+        <input type="number" class="number-needed" placeholder="Number Needed" min="1" />
+        <button type="button" class="add-role-btn">+</button>
+        <button type="button" class="remove-role-btn">-</button>
+      </div>
+      <input type="text" class="custom-role-field" placeholder="Enter custom role" style="display: none; margin-top: 10px; margin-bottom: 10px;" />
     `;
           rolesContainer.appendChild(roleInputDiv);
         }
 
         if (e.target.classList.contains("remove-role-btn")) {
-          const roleInput = e.target.parentElement;
+          const roleGroup = e.target.closest(".role-group"); // Select the entire group
           if (rolesContainer.children.length > 1) {
-            rolesContainer.removeChild(roleInput);
+            rolesContainer.removeChild(roleGroup);
           }
+        }
+      });
+      const ideaBank = document.getElementById("ideaBank");
+      const customIdeaInput = document.getElementById("customIdea");
+
+      // Show/hide the custom idea input field based on the selected option
+      ideaBank.addEventListener("change", () => {
+        if (ideaBank.value === "other") {
+          customIdeaInput.style.display = "block";
+        } else {
+          customIdeaInput.style.display = "none";
+        }
+      });
+      const yourRole = document.getElementById("yourRole");
+      const customYourRoleInput = document.getElementById("customYourRole");
+
+      // Show/hide the custom role input field based on the selected option
+      yourRole.addEventListener("change", () => {
+        if (yourRole.value === "other") {
+          customYourRoleInput.style.display = "block";
+        } else {
+          customYourRoleInput.style.display = "none";
         }
       });
     </script>
