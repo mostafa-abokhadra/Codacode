@@ -33,12 +33,17 @@ model User {
 
   // Many-to-many relation with Project
   assignedProjects Project[] @relation("ProjectUsers")
+
+  // GitHubCredential
+  GitHub GitHubCredential? @relation("userGitHubCredential")
 }
 model Post {
 	id Int @id @default(autoincrement())
   title String @db.VarChar(50)
 	content String @db.VarChar(350)
 	repo String
+  language String
+  myRole String
 	createdAt DateTime @default(now())
 	updatedAt DateTime @default(now()) @updatedAt
 
@@ -117,7 +122,12 @@ model message {
   user User @relation("userMessages", fields: [user_id], references: [id], onDelete: Cascade)
   user_id Int
 }
-
+model GitHubCredential {
+  user User @relation("userGitHubCredential", fields: [user_id], references: [id], onDelete: Cascade)
+  user_id Int @unique
+  accessToken String?
+  githubUsername String?
+}
 //  users behaviors data table for each page {
 //  how many time each page get visitor
 //  duration of which each user stays in each page

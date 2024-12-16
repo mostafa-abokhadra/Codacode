@@ -1,5 +1,6 @@
 const router = require("express").Router()
 const passport = require('../config/googleStrategy')
+const passportGithub = require("../config/githubStrategy")
 
 const ensureAuthenticated = require('../middlewares/checkSession').ensureAuthenticated
 const blockAuthenticatedUsers = require('../middlewares/checkSession').blockAuthenticatedUsers
@@ -45,6 +46,16 @@ router.get(
     '/google/redirect',
     authController.redirectGoogle
 );
+
+
+router.get(
+    "/github",
+    passportGithub.authenticate('github', {scope: ["repo", "user:email"]})
+)
+router.get(
+    '/github/redirect',
+    authController.getGitHubRedirect
+)
 
 router.post('/logout', ensureAuthenticated, authController.logout)
 

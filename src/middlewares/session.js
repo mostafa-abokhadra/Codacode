@@ -1,6 +1,6 @@
 const session = require('express-session')
 module.exports = session({
-    name: 'sessionCookie',
+    name: 'codacodeCookie',
     secret: process.env.SESSION_SECRET || "messi",
     resave: true,
     saveUninitialized: true,

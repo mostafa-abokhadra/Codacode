@@ -3,7 +3,8 @@ const {PrismaClient} = require("@prisma/client")
 const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
 const utils  = require("../utils/utils")
-const { promises } = require("dns");
+const passportGithub = require("../config/githubStrategy")
+
 class authController {
 
     static async getSignup(req, res){
@@ -31,7 +32,7 @@ class authController {
                     email: email,
                     fullName: fullName,
                     password: await new Promise((resolve, reject) => {
-                        bcrypt.hash(password, process.env.SALT || 10, (error, hashed) => {
+                        bcrypt.hash(password, parseInt(process.env.HASHING_SALT) || 10, (error, hashed) => {
                             if (error)
                                 return reject(error)
                             resolve(hashed)
@@ -40,21 +41,23 @@ class authController {
                 }
             })
             user = await utils.getUpdatedUser(email)
-            if (!user.hasOwnProperty('message')) {
-                req.logIn(user, (error) => {
-                    if (error){
-                        return res.status(500).json({"message": "error while login user"})
-                    }
-                    const urlUserName = user.fullName.replaceAll(" ", '-')
-                    res.redirect(`/${urlUserName}/dashboard`)
-                })
-            } else {
+            if (user.hasOwnProperty('error')) {
                 return res.status(500).json({
                     "info": "an error occured while fetching updated user",
                     "message": user.message
                 })
             }
+            req.logIn(user, (error) => {
+                if (error){
+                    return res.status(500).json({"message": "error while login user"})
+                }
+                const urlUserName = user.fullName.replaceAll(" ", '-')
+                req.user.urlUserName = urlUserName
+                return res.redirect("/auth/github")
+                // return res.redirect(`/${req.user.urlUserName}/dashboard`)
+            })
         } catch(error) {
+            console.log(error)
             return res.status(500).json({"message": "an error has occured"})
         }
     }
@@ -72,7 +75,10 @@ class authController {
                     return res.status(500).json({"message": "error in login"})
                 }
                 const urlUserName = user.fullName.replaceAll(" ", '-')
-                res.redirect(`/${urlUserName}/dashboard`)
+                req.user.urlUserName = urlUserName
+                if (!user.GitHub)
+                    return res.redirect("/auth/github/policy")
+                return res.redirect(`/${req.user.urlUserName}/dashboard`)
             });
         })(req, res, next)
     }
@@ -107,7 +113,7 @@ class authController {
                     })
                 }
                 user = await utils.getUpdatedUser(user.email)
-                if (user.hasOwnProperty("message")) {
+                if (user.hasOwnProperty("error")) {
                     return res.status(500).json({
                         "message": "an error occure while fetching updted user",
                         "info": user.message
@@ -117,7 +123,10 @@ class authController {
                     if (error)
                         return res.status(500).json({ error: 'Login failed. Please try again.' });
                     const urlUserName = user.fullName.replaceAll(" ", '-')
-                    res.redirect(`/${urlUserName}/dashboard`)
+                    req.user.urlUserName = urlUserName
+                    if (!user.GitHub)
+                        return res.redirect("/auth/github")
+                    return res.redirect(`/${req.user.urlUserName}/dashboard`)
                 });
             }catch(err){
                 return res.status(500).json({"message": "an error has occured"})
@@ -126,13 +135,42 @@ class authController {
         
     }
 
+    static async getGitHubAuth(req, res, next) {
+        return res.status(200).json({"message": "github auth page"})
+    }
+
+    static async getGitHubRedirect(req, res, next){
+        passportGithub.authenticate('github', async(err, user, info)=> {
+            try {
+                const encryptedToken = await utils.encryptToken(user.token)
+                const encryptedGitHubUsername = await utils.encryptToken(user.username)
+                const githubCredentials = await prisma.gitHubCredential.create({
+                    data: {
+                        user: {
+                            connect: {
+                                id: req.user.id
+                            }
+                        },
+                        accessToken: encryptedToken,
+                        githubUsername: encryptedGitHubUsername
+                    }
+                })
+                if (!githubCredentials)
+                    return res.status(500).json({"message": "can't save user github credentials"})
+                return res.redirect(`/${req.user.urlUserName}/dashboard`)
+            } catch(error) {
+
+            }
+            return res.status(200).json({"message": "tmam", user: user})
+        })(req, res, next);
+    }
     static async logout(req, res){
         req.logout((err) => {
             if (err) {
                 return res.status(500).json({"message": "logout failed"})
             }
-            res.clearCookie("sessionCookie")
-            res.redirect("/")
+            res.clearCookie("codacodeCookie")
+            return res.redirect("/")
         })
     }
 }
