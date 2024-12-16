@@ -42,7 +42,7 @@ model Post {
   title String @db.VarChar(50)
 	content String @db.VarChar(350)
 	repo String
-  language String
+  String
   myRole String
 	createdAt DateTime @default(now())
 	updatedAt DateTime @default(now()) @updatedAt
