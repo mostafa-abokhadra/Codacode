@@ -6,10 +6,8 @@ const utils = require("../utils/utils")
 class projectPostController {
     static async createPost(req, res) {
         try {
-            console.log(req.params)
-            console.log(req.body)
-            return 
-            const { title, description, language, repo, roles} = req.body
+            const { title, description, langPref, yourRole, repo} = req.body
+            let {roles} = req.body; roles = JSON.parse(roles)
             const user = await prisma.user.findUnique({
                 where: {fullName: req.params.username},
                 include: {posts: true}
@@ -19,10 +17,12 @@ class projectPostController {
             const projectPost = await prisma.post.create({
                 data: {
                     title: title,
-                    content: description,
+                    description: description,
                     repo: repo,
                     createdAt: new Date(),
                     updatedAt: new Date(),
+                    languagePreferences: langPref,
+                    myRole: yourRole,
                     user: {
                         connect: {id: user.id}
                     }

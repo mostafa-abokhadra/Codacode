@@ -77,10 +77,11 @@ class projectController {
             const user = await utils.getUpdatedUser(post.user.email)
             if (user.hasOwnProperty('message'))
                 return res.status(500).json(user)
-            return res.status(200).json({
-                "message": "project created successfully",
-                user: user
-            })
+            // return res.status(200).json({
+            //     "message": "project created successfully",
+            //     user: user
+            // })
+            return res.redirect(`${username}/projects`)
         } catch(error) {
             console.log(error)
             return res.status(500).json({"message": "an error has occured"})
@@ -106,7 +107,8 @@ class projectController {
             })
             if (!user)
                 return res.status(401).json({"message": "can't get projects"})
-            return res.status(200).json({"message": "projects retrieved successfully", projects: user.Projects})
+            return res.render('projects.ejs', {user: user})
+            // return res.status(200).json({"message": "projects retrieved successfully", projects: user.Projects})
         } catch(error) {
             console.log(error)
             return res.status(500).json({"message": "an error has occured, check the console"})
