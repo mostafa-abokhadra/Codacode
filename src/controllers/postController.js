@@ -35,12 +35,12 @@ class projectPostController {
             for(let i = 0; i < roles.length ; i++){
 
                 let role = roles[i].role
-                let no = roles[i].no
+                let numberNeeded = roles[i].numberNeeded
 
                 const createRole = await prisma.role.create({
                     data: {
                         position: role,
-                        needed: no,
+                        needed: parseInt(numberNeeded),
                         post: {
                             connect: {id: projectPost.id}
                         },
@@ -52,7 +52,7 @@ class projectPostController {
                     if (createdRoles) {
                         // checking if there is some role created and then an error occur for the subsequent roles
                         // in this case i will delete all roles created for this post from the database
-                        // cause project post is not complete this way and already created roles don't belong to any post
+                        // cause project post is numberNeededt complete this way and already created roles don't belong to any post
 
                         for(let i = 0; i < createdRoles.length; i++)
                         {
@@ -79,6 +79,7 @@ class projectPostController {
             //     "user": updatedUser
             // })
         } catch(error) {
+            console.log(error)
             return res.status(500).json({"message": "an error occured"})
         }
     }
@@ -114,7 +115,7 @@ class projectPostController {
                 }
             })
             if (!post)
-                return res.status(403).json({"message": "no post exist with given id for the given user"})
+                return res.status(403).json({"message": "numberNeeded post exist with given id for the given user"})
             return res.status(200).json({
                 "message": "posts retrieved scucessfully",
                 post: post
@@ -152,7 +153,7 @@ class projectPostController {
                 let createRole = await prisma.role.create({
                     data: {
                         position: roles[i].role,
-                        needed: roles[i].no,
+                        needed: roles[i].numberNeeded,
                         post: {
                             connect: {
                                 id: post.id
@@ -163,7 +164,7 @@ class projectPostController {
                 if (!createRole) {
                     // if one role hasn't been created successfully for any reason
                     // the whole new roles will be deleted because in this case
-                    // the post roles are not complete, so can't associate some roles
+                    // the post roles are numberNeededt complete, so can't associate some roles
                     // to the project without the remaining ones that couldn't be created
                     if (createdRoles) {
                         for (let i = 0; i < createdRoles.length; i++) {
@@ -175,7 +176,7 @@ class projectPostController {
                             if (!deletedRole) {
                                 return res.status(500).json({
                                     "message": "can't update post",
-                                    "problem": "some roles created but not all of them",
+                                    "problem": "some roles created but numberNeededt all of them",
                                     "solve": "delete created roles manually",
                                     "rolesToBeDeletedManually": createdRoles
                                 })

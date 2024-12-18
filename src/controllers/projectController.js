@@ -81,7 +81,7 @@ class projectController {
             //     "message": "project created successfully",
             //     user: user
             // })
-            return res.redirect(`${username}/projects`)
+            return res.redirect(`/${username}/projects`)
         } catch(error) {
             console.log(error)
             return res.status(500).json({"message": "an error has occured"})
