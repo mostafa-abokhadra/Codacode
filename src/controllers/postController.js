@@ -7,7 +7,12 @@ class projectPostController {
     static async createPost(req, res) {
         try {
             const { title, description, langPref, yourRole, repo} = req.body
-            let {roles} = req.body; roles = JSON.parse(roles)
+            let {roles} = req.body;
+            console.log(roles)
+            console.log(typeof roles)
+            if (typeof roles === 'string') {
+                roles = JSON.parse(roles)
+            }
             const user = await prisma.user.findUnique({
                 where: {fullName: req.params.username},
                 include: {posts: true}

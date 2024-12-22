@@ -8,12 +8,12 @@
 
     - **body example**
         ```json
-        {
-            "fullName":"mostafa abokhadra",
-            "email": "mostafa@gmail.com",
-            "password": "mostafa123",
-            "confirmPassword": "mostafa123"
-        }
+            {
+                "fullName":"mostafa abokhadra",
+                "email": "mostafa@gmail.com",
+                "password": "mostafa123",
+                "confirmPassword": "mostafa123"
+            }
         ```
 
 - GET http://localhost:8080/auth/login
@@ -32,10 +32,10 @@
             "password": "ronaldo123"
         }
 
-        {
-            "email": "messi@gmail.com",
-            "password": "messi123"
-        }
+              {
+                "email": "messi@gmail.com",
+                "password": "messi123"
+            }
         {
             "email": "momen@gmail.com",
             "password": "momen1123"
@@ -52,18 +52,20 @@
 
     - **body example**
         ```json
-        {
+       {
             "title": "e-commerce",
             "description": "i'm planning to work on an e-commerce project as it has so many customer in the market, i'm a frontend develpoer so i want 1 more front end develpoer with me, a UIUX designer and backend developers, who is ready to mingle?!",
-            "roles": [{"role": "UIUX", "no": 1}, {"role": "backend Developer", "no": 3}],
-            "repo": "https://github.com/mostafa-abokhadra/Codacode"
+            "roles": [{"role": "UIUX", "numberNeeded": 3}],
+            "repo": "https://github.com/mostafa-abokhadra/Codacode",
+            "yourRole": "manager",
+            "langPref": "arabic"
         }
-
         {
             "title": "e-commerce",
             "description": "i'm planning to work on an e-commerce project as it has so many customer in the market, i'm a frontend develpoer so i want 1 more front end develpoer with me, a UIUX designer and backend developers, who is ready to mingle?!",
             "roles": [{"role": "UIUX", "no": 1}, {"role": "backend Developer", "no": 3}],
             "repo": "https://github.com/Mo2men-dev/pocket-doctor-client"
+        }
         ```
 
 - GET http://localhost:8080/:username/posts/

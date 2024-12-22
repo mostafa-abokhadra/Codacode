@@ -195,6 +195,30 @@ async function decryptToken(encryptedToken) {
     return decrypted;
 }
 
+const fetch = require('node-fetch');
+
+const addCollaborator = async (ownerUsername, inviteeUsername, ownerToken, repo) => {
+
+    const response = await fetch(
+        `https://api.github.com/repos/${ownerUsername}/${repo}/collaborators/${inviteeUsername}`, {
+        method: 'PUT',
+        headers: {
+            Authorization: `token ${ownerToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ permission: 'push' }) // Optional permission
+    });
+
+    if (response.ok) {
+        console.log(`Collaboration request sent to ${inviteeUsername}`);
+        return {"message": `Collaboration request sent to ${inviteeUsername} Successfully`}
+    } else {
+        const error = await response.json();
+        console.error('Error:', error.message);
+        return {"error": "an error occured while sending collab request"}
+    }
+};
+
 module.exports = {
     getUpdatedUser,
     deleteGarbageRequest,
@@ -202,5 +226,6 @@ module.exports = {
     getPendingRequests,
     checkProjectStatus,
     encryptToken,
-    decryptToken
+    decryptToken,
+    addCollaborator
 }

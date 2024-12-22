@@ -94,7 +94,7 @@ model Project {
   id Int @id @default(autoincrement())
   repo String
   status projectStatus?
-
+  repoName String?
   owner User @relation("userProjects", fields: [owner_id], references: [id])
   owner_id Int
 
