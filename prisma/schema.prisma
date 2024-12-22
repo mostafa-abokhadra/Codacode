@@ -40,9 +40,9 @@ model User {
 model Post {
 	id Int @id @default(autoincrement())
   title String @db.VarChar(50)
-	content String @db.VarChar(350)
+	description String @db.VarChar(350)
 	repo String
-  language String
+  languagePreferences String
   myRole String
 	createdAt DateTime @default(now())
 	updatedAt DateTime @default(now()) @updatedAt
@@ -94,7 +94,7 @@ model Project {
   id Int @id @default(autoincrement())
   repo String
   status projectStatus?
-
+  repoName String?
   owner User @relation("userProjects", fields: [owner_id], references: [id])
   owner_id Int
 

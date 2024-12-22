@@ -8,13 +8,13 @@ const passportGithub = require("../config/githubStrategy")
 class authController {
 
     static async getSignup(req, res){
-        res.render('signup')
+        return res.render('signup')
     }
 
     static async getLogin(req, res){
         let message = req.session.info
         req.session.info = null
-        res.render('login', {message: message});
+        return res.render('login', {message: message});
     }
 
     static async postSignup(req, res){

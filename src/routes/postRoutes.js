@@ -13,10 +13,10 @@ router.post(
     '/:username/posts',
     checkSession.ensureAuthenticated,
     checkSession.ensureValidUser,
-    // postValidtor.titleValidator,
-    // postValidtor.descriptionValidator,
-    // postValidtor.rolesValidator,
-    // postValidtor.repoUrlValidator,
+    postValidtor.titleValidator,
+    postValidtor.descriptionValidator,
+    postValidtor.rolesValidator,
+    postValidtor.repoUrlValidator,
     handleValidationError,
     postController.createPost
 )
