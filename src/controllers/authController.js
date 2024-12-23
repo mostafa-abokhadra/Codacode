@@ -76,8 +76,6 @@ class authController {
                 }
                 const urlUserName = user.fullName.replaceAll(" ", '-')
                 req.user.urlUserName = urlUserName
-                if (!user.GitHub)
-                    return res.redirect("/auth/github/policy")
                 return res.redirect(`/${req.user.urlUserName}/dashboard`)
             });
         })(req, res, next)
@@ -159,9 +157,8 @@ class authController {
                     return res.status(500).json({"message": "can't save user github credentials"})
                 return res.redirect(`/${req.user.urlUserName}/dashboard`)
             } catch(error) {
-
+                return res.status(500).json({"'message": "an error has occured"})
             }
-            return res.status(200).json({"message": "tmam", user: user})
         })(req, res, next);
     }
     static async logout(req, res){

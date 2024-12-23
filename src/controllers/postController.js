@@ -95,15 +95,20 @@ class projectPostController {
             const posts = await prisma.post.findMany({
                 where: {
                     user: {
-                        fullName: username
+                        fullName: req.user.fullName
                     }
                 },
-                include: {roles: true}
+                include: {
+                    roles: true,
+                    user: true
+                }
             })
             if (!posts)
                 return res.status(203).json({"message": "user don't have any posts yet"})
-            return res.status(200).json({"message": "posts retrieved successfully", posts: posts})
+            return res.render('userPosts', {user: req.user, posts: posts})
+            // return res.status(200).json({"posts": posts})
         } catch(error) {
+            console.log(error)
             return res.status(500).json({"message": "an error occured"})
         }
     }
