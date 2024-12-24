@@ -39,7 +39,7 @@ router.get(
 router.get(
     "/:username/all/projects",
     ensureAuthenticated,
-    ensureValidUser,
+    // ensureValidUser,
     projectController.getAllProjects
 )
 

@@ -76,11 +76,12 @@ class requestsController {
 
     static async getSendToMeRequests(req, res) {
         try {
-            const {username} = req.params
-            const sendToMe = await utils.getSendToMeRequests(username)
+            // const {username} = req.params
+            const sendToMe = await utils.getSendToMeRequests(req.user.fullName)
             if (sendToMe.hasOwnProperty("error"))
                 return res.status(500).json(sendToMe)
-            return res.status(200).json(sendToMe)
+            return res.render('requests', {requests: sendToMe, user: req.user})
+            // return res.status(200).json(sendToMe)
         } catch(error) {
             return res.status(500).json({"meessage": "an error occured, check the console"})
         }
@@ -88,11 +89,12 @@ class requestsController {
 
     static async getPendingRequests(req, res) {
         try {
-            const {username} = req.params
-            const pending = await utils.getPendingRequests(username)
+            // const {username} = req.params
+            const pending = await utils.getPendingRequests(req.user.fullName)
             if (pending.hasOwnProperty("error"))
                 return res.status(500).json(pending)
-            return res.status(200).json(pending)
+            return res.render('pending', {user: req.user, pending: pending})
+            // return res.status(200).json(pending)
         } catch(error) {
             return res.status(500).json({"message": "an error has occured"})
         }

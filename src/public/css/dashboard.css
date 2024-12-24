@@ -413,7 +413,7 @@ transition-delay: 0.3s; /* Delay to sync with the underline animation */
         margin-left: 0; /* No space for sidebar on mobile */
     }
 }
-@media (max-width: 460px) {
+@media (max-width: 500px) {
     /* .dashboard-logo {
         display: none; 
     } */
@@ -433,16 +433,16 @@ transition-delay: 0.3s; /* Delay to sync with the underline animation */
         display: inline-block;
     }
 }
-@media (max-width: 350px) {
+@media (max-width: 400px) {
     #profile-link {
         display: none;
     }
     #profile-link-media-768 {
         display: inline-block;
     }
-    #logout-link-media-768 {
+    /* #logout-link-media-768 {
         display: inline-block;
-    }
+    } */
 }
 @media (max-width: 430px) {
     .dashboard-section {

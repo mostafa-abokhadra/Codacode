@@ -18,7 +18,7 @@ router.post(
 router.get(
     "/:username/requests",
     checksession.ensureAuthenticated,
-    checksession.ensureValidUser,
+    //checksession.ensureValidUser,
     handleValidationErrors,
     requestsController.getSendToMeRequests
 )
@@ -27,7 +27,7 @@ router.get(
 router.get(
     '/:username/pending',
     checksession.ensureAuthenticated,
-    checksession.ensureValidUser,
+    // checksession.ensureValidUser,
     handleValidationErrors,
     requestsController.getPendingRequests
 )

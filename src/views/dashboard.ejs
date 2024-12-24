@@ -13,23 +13,29 @@
   <body>
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
-      <a href="/<%=user.urlUserName%>/dashboard">
+      <a href="/<%= user.urlUserName %>/dashboard">
         <h2>Dashboard</h2>
       </a>
-      <a href="#"><i class="fas fa-folder"></i> My Projects</a>
-      <a href="#"><i class="fas fa-clock"></i> Pending</a>
-      <a href="#"><i class="fas fa-tasks"></i> Assigned Projects</a>
-      <a href="#"><i class="fas fa-envelope"></i> Requests</a>
-      <a href="#"><i class="fas fa-lightbulb"></i> Project Idea Bank</a>
+      <a href="/<%= user.urlUserName %>/all/projects"
+        ><i class="fas fa-folder"></i> My Projects</a
+      >
+      <a href="/<%= user.urlUserName %>/pending"
+        ><i class="fas fa-clock"></i> Pending</a
+      >
+      <!-- <a href="#"><i class="fas fa-tasks"></i> Assigned Projects</a> -->
+      <a href="/<%= user.urlUserName %>/requests"
+        ><i class="fas fa-envelope"></i> Requests</a
+      >
       <a
         href="/<%= user.urlUserName %>/posts"
         id="postsLink"
         username="<%= user.fullName %>"
         ><i class="fas fa-comments"></i> My Posts</a
       >
-      <a href="#" id="profile-link-media-768"
-        ><i class="fas fa-user"></i> Profile</a
+      <a href="/<%= user.urlUserName %>/portofolio" id="profile-link-media-768"
+        ><i class="fas fa-user"></i> Portofolio</a
       >
+      <a href="/IdeaBank"><i class="fas fa-lightbulb"></i> Project Idea Bank</a>
       <a
         id="logout-link-media-768"
         href="#"
@@ -48,7 +54,9 @@
           <span class="dashboard-logo" id="dashboardLogo">Dashboard</span>
         </span>
         <div>
-          <a href="#" id="profile-link"><i class="fas fa-user"></i> Profile</a>
+          <a href="/<%= user.urlUserName %>/portofolio" id="profile-link"
+            ><i class="fas fa-user"></i> Portofolio</a
+          >
           <a
             id="logout-link"
             href="#"

@@ -29,7 +29,8 @@ async function getUpdatedUser(email) {
                                     include: {
                                         messages: true
                                     }
-                                }
+                                },
+                                members: true
                             }
                         }
                     }
@@ -42,7 +43,8 @@ async function getUpdatedUser(email) {
                                     include: {
                                         messages: true 
                                     }
-                                }
+                                },
+                                members: true
                             }
                         }
                     }
@@ -53,6 +55,8 @@ async function getUpdatedUser(email) {
         
         if (!user)
             return {"error": "couldn't fetch user"}
+        if (user.GitHub)
+            user.GitHub = true
         return user
     } catch(error) {
         console.log("in utils: ", error)
