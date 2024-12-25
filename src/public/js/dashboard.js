@@ -74,3 +74,7 @@ projectForm.addEventListener("submit", (e) => {
   projectForm.appendChild(rolesInput);
 });
 
+const startCollaboration = document.getElementById("startCollaboration")
+startCollaboration.addEventListener('click', (e) => {
+  window.location.href = '/projects'
+})

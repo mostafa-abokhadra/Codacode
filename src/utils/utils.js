@@ -104,9 +104,19 @@ async function getSendToMeRequests(username) {
                                             userApplied: {
                                                 select: {
                                                     id: true,
+                                                    fullName: true,
+                                                    profile: {
+                                                        select: {
+                                                            image: true
+                                                        }
+                                                    }
                                                 }
                                             },
-                                            role: true
+                                            role: {
+                                                include: {
+                                                    post: true
+                                                }
+                                            }
                                         }
                                     }
                                 }

@@ -21,15 +21,17 @@
         background-color: #f4f4f4;
       }
 
-      .container {
+      #requests-container {
         display: flex;
         flex-wrap: wrap;
-        justify-content: center;
+        /* justify-content: center; */
         gap: 20px;
         padding: 20px;
+        /* height: 100vh; */
       }
 
       .card {
+        height: fit-content;
         background-color: #fff;
         border-radius: 10px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -179,45 +181,16 @@
           </form>
         </div>
       </div>
-      <div>
-        <div class="container" style="background-color: #f4f4f4">
-          <div class="card">
-            <div class="card-header">
-              <div class="user-image"></div>
-              <div class="user-info">
-                <div class="username">Username</div>
-                <div class="date">December 24, 2024</div>
-              </div>
-            </div>
-            <div class="card-content">
-              This is a sample paragraph that describes the content of the card.
-              It can be as long or as short as needed.
-            </div>
-            <div class="card-footer">
-              <button class="button accept">Accept</button>
-              <button class="button reject">Reject</button>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-header">
-              <div class="user-image"></div>
-              <div class="user-info">
-                <div class="username">Username</div>
-                <div class="date">December 24, 2024</div>
-              </div>
-            </div>
-            <div class="card-content">
-              This is a sample paragraph that describes the content of the card.
-              It can be as long or as short as needed.
-            </div>
-            <div class="card-footer">
-              <button class="button accept">Accept</button>
-              <button class="button reject">Reject</button>
-            </div>
-          </div>
-        </div>
+
+      <div
+        id="requests-container"
+        requests="<%= JSON.stringify(requests) %>"
+        user="<%= JSON.stringify(user) %>"
+      >
+        <%= JSON.stringify(requests.requests) %>
       </div>
     </div>
     <script src="/js/dashboard.js"></script>
+    <script src="/js/requests.js"></script>
   </body>
 </html>
