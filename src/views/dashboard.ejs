@@ -9,6 +9,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <link rel="stylesheet" href="/css/dashboard.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body>
     <!-- Sidebar -->
@@ -80,7 +81,11 @@
       <div class="content">
         <h1 class="welcome-message">
           Welcome
-          <span class="username">
+          <span
+            class="username"
+            id="username"
+            user="<%= JSON.stringify(user) %>"
+          >
             <%= user.fullName %>
             <span class="heart">💚</span>
           </span>
@@ -103,22 +108,17 @@
         </div>
       </div>
     </div>
-
     <div class="modal" id="createProjectModal">
       <div class="modal-content">
         <span class="close-btn" id="closeModal">&times;</span>
         <h2>Create a Project</h2>
-        <form
-          id="projectForm"
-          action="/<%= user.fullName %>/posts"
-          method="post"
-        >
+        <form id="projectForm">
           <div class="form-group">
             <label for="ideaBank">Project Title</label>
             <input
               type="text"
               name="title"
-              id="ideaBank"
+              id="title"
               placeholder="Enter your project title"
             />
             <a href="#" id="chooseIdeaBankLink">Choose from Idea Bank</a>
@@ -137,6 +137,7 @@
           <div class="form-group">
             <label for="languagePreference">Language Preference</label>
             <input
+              id="langPref"
               type="text"
               name="langPref"
               placeholder="Your team speaking language"
@@ -192,6 +193,47 @@
         </form>
       </div>
     </div>
+
+    <!-- Popup Modal -->
+    <button
+      id="openPopup"
+      class="bg-blue-500 text-white p-2 rounded"
+      style="display: none"
+    >
+      Open Popup
+    </button>
+
+    <div
+      id="githubAuthPopup"
+      class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 hidden"
+    >
+      <div class="bg-white p-6 rounded-lg w-96">
+        <h2 class="text-xl font-bold text-center mb-4">
+          Authentication Required
+        </h2>
+        <p class="text-center mb-4">
+          You should authenticate with GitHub first before creating or applying
+          to a project.
+        </p>
+
+        <!-- GitHub Authentication Button -->
+        <a
+          href="/auth/github"
+          class="bg-gray-800 text-white py-2 px-4 rounded text-center block w-full"
+        >
+          Authenticate with GitHub
+        </a>
+
+        <!-- Close Button -->
+        <button
+          id="closePopup"
+          class="bg-red-500 text-white py-2 px-4 rounded mt-4 w-full"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+
     <script src="/js/dashboard.js"></script>
   </body>
 </html>

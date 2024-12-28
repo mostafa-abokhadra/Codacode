@@ -12,6 +12,7 @@ const validateGitHubUsername = async (username, repoOwner) => {
     });
 
     if (!user) throw new Error("User not found to validate GitHub username");
+    if (!user.GitHub) throw new Error("User is not github authentciate");
 
     const decryptedUsername = await utils.decryptToken(user.GitHub.githubUsername);
 
@@ -113,7 +114,7 @@ const repoUrlValidator = [
                 throw new Error("Repo URL Already Belong to Another Project")
 
             const { owner } = await validateRepoUrl(repoUrl);
-            const username = req.params.username; 
+            const username = req.user.fullName;
             await validateGitHubUsername(username, owner);
             return true
 

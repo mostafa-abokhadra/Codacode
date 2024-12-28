@@ -1,6 +1,7 @@
 const {PrismaClient} = require("@prisma/client")
 const prisma = new PrismaClient()
 const crypto = require('crypto');
+const {URL} = require('url')
 
 async function getUpdatedUser(email) {
     try {
@@ -241,5 +242,5 @@ module.exports = {
     checkProjectStatus,
     encryptToken,
     decryptToken,
-    addCollaborator
+    addCollaborator,
 }

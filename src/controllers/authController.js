@@ -47,8 +47,8 @@ class authController {
                     "message": user.message
                 })
             }
-            const {GitHub, ...theUser} = user
-            req.logIn(theUser, (error) => {
+            // const {GitHub, ...theUser} = user
+            req.logIn(user, (error) => {
                 if (error){
                     return res.status(500).json({"message": "error while login user"})
                 }
@@ -71,15 +71,15 @@ class authController {
             if (!user) {
                 return res.status(401).json({message: info.message})
             }
-            const flag = user.GitHub? true: false;
-            const {GitHub, ...theUser} = user
-            req.logIn(theUser, (error) => {
+            // const flag = user.GitHub? true: false;
+            // const {GitHub, ...theUser} = user
+            req.logIn(user, (error) => {
                 if (error) {
                     return res.status(500).json({"message": "error in login"})
                 }
                 const urlUserName = user.fullName.replaceAll(" ", '-')
                 req.user.urlUserName = urlUserName
-                if (!flag)
+                if (!user.GitHub)
                     return res.redirect('/auth/github')
                 return res.redirect(`/${req.user.urlUserName}/dashboard`)
             });
@@ -123,15 +123,15 @@ class authController {
                         "info": user.message
                     })
                 }
-                const flag = user.GitHub? true: false;
-                const {GitHub, ...theUser} = user
+                // const flag = user.GitHub? true: false;
+                // const {GitHub, ...theUser} = user
                 
-                req.logIn(theUser, (error) => {
+                req.logIn(user, (error) => {
                     if (error)
                         return res.status(500).json({ error: 'Login failed. Please try again.' });
                     const urlUserName = user.fullName.replaceAll(" ", '-')
                     req.user.urlUserName = urlUserName
-                    if (!flag)
+                    if (!user.GitHub)
                         return res.redirect("/auth/github")
                     return res.redirect(`/${req.user.urlUserName}/dashboard`)
                 });

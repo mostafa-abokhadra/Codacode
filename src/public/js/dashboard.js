@@ -1,5 +1,7 @@
 const toggleBtn = document.getElementById("toggle-btn");
 const sidebar = document.getElementById("sidebar");
+let user = document.getElementById('username').attributes.user.value
+user = JSON.parse(user)
 
 toggleBtn.addEventListener("click", () => {
   sidebar.classList.toggle("open");
@@ -10,9 +12,27 @@ const modal = document.getElementById("createProjectModal");
 const closeModalBtn = document.getElementById("closeModal");
 const rolesContainer = document.getElementById("rolesContainer");
 
+const GithubAuthBtn = document.getElementById("githubAuthPopup");
+const openGithubAuthPopupButton = document.getElementById("openPopup");
+const closeGithubAuhtPopupButton = document.getElementById("closePopup");
+
+// Open the popup
+openGithubAuthPopupButton.addEventListener("click", () => {
+  GithubAuthBtn.classList.remove("hidden");
+});
+
+// Close the popup
+closeGithubAuhtPopupButton.addEventListener("click", () => {
+  GithubAuthBtn.classList.add("hidden");
+});
+
 // Open Modal
 createBtn.addEventListener("click", () => {
-  modal.style.display = "block";
+  if (!user.GitHub) {
+    openGithubAuthPopupButton.click()
+  } else {
+    modal.style.display = "block";
+  }
 });
 
 // Close Modal
@@ -70,10 +90,47 @@ projectForm.addEventListener("submit", (e) => {
   rolesInput.type = "hidden";
   rolesInput.name = "roles";
   rolesInput.value = JSON.stringify(rolesData);
-
   projectForm.appendChild(rolesInput);
+
+  const title = document.getElementById("title").value
+  const description = document.getElementById("description").value
+  const langPref = document.getElementById('langPref').value
+  const yourRole = document.getElementById("yourRole").value
+  const repo = document.getElementById("repoLink").value
+  const roles = JSON.stringify(rolesData)
+
+  const postData = {
+    title: title,
+    description: description,
+    langPref: langPref,
+    yourRole: yourRole,
+    repo: repo,
+    roles: roles
+  }
+  createPost(postData)
 });
 
+async function createPost (dic) {
+  try {
+    const formData = new URLSearchParams(dic).toString();
+    let res = await fetch(`/${user.fullName}/posts`, {
+      method: 'post',
+      body: formData,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      }
+    })
+    res = await res.json()
+    // if (res.errors[0].msg == "Repo URL Already Belong to Another Project")
+    // if (res.errors[0].msg == "Repo URL Already Belong to Another Project")
+    // console.log(res)
+    // console.log("the res", res)
+
+    // if 200 close form and popup created successfully
+  } catch(error) {
+    console.error("the errro", error)
+  }
+}
 const startCollaboration = document.getElementById("startCollaboration")
 startCollaboration.addEventListener('click', (e) => {
   window.location.href = '/projects'

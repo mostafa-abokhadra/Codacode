@@ -5,12 +5,13 @@ const utils = require("../utils/utils")
 class projectController {
     static async createProject(req, res) {
         try {
+            console.log("do i got here")
             const {username, postId} = req.params
             // getting the post
             const post = await prisma.post.findFirst({
                 where: {
                     user: {
-                        fullName: username
+                        fullName: req.user.fullName
                     },
                     id: parseInt(postId),
                 },

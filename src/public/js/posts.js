@@ -11,7 +11,6 @@ try {
 let pending;
 try {
   pending = JSON.parse(posts.attributes.pending.value)
-  console.log(pending)
 } catch(error) {
   console.error("cant't parse user pending requests", error)
 }
@@ -36,7 +35,6 @@ const createButton = async (role) => {
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = buttonHTML;
       const elem = tempDiv.firstChild; // This will be the <button> element
-      console.log(elem)
       return elem
   } catch (error) {
       console.error("Failed to fetch pending requests:", error);
@@ -77,6 +75,7 @@ if (posts) {
   function generatePost(postData) {
     const postCard = document.createElement("div");
     postCard.className = "bg-white p-4 rounded-lg shadow-md mb-4";
+    postCard.setAttribute('postId',`${postData.id}`)
     postCard.innerHTML = `
       <div class="flex items-center justify-between">
         <a class="flex items-center space-x-4">
@@ -106,7 +105,9 @@ if (posts) {
               id="apply"
               roleId="${role.id}"
               ${pending ? (pending.pending.some((req)=>req.role_id == role.id)? 'disabled' : ''): ''}
-              class="apply-btn bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700">
+              class="apply-btn bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700"
+              postId="${postData.id}"
+              >
               Apply
             </button>
           </div>
@@ -131,6 +132,19 @@ if (posts) {
         </div>
     </div>
     <button style="display: none" id="openSuccessPopUp" onclick="openPopup()">Show Popup</button>
+    
+    <div id="myPostModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg shadow-lg max-w-sm w-full p-6 text-center">
+      <h2 class="text-lg font-bold text-gray-800">Wait... what?! 🤔</h2>
+      <p class="mt-2 text-gray-600">You can't apply to your own project!  
+        That's like high-fiving yourself in public. wait for developers to apply!</p>
+      <button 
+        onclick="myPostApplyHandler()" 
+        class="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+        Got it!
+      </button>
+    </div>
+  </div>
     `;
 
     // Handle Apply/Cancel button logic
@@ -140,13 +154,25 @@ if (posts) {
         try {
           if (!user)
             window.location.href = "/auth/signup"
-          let res = await fetch(`/${user.fullName}/roles/${btn.attributes.roleId.value}`, {method: 'post'})
-          // await res.json()
-          res = await res.json()
-          btn.setAttribute('requestId', `${res.request.id}`)
-          const openPopUp = document.getElementById('openSuccessPopUp')
-          openPopUp.click()
-          btn.disabled = true
+
+          let userPosts = await fetch(`${user.fullName}/posts`)
+          if (!userPosts.ok)
+            console.error("can't fetch user posts")
+          else {
+            userPosts = await userPosts.json()
+          }
+          let flag = userPosts.posts.some((post) =>{return post.id === Number(btn.attributes.postId.value)})
+          if (flag)
+            myPostApplyHandler()
+          else {
+            let res = await fetch(`/${user.fullName}/roles/${btn.attributes.roleId.value}`, {method: 'post'})
+            // await res.json()
+            res = await res.json()
+            btn.setAttribute('requestId', `${res.request.id}`)
+            const openPopUp = document.getElementById('openSuccessPopUp')
+            openPopUp.click()
+            btn.disabled = true
+          }
           // if (res.status == '201') {
           //   btn.textContent = "Cancel";
           //   btn.classList.remove("bg-green-600", "hover:bg-green-700");

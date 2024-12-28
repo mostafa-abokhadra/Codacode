@@ -8,13 +8,11 @@ class projectPostController {
         try {
             const { title, description, langPref, yourRole, repo} = req.body
             let {roles} = req.body;
-            console.log(roles)
-            console.log(typeof roles)
             if (typeof roles === 'string') {
                 roles = JSON.parse(roles)
             }
             const user = await prisma.user.findUnique({
-                where: {fullName: req.params.username},
+                where: {fullName: req.user.fullName},
                 include: {posts: true}
             })
             if (!user)
@@ -105,8 +103,8 @@ class projectPostController {
             })
             if (!posts)
                 return res.status(203).json({"message": "user don't have any posts yet"})
-            return res.render('userPosts', {user: req.user, posts: posts})
-            // return res.status(200).json({"posts": posts})
+            // return res.render('userPosts', {user: req.user, posts: posts})
+            return res.status(200).json({"posts": posts})
         } catch(error) {
             console.log(error)
             return res.status(500).json({"message": "an error occured"})
