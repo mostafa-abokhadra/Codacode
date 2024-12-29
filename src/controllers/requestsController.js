@@ -79,6 +79,7 @@ class requestsController {
     static async getSendToMeRequests(req, res) {
         try {
             // const {username} = req.params
+            console.log("got here")
             const sendToMe = await utils.getSendToMeRequests(req.user.fullName)
             if (sendToMe.hasOwnProperty("error"))
                 return res.status(500).json(sendToMe)
@@ -92,6 +93,7 @@ class requestsController {
     static async getPendingRequests(req, res) {
         try {
             // const {username} = req.params
+            console.log("got here in pending")
             const pending = await utils.getPendingRequests(req.user.fullName)
             if (pending.hasOwnProperty("error"))
                 return res.status(500).json(pending)

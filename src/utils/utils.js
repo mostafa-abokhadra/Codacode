@@ -58,6 +58,8 @@ async function getUpdatedUser(email) {
             return {"error": "couldn't fetch user"}
         if (user.GitHub)
             user.GitHub = true
+        const urlUserName = user.fullName.replaceAll(" ", '-')
+        user.urlUserName = urlUserName
         return user
     } catch(error) {
         console.log("in utils: ", error)

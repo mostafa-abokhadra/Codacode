@@ -7,7 +7,6 @@ try {
   console.error("can't parse user data", error)
 }
 
-
 let pending;
 try {
   pending = JSON.parse(posts.attributes.pending.value)
@@ -64,13 +63,27 @@ if (posts) {
 //     });
 //   });
 
-  // document.querySelectorAll(".cancel-btn").forEach((button) => {
-  //   button.addEventListener("click", () => {
-  //     button.classList.add("hidden");
-  //     const applyButton = button.previousElementSibling;
-  //     applyButton.classList.remove("hidden");
-  //   });
-  // });
+// document.querySelectorAll(".cancel-btn").forEach((button) => {
+//   button.addEventListener("click", () => {
+//     button.classList.add("hidden");
+//     const applyButton = button.previousElementSibling;
+//     applyButton.classList.remove("hidden");
+//   });
+// });
+
+const GithubAuthBtn = document.getElementById("githubAuthPopup");
+const openGithubAuthPopupButton = document.getElementById("openPopup");
+const closeGithubAuhtPopupButton = document.getElementById("closePopup");
+
+// Open the popup
+openGithubAuthPopupButton.addEventListener("click", () => {
+  GithubAuthBtn.classList.remove("hidden");
+});
+
+// Close the popup
+closeGithubAuhtPopupButton.addEventListener("click", () => {
+  GithubAuthBtn.classList.add("hidden");
+});
 
   function generatePost(postData) {
     const postCard = document.createElement("div");
@@ -154,24 +167,27 @@ if (posts) {
         try {
           if (!user)
             window.location.href = "/auth/signup"
-
-          let userPosts = await fetch(`${user.fullName}/posts`)
-          if (!userPosts.ok)
-            console.error("can't fetch user posts")
-          else {
-            userPosts = await userPosts.json()
-          }
-          let flag = userPosts.posts.some((post) =>{return post.id === Number(btn.attributes.postId.value)})
-          if (flag)
-            myPostApplyHandler()
-          else {
-            let res = await fetch(`/${user.fullName}/roles/${btn.attributes.roleId.value}`, {method: 'post'})
-            // await res.json()
-            res = await res.json()
-            btn.setAttribute('requestId', `${res.request.id}`)
-            const openPopUp = document.getElementById('openSuccessPopUp')
-            openPopUp.click()
-            btn.disabled = true
+          if (!user.GitHub) {
+            openGithubAuthPopupButton.click()
+          } else {
+            let userPosts = await fetch(`${user.fullName}/posts`)
+            if (!userPosts.ok)
+              console.error("can't fetch user posts")
+            else {
+              userPosts = await userPosts.json()
+            }
+            let flag = userPosts.posts.some((post) =>{return post.id === Number(btn.attributes.postId.value)})
+            if (flag)
+              myPostApplyHandler()
+            else {
+              let res = await fetch(`/${user.fullName}/roles/${btn.attributes.roleId.value}`, {method: 'post'})
+              // await res.json()
+              res = await res.json()
+              btn.setAttribute('requestId', `${res.request.id}`)
+              const openPopUp = document.getElementById('openSuccessPopUp')
+              openPopUp.click()
+              btn.disabled = true
+            } 
           }
           // if (res.status == '201') {
           //   btn.textContent = "Cancel";

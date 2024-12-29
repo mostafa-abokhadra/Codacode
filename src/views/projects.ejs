@@ -213,6 +213,7 @@
         >
       </div>
     </nav>
+
     <!--  -->
     <div
       class=""
@@ -229,6 +230,47 @@
       </div>
     </div>
     <!--  -->
+
+    <!-- Popup Modal -->
+    <button
+      id="openPopup"
+      class="bg-blue-500 text-white p-2 rounded"
+      style="display: none"
+    >
+      Open Popup
+    </button>
+
+    <div
+      id="githubAuthPopup"
+      class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 hidden"
+    >
+      <div class="bg-white p-6 rounded-lg w-96">
+        <h2 class="text-xl font-bold text-center mb-4">
+          Authentication Required
+        </h2>
+        <p class="text-center mb-4">
+          You should authenticate with GitHub first before creating or applying
+          to a project.
+        </p>
+
+        <!-- GitHub Authentication Button -->
+        <a
+          href="/auth/github"
+          class="bg-gray-800 text-white py-2 px-4 rounded text-center block w-full"
+        >
+          Authenticate with GitHub
+        </a>
+
+        <!-- Close Button -->
+        <button
+          id="closePopup"
+          class="bg-red-500 text-white py-2 px-4 rounded mt-4 w-full"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+
     <footer class="bg-gray-800 text-white py-12">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <!-- Feedback Section -->

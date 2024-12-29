@@ -167,6 +167,14 @@ class authController {
                 })
                 if (!githubCredentials)
                     return res.status(500).json({"message": "can't save user github credentials"})
+                req.user = {
+                    ...req.user,
+                    GitHub: true
+                }
+                req.logIn(req.user, (error) => {
+                    if (error)
+                        return res.status(500).json({"message": "can't login after github auth"})
+                })
                 return res.redirect(`/${req.user.urlUserName}/dashboard`)
             } catch(error) {
                 console.log(error)

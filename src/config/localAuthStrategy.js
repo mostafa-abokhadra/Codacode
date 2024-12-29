@@ -33,16 +33,17 @@ passport.use(new LocalStrategy({
     }
 }))
 
-passport.serializeUser((user, done) => {
-    process.nextTick(function() {
+passport.serializeUser(async (user, done) => {
+    process.nextTick(async function() {
         done(null, user);
     });
 })
 
 passport.deserializeUser(async (user, done) => {
     try {
-        process.nextTick(function() {
-            return done(null, user);
+        process.nextTick(async function() {
+            const updatedUser = await utils.getUpdatedUser(user.email)
+            return done(null, updatedUser);
         });
     } catch(error) {
         return done(error, null)
