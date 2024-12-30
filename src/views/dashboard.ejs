@@ -113,7 +113,7 @@
         <span class="close-btn" id="closeModal">&times;</span>
         <h2>Create a Project</h2>
         <form id="projectForm">
-          <div class="form-group">
+          <div class="form-group titleDiv">
             <label for="ideaBank">Project Title</label>
             <input
               type="text"
@@ -121,10 +121,15 @@
               id="title"
               placeholder="Enter your project title"
             />
-            <a href="#" id="chooseIdeaBankLink">Choose from Idea Bank</a>
+            <a
+              href="/ideasBank"
+              id="chooseIdeaBankLink"
+              style="font-size: smaller; color: rgb(198, 3, 198)"
+              >Choose from Idea Bank</a
+            >
           </div>
 
-          <div class="form-group">
+          <div class="form-group descriptionDiv">
             <label for="projectDescription">Project Description</label>
             <textarea
               id="description"
@@ -134,7 +139,7 @@
             ></textarea>
           </div>
 
-          <div class="form-group">
+          <div class="form-group langPrefDiv">
             <label for="languagePreference">Language Preference</label>
             <input
               id="langPref"
@@ -144,20 +149,19 @@
             />
           </div>
 
-          <div class="form-group">
+          <div class="form-group yourRoleDiv">
             <label for="yourRole">Your Role</label>
             <input
               type="text"
               name="yourRole"
               id="yourRole"
               placeholder="Enter your role"
-              required
             />
           </div>
 
           <div class="form-group">
             <label>Roles Needed</label>
-            <div id="rolesContainer">
+            <div id="rolesContainer" class="roleInputDiv">
               <div class="role-input">
                 <input
                   type="text"
@@ -178,14 +182,13 @@
             </div>
           </div>
 
-          <div class="form-group">
+          <div class="form-group repoLinkDiv">
             <label for="repoLink">Repo Link</label>
             <input
               type="url"
               name="repo"
               id="repoLink"
               placeholder="Prove you are serious by initiating your project repo and providing the link"
-              required
             />
           </div>
 

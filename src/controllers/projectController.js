@@ -5,7 +5,6 @@ const utils = require("../utils/utils")
 class projectController {
     static async createProject(req, res) {
         try {
-            console.log("do i got here")
             const {username, postId} = req.params
             // getting the post
             const post = await prisma.post.findFirst({
@@ -78,11 +77,11 @@ class projectController {
             const user = await utils.getUpdatedUser(post.user.email)
             if (user.hasOwnProperty('message'))
                 return res.status(500).json(user)
-            // return res.status(200).json({
-            //     "message": "project created successfully",
-            //     user: user
-            // })
-            return res.redirect(`/${req.user.urlUserName}/posts`)
+            return res.status(200).json({
+                "message": "project created successfully",
+                user: user
+            })
+            // return res.redirect(`/${req.user.urlUserName}/posts`)
         } catch(error) {
             console.log(error)
             return res.status(500).json({"message": "an error has occured"})

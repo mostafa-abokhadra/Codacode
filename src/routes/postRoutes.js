@@ -17,6 +17,8 @@ router.post(
     postValidtor.descriptionValidator,
     postValidtor.rolesValidator,
     postValidtor.repoUrlValidator,
+    postValidtor.langPrefValidator,
+    postValidtor.yourRoleValidator,
     handleValidationError,
     postController.createPost
 )

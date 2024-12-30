@@ -103,6 +103,7 @@ const rolesValidator = [
 ]
 const repoUrlValidator = [
     body('repo')
+    .trim()
     .notEmpty().withMessage('Repository URL is required')
     .isURL().withMessage('Repository URL must be a valid URL')
     .custom(async (repoUrl, {req}) => {
@@ -123,12 +124,28 @@ const repoUrlValidator = [
         }
     })
 ]
-
+const yourRoleValidator = [
+    body('yourRole')
+    .trim()
+    .escape()
+    .notEmpty().withMessage("your role is required")
+    .isString().withMessage("your role must be descriptive")
+    .isLength({max: 30}).withMessage("your role must be less than 30 characters long")
+]
+const langPrefValidator = [
+    body('langPref')
+    .trim()
+    .escape()
+    .notEmpty().withMessage("language is required")
+    .isLength({max: 20}).withMessage("language should be less than 20 character")
+]
 module.exports = {
     titleValidator,
     descriptionValidator,
     rolesValidator,
     repoUrlValidator,
+    yourRoleValidator,
+    langPrefValidator,
     validateGitHubUsername,
     validateRepoUrl
 }

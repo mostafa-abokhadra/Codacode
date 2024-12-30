@@ -72,7 +72,9 @@ rolesContainer.addEventListener("click", (e) => {
 // Format the roles data on form submission
 const projectForm = document.getElementById("projectForm");
 
-projectForm.addEventListener("submit", (e) => {
+projectForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  document.querySelectorAll('.error-message').forEach((msg) => msg.remove());
   const roleFields = document.querySelectorAll(".role-field");
   const numberFields = document.querySelectorAll(".number-needed");
   const rolesData = [];
@@ -110,6 +112,17 @@ projectForm.addEventListener("submit", (e) => {
   createPost(postData)
 });
 
+async function validateDivExistence(elementDiv, infoMessage) {
+  if (elementDiv) {
+
+  
+      elementDiv.appendChild(infoMessage)
+
+  } else {
+    console.error("Element not found.");
+  }
+}
+
 async function createPost (dic) {
   try {
     const formData = new URLSearchParams(dic).toString();
@@ -121,6 +134,54 @@ async function createPost (dic) {
       }
     })
     res = await res.json()
+    if (res.errors) {
+      document.querySelectorAll('.error-message').forEach((msg) => msg.remove());
+      for (let i = 0; i < res.errors.length; i++) {
+        const infoMessage = document.createElement('small')
+        infoMessage.textContent = res.errors[i].msg
+        infoMessage.style = "color: red; margin-top: 3px"
+        infoMessage.className = 'error-message';
+        const repoLinkDiv = document.getElementsByClassName('repoLinkDiv')[0]
+        const titleDiv = document.getElementsByClassName('titleDiv')[0]
+        const descriptionDiv = document.getElementsByClassName('descriptionDiv')[0]
+        const langPrefDiv = document.getElementsByClassName("langPrefDiv")[0]
+        const yourRoleDiv = document.getElementsByClassName('yourRoleDiv')[0]
+        const roleInputDiv = document.getElementsByClassName('roleInputDiv')[0]
+        if (res.errors[i].path === 'repo') {
+          validateDivExistence(repoLinkDiv, infoMessage)
+        } else if (res.errors[i].path === 'title') {
+            const anchor = titleDiv.querySelector('a')
+            const br = document.createElement('br')
+            if (anchor) {
+              anchor.before(infoMessage)
+              infoMessage.after(br)
+            }
+          // validateDivExistence(titleDiv, infoMessage)
+        } else if (res.errors[i].path === 'description') {
+          validateDivExistence(descriptionDiv, infoMessage)
+        } else if (res.errors[i].path === 'langPref') {
+          validateDivExistence(langPrefDiv, infoMessage)
+        } else if (res.errors[i].path === 'yourRole') {
+          validateDivExistence(yourRoleDiv, infoMessage)
+        } else if (res.errors[i].path === 'roles' ) {
+          validateDivExistence(roleInputDiv, infoMessage)
+        }
+      }
+    } else {
+      
+        // if (res.status == '500')
+        //   serverErrorPopUp.click()
+        // else {}
+        const projectRes = await fetch(`/${user.fullName}/posts/${res.post.id}/projects`, {
+          method: 'post'
+        })
+        if (projectRes.ok) {
+          const projectData = await projectRes.json()
+          console.log(projectData)
+        }
+
+    }
+
     // if (res.errors[0].msg == "Repo URL Already Belong to Another Project")
     // if (res.errors[0].msg == "Repo URL Already Belong to Another Project")
     // console.log(res)

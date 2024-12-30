@@ -76,11 +76,12 @@ class projectPostController {
                 createdRoles.push(createRole)
             }
             const {password, ...updatedUser} = await utils.getUpdatedUser(user.email)
-            return res.redirect(307, `/${req.params.username}/posts/${projectPost.id}/projects`)
-            // return res.status(200).json({
-            //     "message": "post created successfully",
-            //     "user": updatedUser
-            // })
+            // return res.redirect(307, `/${req.params.username}/posts/${projectPost.id}/projects`)
+            return res.status(200).json({
+                "message": "post created successfully",
+                "user": updatedUser,
+                post: projectPost
+            })
         } catch(error) {
             console.log(error)
             return res.status(500).json({"message": "an error occured"})
