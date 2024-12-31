@@ -12,11 +12,13 @@ const postController = require('../controllers/postController')
 router.post(
     '/:username/posts',
     checkSession.ensureAuthenticated,
-    checkSession.ensureValidUser,
+    // checkSession.ensureValidUser,
     postValidtor.titleValidator,
     postValidtor.descriptionValidator,
     postValidtor.rolesValidator,
     postValidtor.repoUrlValidator,
+    postValidtor.langPrefValidator,
+    postValidtor.yourRoleValidator,
     handleValidationError,
     postController.createPost
 )

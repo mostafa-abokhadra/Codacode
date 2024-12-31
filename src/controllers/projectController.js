@@ -10,7 +10,7 @@ class projectController {
             const post = await prisma.post.findFirst({
                 where: {
                     user: {
-                        fullName: username
+                        fullName: req.user.fullName
                     },
                     id: parseInt(postId),
                 },
@@ -77,11 +77,11 @@ class projectController {
             const user = await utils.getUpdatedUser(post.user.email)
             if (user.hasOwnProperty('message'))
                 return res.status(500).json(user)
-            // return res.status(200).json({
-            //     "message": "project created successfully",
-            //     user: user
-            // })
-            return res.redirect(`/${username}/projects`)
+            return res.status(200).json({
+                "message": "project created successfully",
+                user: user
+            })
+            // return res.redirect(`/${req.user.urlUserName}/posts`)
         } catch(error) {
             console.log(error)
             return res.status(500).json({"message": "an error has occured"})
@@ -200,18 +200,26 @@ class projectController {
         try {
             const {username} = req.params
             const user = await prisma.user.findFirst({
-                where: {fullName: username},
-                include: {
+                where: {fullName: req.user.fullName},
+                select: {
+                    id: true,
+                    fullName: true,
                     Projects: { include: { team: { include: { group: {include: {messages: true} },  members: true } } } },
                     assignedProjects: { include: { team: { include: { group: {include: {messages: true}}, members: true} } } }
-                }
+                },
+                // include: {
+                //     Projects: { include: { team: { include: { group: {include: {messages: true} },  members: true } } } },
+                //     assignedProjects: { include: { team: { include: { group: {include: {messages: true}}, members: true} } } }
+                // }
             })
             if (!user)
                 return res.status(401).json({"message": "can't find user projects"})
-            return res.status(200).json({
-                "message": "projects retrieved successfully",
-                projects: user.Projects, assigned: user.assignedProjects
-            })
+            // return res.status(200).json({
+            //     "message": "projects retrieved successfully",
+            //     projects: user.Projects, assigned: user.assignedProjects
+            // })
+            user.urlUserName = req.user.urlUserName
+            return res.render('userProjects', {user: user})
         } catch(error) {
             console.log(error)
             return res.status(500).json({"message": "an error has occured"})

@@ -3,7 +3,8 @@ const LocalStrategy = require('passport-local').Strategy;
 const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient();
 const bcrypt = require('bcrypt');
-const utils = require('../utils/utils')
+const utils = require('../utils/utils');
+const { deserialize } = require('v8');
 
 passport.use(new LocalStrategy({
     usernameField: "email",
@@ -28,21 +29,21 @@ passport.use(new LocalStrategy({
         }
         return done(null, user)
     } catch(error) {
-        console.log(error)
         return done(null, false, {message: "an error occured"})
     }
 }))
 
-passport.serializeUser((user, done) => {
-    process.nextTick(function() {
+passport.serializeUser(async (user, done) => {
+    process.nextTick(async function() {
         done(null, user);
     });
 })
 
 passport.deserializeUser(async (user, done) => {
     try {
-        process.nextTick(function() {
-            return done(null, user);
+        process.nextTick(async function() {
+            const updatedUser = await utils.getUpdatedUser(user.email)
+            return done(null, updatedUser);
         });
     } catch(error) {
         return done(error, null)

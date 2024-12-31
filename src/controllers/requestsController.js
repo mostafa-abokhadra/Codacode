@@ -19,14 +19,14 @@ class requestsController {
                 }
             })
             if (!role)
-                return res.status(403).json({"message": "can't find role"})
+                return res.status(404).json({"message": "can't find role"})
             if (role.post.user.id === req.user.id)
-                return res.status(403).json({"message": "can't apply to your own porject"})
+                return res.status(501).json({"message": "can't apply to your own porject"})
             const userApplied = await prisma.user.findFirst({
                 where: {fullName: username}
             })
             if (!userApplied)
-                return res.status(403).json({"message": "user want to apply not found"})
+                return res.status(404).json({"message": "user wants to apply not found"})
             let exist = false;
             for (let i = 0; i < role.requests.length; i++) {
                 if (req.user.id === role.requests[i].userApplied_id) {
@@ -34,7 +34,7 @@ class requestsController {
                 }
             }
             if (exist)
-                return res.status(403).json({"message": "user already have applied to this position"})
+                return res.status(400).json({"message": "user already have applied to this position"})
             const createRequest = await prisma.request.create({
                 data: {
                     role: {
@@ -64,23 +64,25 @@ class requestsController {
                 const deleteGarbageRequest = await utils.deleteGarbageRequest(createRequest.id)
                 return res.status(500).json({"message": "can't update the role request"})
             }
-            const updatedUser = await utils.getUpdatedUser(userApplied.email)
-            return res.status(200).json({
+            // const updatedUser = await utils.getUpdatedUser(userApplied.email)
+            return res.status(201).json({
                 "message": "request to role sent successfully",
-                user: updatedUser
+                // user: updatedUser,
+                request: createRequest
             })
         } catch(error) {
+            console.error(error)
             return res.status(500).json("an error occured, look in console")
         }
     }
 
     static async getSendToMeRequests(req, res) {
         try {
-            const {username} = req.params
-            const sendToMe = await utils.getSendToMeRequests(username)
+            const sendToMe = await utils.getSendToMeRequests(req.user.fullName)
             if (sendToMe.hasOwnProperty("error"))
                 return res.status(500).json(sendToMe)
-            return res.status(200).json(sendToMe)
+            return res.render('requests', {requests: sendToMe, user: req.user})
+            // return res.status(200).json(sendToMe)
         } catch(error) {
             return res.status(500).json({"meessage": "an error occured, check the console"})
         }
@@ -88,10 +90,10 @@ class requestsController {
 
     static async getPendingRequests(req, res) {
         try {
-            const {username} = req.params
-            const pending = await utils.getPendingRequests(username)
+            const pending = await utils.getPendingRequests(req.user.fullName)
             if (pending.hasOwnProperty("error"))
                 return res.status(500).json(pending)
+            // return res.render('pending', {user: req.user, pending: pending})
             return res.status(200).json(pending)
         } catch(error) {
             return res.status(500).json({"message": "an error has occured"})
@@ -149,7 +151,7 @@ class requestsController {
             })
             if (!exist)
                 return res.status(401).json({"message": "no request exist with give id"})
-            const myRequests = await utils.getSendToMeRequests(username)
+            const myRequests = await utils.getSendToMeRequests(req.user.fullName)
             if (myRequests.hasOwnProperty("error"))
                 return res.status(500).json(myRequests)
             const isInRequests = myRequests.requests.some((item) => {

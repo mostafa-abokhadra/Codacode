@@ -3,457 +3,393 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <style>
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      }
-
-      body {
-        display: flex;
-        height: 100vh;
-        background-color: #f8f9fa;
-        color: #333;
-        flex-direction: column;
-      }
-
-      /* Sidebar Styling */
-      .sidebar {
-        width: 250px;
-        background-color: rgb(34 197 94 / var(--tw-bg-opacity, 1));
-        color: #fff;
-        display: flex;
-        flex-direction: column;
-        padding: 20px;
-        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-        position: fixed;
-        height: 100%;
-        transform: translateX(0); /* Always visible on desktop */
-        transition: transform 0.3s ease;
-        z-index: 1000;
-      }
-
-      .sidebar.open {
-        transform: translateX(0);
-      }
-
-      .sidebar h2 {
-        margin-bottom: 40px;
-        text-align: center;
-        font-size: 1.5em;
-        letter-spacing: 1px;
-      }
-
-      .sidebar a {
-        color: #fff;
-        text-decoration: none;
-        padding: 12px 15px;
-        margin: 5px 0;
-        display: flex;
-        align-items: center;
-        border-radius: 5px;
-        font-size: 1em;
-        transition: background-color 0.3s;
-      }
-
-      .sidebar a i {
-        margin-right: 10px;
-        font-size: 1.2em;
-      }
-
-      .sidebar a:hover {
-        background-color: #2e7d32;
-      }
-
-      /* Main Content */
-      .main-content {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        background-color: #fff;
-        margin-left: 250px;
-        transition: margin-left 0.3s ease;
-      }
-
-      /* Navbar */
-      .navbar {
-        background-color: rgb(34 197 94 / var(--tw-bg-opacity, 1));
-        color: #fff;
-        padding: 15px 30px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        position: relative;
-        z-index: 1100;
-      }
-
-      .navbar a {
-        color: #fff;
-        text-decoration: none;
-        margin-left: 30px;
-        font-size: 1em;
-        transition: color 0.3s;
-      }
-
-      .navbar a:hover {
-        color: #c8e6c9;
-      }
-
-      .navbar a i {
-        margin-right: 8px;
-      }
-
-      .toggle-btn {
-        display: block; /* Show by default */
-        font-size: 1.5em;
-        cursor: pointer;
-        color: #fff;
-        z-index: 1100;
-      }
-      /* Content Section */
-      .content {
-        padding: 40px;
-        background-color: #f4f4f4;
-        flex: 1;
-        border-radius: 8px;
-        margin: 30px;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-      }
-
-      .content h1 {
-        margin-bottom: 20px;
-        font-size: 2em;
-        color: #222;
-      }
-
-      .content p {
-        margin-bottom: 30px;
-        color: #555;
-      }
-
-      .dashboard-section {
-        display: flex;
-        justify-content: space-around;
-        flex-wrap: wrap;
-        gap: 20px;
-      }
-      .dashboard-card {
-        background-color: #fff;
-        padding: 25px;
-        border-radius: 8px;
-        width: calc(50% - 20px);
-        text-align: center;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-        transition: transform 0.3s, box-shadow 0.3s;
-      }
-
-      .dashboard-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      }
-
-      .dashboard-card i {
-        font-size: 2.5em;
-        color: rgb(34 197 94 / var(--tw-bg-opacity, 1));
-        margin-bottom: 15px;
-      }
-
-      .dashboard-card h3 {
-        margin-bottom: 10px;
-        font-size: 1.5em;
-        color: #444;
-      }
-
-      .dashboard-card button {
-        background-color: rgb(34 197 94 / var(--tw-bg-opacity, 1));
-        color: #fff;
-        border: none;
-        padding: 12px 25px;
-        border-radius: 5px;
-        font-size: 1em;
-        cursor: pointer;
-        transition: background-color 0.3s;
-      }
-
-      .dashboard-card button:hover {
-        background-color: #2e7d32;
-      }
-      /* Modal Background */
-      /* Modal Background */
-      /* Modal Background */
-      .modal {
-        display: none;
-        position: fixed;
-        z-index: 1200;
-        padding-top: 60px;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.4);
-      }
-
-      /* Modal Content */
-      .modal-content {
-        background-color: #fff;
-        margin: auto;
-        padding: 20px;
-        border: 1px solid #888;
-        width: 80%;
-        max-width: 500px;
-        border-radius: 8px;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-        position: relative;
-      }
-
-      /* Close Button */
-      .close-btn {
-        position: absolute;
-        top: 10px;
-        right: 20px;
-        color: #aaa;
-        font-size: 28px;
-        font-weight: bold;
-        cursor: pointer;
-      }
-
-      .close-btn:hover,
-      .close-btn:focus {
-        color: #000;
-      }
-
-      /* Form Styling */
-      .form-group {
-        margin-bottom: 20px;
-      }
-
-      .form-group label {
-        display: block;
-        margin-bottom: 8px;
-        font-weight: bold;
-      }
-
-      .form-group input,
-      .form-group select,
-      .form-group textarea {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-      }
-
-      /* Hint Styling */
-      .hint {
-        font-size: 0.85em;
-        color: #888;
-      }
-
-      /* Role Input Styling */
-      .role-input {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 10px;
-      }
-
-      .role-input select,
-      .role-input input {
-        flex: 1;
-      }
-
-      .add-role-btn,
-      .remove-role-btn {
-        background-color: rgb(34 197 94 / var(--tw-bg-opacity, 1));
-        color: #fff;
-        border: none;
-        padding: 5px 10px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 1em;
-      }
-
-      .add-role-btn:hover,
-      .remove-role-btn:hover {
-        background-color: #2e7d32;
-      }
-
-      .submit-btn {
-        background-color: rgb(34 197 94 / var(--tw-bg-opacity, 1));
-        color: #fff;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 1em;
-      }
-
-      .submit-btn:hover {
-        background-color: #2e7d32;
-      }
-      /* Welcome Message Styling */
-      /* Welcome Message Styling */
-      /* Welcome Message Styling */
-      /* Welcome Message Styling */
-      .welcome-message {
-        font-size: 1em;
-        color: #333;
-        margin-bottom: 20px;
-        /* text-align: center; */
-      }
-
-      /* Username Styling */
-      .username {
-        color: rgb(34 197 94 / var(--tw-bg-opacity, 1)); /* Main theme color */
-        font-weight: 600;
-        font-size: 1.2em;
-        position: relative;
-        cursor: pointer;
-        display: inline-flex;
-        align-items: center; /* Align the heart vertically */
-        gap: 5px; /* Space between the name and the heart */
-        transition: color 0.3s ease;
-      }
-
-      /* Heart Styling */
-      .heart {
-        display: inline-block;
-        font-size: 1em;
-        opacity: 0;
-        transform: scale(0);
-        transition: transform 0.3s ease, opacity 0.3s ease;
-      }
-
-      /* Underline Effect */
-      .username::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        bottom: -3px;
-        width: 100%;
-        height: 2px;
-        background-color: rgb(34 197 94 / var(--tw-bg-opacity, 1));
-        transform: scaleX(0);
-        transform-origin: left;
-        transition: transform 0.3s ease;
-      }
-
-      /* Hover State */
-      .username:hover {
-        color: #2e7d32; /* Slightly darker green */
-      }
-
-      .username:hover::after {
-        transform: scaleX(1); /* Animate the underline */
-      }
-
-      .username:hover .heart {
-        opacity: 1;
-        transform: scale(1);
-        transition-delay: 0.3s; /* Delay to sync with the underline animation */
-      }
-      @media (max-width: 870px) {
-        .dashboard-section {
-          flex-direction: column; /* Stack the cards vertically on small screens */
-          align-items: center; /* Center the cards */
-        }
-
-        .dashboard-card {
-          width: 100%; /* Make the cards take up more space */
-          margin-bottom: 20px; /* Add space between the cards */
-        }
-      }
-      @media (max-width: 768px) {
-        .dashboard-section {
-          flex-direction: column; /* Stack the cards vertically on small screens */
-          align-items: center; /* Center the cards */
-        }
-
-        .dashboard-card {
-          width: 100%; /* Make the cards take up more space */
-          margin-bottom: 20px; /* Add space between the cards */
-        }
-      }
-      /* Hide the hamburger menu on desktop */
-      @media (min-width: 768px) {
-        .toggle-btn {
-          display: none; /* Hide on desktop and larger screens */
-        }
-      }
-      /* Responsive Design */
-      @media (max-width: 768px) {
-        .sidebar {
-          transform: translateX(-100%);
-        }
-
-        .sidebar.open {
-          transform: translateX(
-            0
-          ); /* Open on mobile when toggle button is clicked */
-        }
-
-        .main-content {
-          margin-left: 0; /* No space for sidebar on mobile */
-        }
-      }
-      @media (max-width: 430px) {
-        .dashboard-section {
-          flex-direction: column; /* Stack the cards vertically on small screens */
-          align-items: center; /* Center the cards */
-        }
-
-        .dashboard-card {
-          width: 100%; /* Make the cards take up more space */
-          margin-bottom: 20px; /* Add space between the cards */
-        }
-      }
-    </style>
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
+  <style>
+    .popup-overlay {
+      display: none; /* Initially hidden */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    /* Popup content */
+    .popup-content {
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px 30px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      position: relative;
+      animation: popup-appear 0.3s ease;
+    }
+
+    /* Close button */
+    .popup-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: transparent;
+      border: none;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #888;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .popup-close:hover {
+      color: #333;
+    }
+
+    /* Heading */
+    .popup-content h2 {
+      color: #28a745;
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    /* Paragraph */
+    .popup-content p {
+      font-size: 1rem;
+      line-height: 1.5;
+      color: #555;
+    }
+
+    .popup-content p a {
+      color: #007bff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .popup-content p a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive animation */
+    @keyframes popup-appear {
+      from {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    /* Button to show popup */
+    button {
+      margin: 20px;
+      padding: 10px 20px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s ease;
+    }
+
+    button:disabled {
+      background: #ccc; /* Gray background */
+      color: #666; /* Dimmed text color */
+      cursor: not-allowed; /* "Not allowed" cursor */
+    }
+    button:disabled:hover {
+      pointer-events: none; /* Ensures no interaction on hover */
+      background: #ccc; /* Keeps the background unchanged */
+      color: #666; /* Keeps the text color unchanged */
+      cursor: not-allowed; /* Shows the "not allowed" cursor */
+    }
+  </style>
   <body>
-    <!-- Sidebar -->
-    <div class="sidebar" id="sidebar">
-      <h2>Dashboard</h2>
-      <a href="/<%=user.fullName%>/projects"
-        ><i class="fas fa-folder"></i> Projects</a
-      >
-      <a href="#"><i class="fas fa-clock"></i> Pending</a>
-      <a href="#"><i class="fas fa-tasks"></i> Assigned Projects</a>
-      <a href="#"><i class="fas fa-envelope"></i> Requests</a>
-      <a href="#"><i class="fas fa-lightbulb"></i> Project Idea Bank</a>
-      <a href="#"><i class="fas fa-comments"></i> Posts</a>
-    </div>
+    <nav class="bg-white shadow-md">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+          <!-- Left Section: Logo and Links -->
+          <div class="flex items-center space-x-8">
+            <!-- Logo -->
+            <a href="/" class="text-xl font-bold text-green-600">Codacode</a>
+            <!-- Links beside the logo -->
+            <div class="hidden md:flex space-x-6">
+              <a href="/projects" class="text-gray-800 hover:text-blue-600"
+                >Projects</a
+              >
+              <a href="/IdeasBank" class="text-gray-800 hover:text-blue-600"
+                >IdeasBank</a
+              >
+              <a href="/guide" class="text-gray-800 hover:text-blue-600"
+                >Guide</a
+              >
+              <a href="/about" class="text-gray-800 hover:text-blue-600"
+                >About</a
+              >
+            </div>
+          </div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-      <!-- Navbar -->
-      <div class="navbar">
-        <span class="toggle-btn" id="toggle-btn"
-          ><i class="fas fa-bars"></i
-        ></span>
-        <div>
-          <a href="#"><i class="fas fa-user"></i> Profile</a>
-          <a href="#" onclick="document.getElementById('logoutForm').submit();">
-            <i class="fas fa-sign-out-alt"></i> Logout
-          </a>
+          <!-- Right Section: Sign Up and Login -->
+          <div class="hidden md:flex items-center space-x-4">
+            <a
+              href="/auth/signup"
+              class="bg-green-500 text-white px-4 py-2 rounded-md hover:text-blue-600"
+              >Sign Up</a
+            >
+            <a
+              href="/auth/login"
+              class="bg-green-500 text-white px-4 py-2 rounded-md hover:text-blue-600"
+              >Login</a
+            >
+          </div>
 
-          <form
-            id="logoutForm"
-            action="/auth/logout"
-            method="POST"
-            style="display: none"
-          >
-            <!-- Form data if needed -->
-          </form>
+          <!-- Hamburger Menu Button -->
+          <div class="md:hidden relative z-50">
+            <button id="menu-button" class="text-gray-800 focus:outline-none">
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M4 6h16M4 12h16M4 18h16"
+                ></path>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
 
+      <!-- Mobile Menu -->
+      <div
+        id="mobile-menu"
+        class="hidden bg-white shadow-md absolute top-0 left-0 w-full z-40"
+        style="margin-top: 60px"
+      >
+        <a
+          href="/projects"
+          class="block px-4 py-2 text-gray-800 hover:bg-blue-100 border-b border-gray-300"
+          >Projects</a
+        >
+        <a
+          class="block px-4 py-2 text-gray-800 hover:bg-blue-100 border-b border-gray-300"
+          href="/ideasBank"
+          class="text-gray-800 hover:text-blue-600"
+          >IdeasBank</a
+        >
+        <a
+          class="block px-4 py-2 text-gray-800 hover:bg-blue-100 border-b border-gray-300"
+          href="/guide"
+          class="text-gray-800 hover:text-blue-600"
+          >Guide</a
+        >
+        <a
+          href="/about"
+          class="block px-4 py-2 text-gray-800 hover:bg-blue-100 border-b border-gray-300"
+          >About</a
+        >
+        <a
+          href="/auth/signup"
+          class="block px-4 py-2 hover:bg-blue-100 border-b border-gray-300"
+          >Sign Up</a
+        >
+        <a
+          href="/auth/login"
+          class="block px-4 py-2 hover:bg-blue-100 border-b border-gray-300"
+          >Login</a
+        >
+      </div>
+    </nav>
+
+    <!--  -->
+    <div
+      class=""
+      style="background-color: #eff6ff var(--tw-gradient-from-position)"
+    >
+      <div class="p-4 space-y-6 max-w-6xl mx-auto flex items-center">
+        <div
+          class="bg-white shadow-md rounded-lg p-4"
+          id="posts-container"
+          posts="<%= JSON.stringify(posts) %>"
+          user="<%= user ? JSON.stringify(user) : '' %>"
+          pending="<%= JSON.stringify(pending) %>"
+        ></div>
+      </div>
+    </div>
+    <!--  -->
+
+    <!-- Popup Modal -->
+    <button
+      id="openPopup"
+      class="bg-blue-500 text-white p-2 rounded"
+      style="display: none"
+    >
+      Open Popup
+    </button>
+
+    <div
+      id="githubAuthPopup"
+      class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 hidden"
+    >
+      <div class="bg-white p-6 rounded-lg w-96">
+        <h2 class="text-xl font-bold text-center mb-4">
+          Authentication Required
+        </h2>
+        <p class="text-center mb-4">
+          You should authenticate with GitHub first before creating or applying
+          to a project.
+        </p>
+
+        <!-- GitHub Authentication Button -->
+        <a
+          href="/auth/github"
+          class="bg-gray-800 text-white py-2 px-4 rounded text-center block w-full"
+        >
+          Authenticate with GitHub
+        </a>
+
+        <!-- Close Button -->
+        <button
+          id="closePopup"
+          class="bg-red-500 text-white py-2 px-4 rounded mt-4 w-full"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+
+    <footer class="bg-gray-800 text-white py-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <!-- Feedback Section -->
+        <div class="text-center">
+          <h2 class="text-3xl font-bold text-green-400">
+            Your Feedback Matters
+          </h2>
+          <p class="mt-2 text-gray-400">
+            Help us improve! Report bugs, suggest enhancements, or share your
+            thoughts.
+          </p>
+        </div>
+
+        <!-- Actions Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <!-- Bug Report Section -->
+          <div class="bg-gray-700 p-6 rounded-lg shadow-lg text-center">
+            <h3 class="text-xl font-bold text-red-400">Report a Bug</h3>
+            <p class="mt-2 text-gray-400">
+              Encountered an issue? Let us know so we can fix it promptly.
+            </p>
+            <a
+              href="#"
+              class="mt-4 inline-block bg-red-500 text-white px-6 py-3 rounded-md text-lg hover:bg-red-600 transition"
+            >
+              Report Bug
+            </a>
+          </div>
+          <!-- Enhancement Suggestion Section -->
+          <div class="bg-gray-700 p-6 rounded-lg shadow-lg text-center">
+            <h3 class="text-xl font-bold text-blue-400">
+              Suggest an Enhancement
+            </h3>
+            <p class="mt-2 text-gray-400">
+              Have an idea to improve our platform? Share it with us!
+            </p>
+            <a
+              href="#"
+              class="mt-4 inline-block bg-blue-500 text-white px-6 py-3 rounded-md text-lg hover:bg-blue-600 transition"
+            >
+              Suggest Enhancement
+            </a>
+          </div>
+        </div>
+
+        <!-- Follow, Contact, Hire Section -->
+        <div class="space-y-8 text-left">
+          <!-- Follow Us -->
+          <div>
+            <h3 class="text-lg font-bold text-green-400">Follow Us</h3>
+            <ul class="mt-4 space-y-2">
+              <li>
+                <a href="#" class="hover:underline text-gray-300">Facebook</a>
+              </li>
+              <li><a href="#" class="hover:underline text-gray-300">X</a></li>
+            </ul>
+          </div>
+          <!-- Contact Us -->
+          <div>
+            <h3 class="text-lg font-bold text-green-400">Contact Us</h3>
+            <ul class="mt-4 space-y-2">
+              <li>
+                <span class="text-gray-300">Email: </span>
+                <a
+                  href="mailto:contact@example.com"
+                  class="hover:underline text-green-400"
+                  >contact@example.com</a
+                >
+              </li>
+              <li><span class="text-gray-300">Phone: </span>+123 456 7890</li>
+            </ul>
+          </div>
+          <!-- Hire Me -->
+          <div>
+            <h3 class="text-lg font-bold text-green-400">Hire Me</h3>
+            <ul class="mt-4 space-y-2">
+              <li>
+                <a href="#" class="hover:underline text-gray-300">LinkedIn</a>
+              </li>
+              <li>
+                <a href="#" class="hover:underline text-gray-300">GitHub</a>
+              </li>
+              <li>
+                <a
+                  href="mailto:hireme@example.com"
+                  class="hover:underline text-gray-300"
+                  >Email</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Bottom Note -->
+        <div class="text-center text-gray-500 text-sm">
+          &copy; 2024 Codacode. All rights reserved.
+        </div>
+      </div>
+    </footer>
+    <script>
+      // JavaScript to toggle the mobile menu visibility
+      const menuButton = document.getElementById("menu-button");
+      const mobileMenu = document.getElementById("mobile-menu");
+
+      menuButton.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden"); // Toggle the visibility of the mobile menu
+      });
+      function closePopup() {
+        document.getElementById("popup").style.display = "none";
+      }
+
+      function openPopup() {
+        document.getElementById("popup").style.display = "flex";
+      }
+      function myPostApplyHandler() {
+        const modal = document.getElementById("myPostModal");
+        modal.classList.toggle("hidden");
+      }
+    </script>
+    <script src="/js/posts.js"></script>
   </body>
 </html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/css/dashboard.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      async function fetchCommits() {
+        const commitsList = document.getElementById("commits-list");
+        const dropdown = document.getElementById("dropdown");
+
+        if (dropdown.classList.contains("hidden")) {
+          dropdown.classList.remove("hidden");
+          // Simulated fetch
+          commitsList.innerHTML = "<li>Loading commits...</li>";
+          try {
+            const response = await fetch(
+              "https://api.github.com/repos/{owner}/{repo}/commits"
+            ); // Replace {owner}/{repo} with actual values
+            const data = await response.json();
+            commitsList.innerHTML = data
+              .slice(0, 5)
+              .map(
+                (commit) =>
+                  `<li class='p-2 border-b hover:bg-gray-100'>${commit.commit.message}</li>`
+              )
+              .join("");
+          } catch (error) {
+            commitsList.innerHTML = "<li>Error fetching commits.</li>";
+          }
+        } else {
+          dropdown.classList.add("hidden");
+        }
+      }
+
+      function openChat() {
+        const card = document.getElementById("project-card");
+        const chatInterface = document.getElementById("chat-interface");
+        card.classList.add("hidden");
+        chatInterface.classList.remove("hidden");
+      }
+
+      function sendMessage() {
+        const messageInput = document.getElementById("chat-message-input");
+        const messageList = document.getElementById("message-list");
+        const message = messageInput.value.trim();
+
+        if (message) {
+          const messageItem = document.createElement("li");
+          messageItem.className = "p-2 border-b";
+          messageItem.textContent = message;
+          messageList.appendChild(messageItem);
+          messageInput.value = "";
+        }
+      }
+
+      function closeChat() {
+        const card = document.getElementById("project-card");
+        const chatInterface = document.getElementById("chat-interface");
+        chatInterface.classList.add("hidden");
+        card.classList.remove("hidden");
+      }
+    </script>
+  </head>
+  <body>
+    <!-- Sidebar -->
+
+    <div class="sidebar" id="sidebar">
+      <a href="/<%=user.urlUserName%>/dashboard">
+        <h2 class="font-bold">Dashboard</h2>
+      </a>
+      <a href="/<%= user.urlUserName %>/all/projects"
+        ><i class="fas fa-folder"></i> My Projects</a
+      >
+      <a href="/<%= user.urlUserName %>/pending"
+        ><i class="fas fa-clock"></i> Pending</a
+      >
+      <!-- <a href="#"><i class="fas fa-tasks"></i> Assigned Projects</a> -->
+      <a href="/<%= user.urlUserName %>/requests"
+        ><i class="fas fa-envelope"></i> Requests</a
+      >
+      <a
+        href="/<%= user.urlUserName %>/posts"
+        id="postsLink"
+        username="<%= user.fullName %>"
+        ><i class="fas fa-comments"></i> My Posts</a
+      >
+      <a href="/<%= user.urlUserName %>/portofolio" id="profile-link-media-768"
+        ><i class="fas fa-user"></i> Portofolio</a
+      >
+      <a href="/IdeaBank"><i class="fas fa-lightbulb"></i> Project Idea Bank</a>
+      <a
+        id="logout-link-media-768"
+        href="#"
+        onclick="document.getElementById('logoutForm').submit();"
+      >
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Navbar -->
+      <div class="navbar">
+        <span class="toggle-btn" id="toggle-btn"
+          ><i class="fas fa-bars"></i>
+          <span class="dashboard-logo" id="dashboardLogo">Dashboard</span>
+        </span>
+        <div>
+          <a href="/<%= user.urlUserName %>/portofolio" id="profile-link"
+            ><i class="fas fa-user"></i> Portofolio</a
+          >
+          <a
+            id="logout-link"
+            href="#"
+            onclick="document.getElementById('logoutForm').submit();"
+          >
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </a>
+
+          <form
+            id="logoutForm"
+            action="/auth/logout"
+            method="POST"
+            style="display: none"
+          >
+            <!-- Form data if needed -->
+          </form>
+        </div>
+      </div>
+
+      <!-- content -->
+      <div
+        class="bg-gradient-to-r from-blue-50 to-indigo-100 flex min-h-screen p-8"
+      >
+        <div
+          id="project-card"
+          class="w-full max-w-lg bg-white shadow-2xl rounded-xl overflow-hidden transform transition hover:scale-105 duration-300"
+          style="height: fit-content"
+        >
+          <div class="p-8">
+            <h2 class="text-2xl font-bold text-indigo-600 mb-4">
+              Project Title
+            </h2>
+            <p class="text-gray-800 mb-4 text-sm">
+              My Role in the Project:
+              <span class="font-medium text-indigo-500">Developer</span>
+            </p>
+            <a
+              href="#"
+              class="text-indigo-500 hover:text-indigo-700 underline text-sm font-medium mb-6 inline-block"
+              >View Project Repo</a
+            >
+
+            <div class="flex items-center mb-6">
+              <div class="flex -space-x-3">
+                <img
+                  class="w-10 h-10 rounded-full border-2 border-indigo-200 shadow-lg"
+                  src="https://via.placeholder.com/40"
+                  alt="Team Member"
+                />
+                <img
+                  class="w-10 h-10 rounded-full border-2 border-indigo-200 shadow-lg"
+                  src="https://via.placeholder.com/40"
+                  alt="Team Member"
+                />
+                <img
+                  class="w-10 h-10 rounded-full border-2 border-indigo-200 shadow-lg"
+                  src="https://via.placeholder.com/40"
+                  alt="Team Member"
+                />
+              </div>
+              <span class="text-sm text-gray-600 ml-4 font-medium"
+                >+3 others</span
+              >
+              <button
+                class="ml-auto text-indigo-600 hover:text-indigo-800 font-bold text-sm focus:outline-none"
+                onclick="openChat()"
+              >
+                Team Chat
+              </button>
+            </div>
+
+            <div>
+              <button
+                class="flex items-center text-indigo-600 hover:text-indigo-800 font-bold text-sm focus:outline-none"
+                onclick="fetchCommits()"
+              >
+                Last Commits
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 ml-1"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M5.23 7.21a.75.75 0 011.06-.02L10 10.586l3.71-3.4a.75.75 0 011.02 1.1l-4 3.673a.75.75 0 01-1.02 0l-4-3.673a.75.75 0 01-.02-1.06z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </button>
+              <ul
+                id="dropdown"
+                class="hidden mt-4 bg-white border rounded-md shadow-lg"
+              >
+                <li id="commits-list" class="p-4 text-gray-700">
+                  No commits fetched yet.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div
+          id="chat-interface"
+          class="hidden w-full max-w-lg bg-white shadow-2xl rounded-xl overflow-hidden"
+        >
+          <div class="p-8 flex flex-col h-full">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-2xl font-bold text-indigo-600">Team Chat</h3>
+              <button
+                class="text-indigo-600 hover:text-indigo-800 font-bold focus:outline-none"
+                onclick="closeChat()"
+              >
+                Close
+              </button>
+            </div>
+            <ul
+              id="message-list"
+              class="flex-grow overflow-y-auto bg-gray-50 p-4 border rounded-md mb-4"
+            >
+              <li class="p-2 border-b">Welcome to the team chat!</li>
+            </ul>
+            <div class="flex items-center">
+              <input
+                id="chat-message-input"
+                type="text"
+                class="flex-grow p-2 border rounded-l-md focus:outline-none"
+                placeholder="Type a message..."
+              />
+              <button
+                class="bg-indigo-600 text-white px-4 py-2 rounded-r-md hover:bg-indigo-700 focus:outline-none"
+                onclick="sendMessage()"
+              >
+                Send
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/js/dashboard.js"></script>
+  </body>
+</html>

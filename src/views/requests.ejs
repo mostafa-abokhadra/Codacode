@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/css/dashboard.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+      }
+
+      #requests-container {
+        display: flex;
+        flex-wrap: wrap;
+        /* justify-content: center; */
+        gap: 20px;
+        padding: 20px;
+        /* height: 100vh; */
+      }
+
+      .card {
+        height: fit-content;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+        padding: 20px;
+      }
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .user-image {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #ddd;
+        margin-right: 15px;
+      }
+
+      .user-info {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .username {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #333;
+      }
+
+      .date {
+        font-size: 0.9rem;
+        color: #777;
+      }
+
+      .card-content {
+        margin-bottom: 15px;
+        font-size: 1rem;
+        color: #555;
+      }
+
+      .card-footer {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+        color: #fff;
+        transition: background-color 0.3s ease;
+      }
+
+      .accept {
+        background-color: #28a745;
+      }
+
+      .accept:hover {
+        background-color: #218838;
+      }
+
+      .reject {
+        background-color: #dc3545;
+      }
+
+      .reject:hover {
+        background-color: #c82333;
+      }
+
+      @media (min-width: 768px) {
+        .card {
+          flex: 0 1 calc(50% - 20px);
+        }
+      }
+    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <!-- Sidebar -->
+
+    <div class="sidebar" id="sidebar">
+      <a href="/<%=user.urlUserName%>/dashboard">
+        <h2 class="font-bold">Dashboard</h2>
+      </a>
+      <a href="/<%= user.urlUserName %>/all/projects"
+        ><i class="fas fa-folder"></i> My Projects</a
+      >
+      <a href="/<%= user.urlUserName %>/pending"
+        ><i class="fas fa-clock"></i> Pending</a
+      >
+      <!-- <a href="#"><i class="fas fa-tasks"></i> Assigned Projects</a> -->
+      <a href="/<%= user.urlUserName %>/requests"
+        ><i class="fas fa-envelope"></i> Requests</a
+      >
+      <a
+        href="/<%= user.urlUserName %>/posts"
+        id="postsLink"
+        username="<%= user.fullName %>"
+        ><i class="fas fa-comments"></i> My Posts</a
+      >
+      <a href="/<%= user.urlUserName %>/portofolio" id="profile-link-media-768"
+        ><i class="fas fa-user"></i> Portofolio</a
+      >
+      <a href="/IdeaBank"><i class="fas fa-lightbulb"></i> Project Idea Bank</a>
+      <a
+        id="logout-link-media-768"
+        href="#"
+        onclick="document.getElementById('logoutForm').submit();"
+      >
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Navbar -->
+      <div class="navbar">
+        <span class="toggle-btn" id="toggle-btn"
+          ><i class="fas fa-bars"></i>
+          <span class="dashboard-logo" id="dashboardLogo">Dashboard</span>
+        </span>
+        <div>
+          <a href="/<%= user.urlUserName %>/portofolio" id="profile-link"
+            ><i class="fas fa-user"></i> Portofolio</a
+          >
+          <a
+            id="logout-link"
+            href="#"
+            onclick="document.getElementById('logoutForm').submit();"
+          >
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </a>
+
+          <form
+            id="logoutForm"
+            action="/auth/logout"
+            method="POST"
+            style="display: none"
+          >
+            <!-- Form data if needed -->
+          </form>
+        </div>
+      </div>
+
+      <div
+        id="requests-container"
+        requests="<%= JSON.stringify(requests) %>"
+        user="<%= JSON.stringify(user) %>"
+      >
+        <%= JSON.stringify(requests.requests) %>
+      </div>
+    </div>
+    <script src="/js/dashboard.js"></script>
+    <script src="/js/requests.js"></script>
+  </body>
+</html>

@@ -1,6 +1,7 @@
 const {PrismaClient} = require("@prisma/client")
 const prisma = new PrismaClient()
 const crypto = require('crypto');
+const {URL} = require('url')
 
 async function getUpdatedUser(email) {
     try {
@@ -29,7 +30,8 @@ async function getUpdatedUser(email) {
                                     include: {
                                         messages: true
                                     }
-                                }
+                                },
+                                members: true
                             }
                         }
                     }
@@ -42,7 +44,8 @@ async function getUpdatedUser(email) {
                                     include: {
                                         messages: true 
                                     }
-                                }
+                                },
+                                members: true
                             }
                         }
                     }
@@ -53,6 +56,10 @@ async function getUpdatedUser(email) {
         
         if (!user)
             return {"error": "couldn't fetch user"}
+        if (user.GitHub)
+            user.GitHub = true
+        const urlUserName = user.fullName.replaceAll(" ", '-')
+        user.urlUserName = urlUserName
         return user
     } catch(error) {
         console.log("in utils: ", error)
@@ -100,9 +107,19 @@ async function getSendToMeRequests(username) {
                                             userApplied: {
                                                 select: {
                                                     id: true,
+                                                    fullName: true,
+                                                    profile: {
+                                                        select: {
+                                                            image: true
+                                                        }
+                                                    }
                                                 }
                                             },
-                                            role: true
+                                            role: {
+                                                include: {
+                                                    post: true
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -227,5 +244,5 @@ module.exports = {
     checkProjectStatus,
     encryptToken,
     decryptToken,
-    addCollaborator
+    addCollaborator,
 }
