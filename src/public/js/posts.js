@@ -43,8 +43,9 @@ const createButton = async (role) => {
 if (posts) {
   try {
     const userPosts = JSON.parse(posts.attributes.posts.value)
+    console.log("posts = ", )
     document.addEventListener("DOMContentLoaded", () => {
-      for (let i = 0; i < userPosts.length; i++) {
+      for (let i = userPosts.length - 1; i >= 0 ; i--) {
           userPosts[i].createdAt = userPosts[i].createdAt.split('T')
           const post = generatePost(userPosts[i]);
           posts.appendChild(post);

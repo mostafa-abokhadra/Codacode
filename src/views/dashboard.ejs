@@ -197,7 +197,29 @@
       </div>
     </div>
 
-    <!-- Popup Modal -->
+    <!-- form createion success Popup -->
+    <div
+      class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 hidden"
+      id="formSuccessPopUp"
+      style="opacity: 1; transition: opacity 0.5s"
+    >
+      <div
+        class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full text-center"
+      >
+        <h2 class="text-xl font-semibold text-green-600">Success!</h2>
+        <p class="mt-4 text-gray-700">
+          Your project was created successfully. Wait for developers to apply.
+        </p>
+        <button
+          onclick="closeSuccessPopup()"
+          class="mt-6 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+
+    <!-- github auth Popup -->
     <button
       id="openPopup"
       class="bg-blue-500 text-white p-2 rounded"
@@ -231,6 +253,26 @@
         <button
           id="closePopup"
           class="bg-red-500 text-white py-2 px-4 rounded mt-4 w-full"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+    <!-- serverErrorPopup -->
+    <div
+      id="serverErrorPopup"
+      class="hidden fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50"
+    >
+      <div
+        class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full text-center"
+      >
+        <h2 class="text-xl font-semibold text-red-600">Server Error</h2>
+        <p class="mt-4 text-gray-700">
+          There was an issue with the server. Please try again later.
+        </p>
+        <button
+          onclick="closeErrorPopup()"
+          class="mt-6 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded"
         >
           Close
         </button>

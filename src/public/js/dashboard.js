@@ -177,7 +177,10 @@ async function createPost (dic) {
         })
         if (projectRes.ok) {
           const projectData = await projectRes.json()
-          console.log(projectData)
+          closeModalBtn.click()
+          document.getElementById('formSuccessPopUp').classList.remove('hidden')
+        } else {
+          showErrorPopup()
         }
 
     }
@@ -196,3 +199,26 @@ const startCollaboration = document.getElementById("startCollaboration")
 startCollaboration.addEventListener('click', (e) => {
   window.location.href = '/projects'
 })
+
+async function closeSuccessPopup() {
+  const popup = document.getElementById('formSuccessPopUp');
+
+  // Add a fading animation
+  popup.style.transition = 'opacity 0.5s';
+  popup.style.opacity = '0';
+
+  // Wait for the animation to complete
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  // Hide the popup
+  popup.style.display = 'none';
+}
+
+function showErrorPopup() {
+  document.getElementById('serverErrorPopup').classList.remove('hidden');
+}
+
+// Function to close the popup
+function closeErrorPopup() {
+  document.getElementById('serverErrorPopup').classList.add('hidden');
+}

@@ -1,6 +1,7 @@
 const { PrismaClient } = require("@prisma/client")
 const prisma = new PrismaClient()
 const utils = require('../utils/utils')
+
 class noAuthController {
     static async getIdeas(req, res) {
         try {
