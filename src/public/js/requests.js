@@ -2,10 +2,8 @@ const requestsContainer = document.getElementById('requests-container');
 
 if (requestsContainer) {
     let requests;
-    let user;
     try {
         requests = JSON.parse(requestsContainer.attributes.requests.value)
-        user = JSON.parse(requestsContainer.attributes.user.value)
     } catch (error) {
         console.error("Failed to parse requests:", error);
         requests = []; // Default to an empty array if parsing fails
@@ -33,10 +31,10 @@ function createCard(cardData) {
             </div>
         </a>
         <div class="card-content">
-            Applied to ${cardData.role.position} position on <a href="#">${cardData.role.post.title}</a> project
+            Applied to <b>${cardData.role.position}</b> position to your <a href="#"><b>${cardData.role.post.title}</b></a> project
         </div>
         <div class="card-footer">
-            <button id="accept" class="button accept" requestsId="${cardData.id}">Accept</button>
+            <button id="accept" class="button accept" requestId="${cardData.id}">Accept</button>
             <button id="reject" class="button reject" requestId="${cardData.id}">Reject</button>
         </div>
     `;
@@ -44,12 +42,39 @@ function createCard(cardData) {
 }
 
 const acceptReq = document.getElementById('accept')
+if (!acceptReq) {
+    const noReq = document.getElementById('noRequests')
+    noReq.classList.remove('hidden')
+}
+
 acceptReq.addEventListener('click', async (e) => {
     try {
-        const res = await fetch(`/${user.urlUserName}/requests/${acceptReq.attributes.requestId.value}`, {method: 'post'})
-        console.log(await res.json())
-    } catch(error) {
+        const user = JSON.parse(requestsContainer.attributes.user.value)
+        const res = await fetch(`/${user.urlUserName}/requests/${acceptReq.attributes.requestId.value}/accept`, {method: 'post'})
+        const data = await res.json()
+        acceptSuccessPopup.classList.remove('hidden')
+        const immediateParent = acceptReq.parentElement
+        const rejectElement = immediateParent.querySelector('.reject');
+        if (rejectElement) {
+            rejectElement.remove();
+        }
+        const span = document.createElement('span')
+        span.textContent = "Status: "
+        span.setAttribute('style', 'transition: 0.3s; font-size: 30px; ')
+        
 
+        immediateParent.insertBefore(span, immediateParent.firstChild)
+        immediateParent.setAttribute('style', 'display: block;')
+        acceptReq.style.backgroundColor = '#005012'
+        acceptReq.disabled = true
+        // const card = immediateParent.parentElement
+        // card.setAttribute('style', 'display: none');
+    } catch(error) {
+        console.error("the error", error)
     }
 })
-
+const acceptSuccessPopup = document.getElementById('acceptSuccessPopup');
+const closePopup = document.getElementById('closeAcceptSuccessPopup');
+closePopup.addEventListener('click', () => {
+    acceptSuccessPopup.classList.add('hidden');
+});

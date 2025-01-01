@@ -158,9 +158,9 @@ class requestsController {
                 return item.id === exist.id
             })
             if (!isInRequests)
-                return res.status(401).json({"message": "request doesn't belong to user or already accepted or rejected"})
+                return res.status(403).json({"message": "request doesn't belong to user or already accepted or rejected"})
             if (exist.role.accepted === exist.role.needed)
-                return res.status(401).json({"message": "role is already staisfied"})
+                return res.status(403).json({"message": "role is already staisfied"})
             const request = await prisma.request.update({
                 where: {id: parseInt(requestId)},
                 data: {
@@ -255,7 +255,7 @@ class requestsController {
                 where: {user_id: request.userApplied.id}
             })
             if(!ownerGithub || !inviteeGithub)
-                return res.status(401).json({"message": "can't get github credentials"})
+                return res.status(403).json({"message": "can't get github credentials"})
             const repo = request.role.post.repo.split('/')[4]
             const ownerToken = await utils.decryptToken(ownerGithub.accessToken)
             const ownerUsername = await utils.decryptToken(ownerGithub.githubUsername)
@@ -264,7 +264,7 @@ class requestsController {
             const result = await utils.addCollaborator(ownerUsername, inviteeUsername, ownerToken, repo)
             if (result.hasOwnProperty("error"))
                 return res.json(500).json(result)
-            const currentRequestsAfterAccept = await utils.getSendToMeRequests(username) 
+            const currentRequestsAfterAccept = await utils.getSendToMeRequests(req.user.fullName) 
             return res.status(200).json({
                 "message": "you have accepted request successfully",
                 "info": result.message,

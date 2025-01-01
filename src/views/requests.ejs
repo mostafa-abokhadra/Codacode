@@ -187,9 +187,47 @@
         requests="<%= JSON.stringify(requests) %>"
         user="<%= JSON.stringify(user) %>"
       >
-        <%= JSON.stringify(requests.requests) %>
+        <!-- No Requests Message -->
+        <div id="noRequests" class="mt-8 flex justify-center hidden">
+          <div
+            class="bg-white rounded-lg shadow p-6 w-11/12 max-w-md text-center"
+          >
+            <p class="text-lg font-medium text-gray-800">
+              You have no requests yet. Wait for developers to apply to your
+              projects.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
+
+    <!-- accept success Popup Container -->
+    <div
+      id="acceptSuccessPopup"
+      class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden"
+    >
+      <div class="bg-white rounded-lg shadow-lg p-6 w-11/12 max-w-md">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">
+          Accept Successful
+        </h2>
+        <p class="text-gray-700 mb-6">
+          Now <span class="font-bold">'username'</span> is your teammate as
+          <span class="font-bold">'somePosition'</span> developer in your
+          <span class="font-bold">'projectname'</span> project. A collaboration
+          request has been sent to him successfully to the repo, and now you can
+          find him in your projects page.
+        </p>
+        <div class="flex justify-end gap-4">
+          <button
+            id="closeAcceptSuccessPopup"
+            class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded text-gray-800"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
     <script src="/js/dashboard.js"></script>
     <script src="/js/requests.js"></script>
   </body>

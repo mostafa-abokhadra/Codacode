@@ -92,7 +92,7 @@ closeGithubAuhtPopupButton.addEventListener("click", () => {
     postCard.setAttribute('postId',`${postData.id}`)
     postCard.innerHTML = `
       <div class="flex items-center justify-between">
-        <a class="flex items-center space-x-4">
+        <a href="#" class="flex items-center space-x-4">
           <img
             src="${postData.user.profile.image}"
             alt="Profile"

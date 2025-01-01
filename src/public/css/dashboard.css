@@ -391,7 +391,7 @@ transition-delay: 0.3s; /* Delay to sync with the underline animation */
 /* Responsive Design */
 @media (max-width: 768px) {
     .sidebar {
-        transform: translateX(-100%);
+        transform: translateY(-100%);
     }
     .sidebar a[href*="/dashboard"] {
         visibility:hidden; /* Hides "Dashboard" in the sidebar */

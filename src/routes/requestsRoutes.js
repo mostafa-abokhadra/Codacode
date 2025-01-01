@@ -46,7 +46,7 @@ router.delete(
 router.post(
     '/:username/requests/:requestId/accept',
     checksession.ensureAuthenticated,
-    checksession.ensureValidUser,
+    // checksession.ensureValidUser,
     requestValidator.validateRequestId,
     handleValidationErrors,
     requestsController.acceptRequest
