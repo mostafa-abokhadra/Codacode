@@ -43,7 +43,10 @@ const createButton = async (role) => {
 if (posts) {
   try {
     const userPosts = JSON.parse(posts.attributes.posts.value)
-    console.log("posts = ", )
+    if (!userPosts) {
+      const noProjects = document.getElementById('no-projects')
+      noProjects.classList.remove('hidden')
+    }
     document.addEventListener("DOMContentLoaded", () => {
       for (let i = userPosts.length - 1; i >= 0 ; i--) {
           userPosts[i].createdAt = userPosts[i].createdAt.split('T')
@@ -227,7 +230,199 @@ closeGithubAuhtPopupButton.addEventListener("click", () => {
   
       // btn.addEventListener("click", applyHandler);
     });
-  
     return postCard;
   }
-  
+//
+const createNewProjectBtn = document.getElementById('createNewProjectBtn')
+if (createNewProjectBtn) {
+
+}
+createNewProjectBtn.addEventListener('click', (event) => {
+  if (!user) {
+    window.location.href = '/auth/login'
+  } else if (!user.GitHub) {
+    const githubAuthPopup = document.getElementById('githubAuthPopup')
+    githubAuthPopup.classList.remove('hidden')
+
+    
+    const rolesContainer = document.getElementById("rolesContainer");
+    
+  } else {
+    const createProjectModal = document.getElementById("createProjectModal")
+    createProjectModal.setAttribute('style', 'display: block')
+  }
+})
+
+const closeCreateProjectModalBtn = document.getElementById("closeModal");
+closeCreateProjectModalBtn.addEventListener("click", () => {
+  createProjectModal.style.display = "none";
+});
+
+// Close Modal on Outside Click
+window.addEventListener("click", (e) => {
+  if (e.target === createProjectModal) {
+    createProjectModal.style.display = "none";
+  }
+});
+
+const rolesContainer = document.getElementById("rolesContainer");
+rolesContainer.addEventListener("click", (e) => {
+  if (e.target.classList.contains("add-role-btn")) {
+    const roleInputDiv = document.createElement("div");
+    roleInputDiv.classList.add("role-input");
+    roleInputDiv.innerHTML = `
+      <input type="text" name="role" class="role-field" placeholder="Enter role needed" />
+      <input type="number" name="numberNeeded" class="number-needed" placeholder="Number Needed" min="1" />
+      <button type="button" class="add-role-btn">+</button>
+      <button type="button" class="remove-role-btn">-</button>
+    `;
+    rolesContainer.appendChild(roleInputDiv);
+  }
+
+  if (e.target.classList.contains("remove-role-btn")) {
+    const roleInput = e.target.closest(".role-input");
+    if (rolesContainer.children.length > 1) {
+      rolesContainer.removeChild(roleInput);
+    }
+  }
+});
+
+
+// 
+
+// Format the roles data on form submission
+const projectForm = document.getElementById("projectForm");
+
+projectForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  document.querySelectorAll('.error-message').forEach((msg) => msg.remove());
+  const roleFields = document.querySelectorAll(".role-field");
+  const numberFields = document.querySelectorAll(".number-needed");
+  const rolesData = [];
+
+  roleFields.forEach((roleField, index) => {
+    const role = roleField.value;
+    const numberNeeded = numberFields[index].value;
+    if (role && numberNeeded) {
+      rolesData.push({ role, numberNeeded });
+    }
+  });
+
+  // Replace the existing inputs with a hidden input containing the roles JSON
+  const rolesInput = document.createElement("input");
+  rolesInput.type = "hidden";
+  rolesInput.name = "roles";
+  rolesInput.value = JSON.stringify(rolesData);
+  projectForm.appendChild(rolesInput);
+
+  const title = document.getElementById("title").value
+  const description = document.getElementById("description").value
+  const langPref = document.getElementById('langPref').value
+  const yourRole = document.getElementById("yourRole").value
+  const repo = document.getElementById("repoLink").value
+  const roles = JSON.stringify(rolesData)
+
+  const postData = {
+    title: title,
+    description: description,
+    langPref: langPref,
+    yourRole: yourRole,
+    repo: repo,
+    roles: roles
+  }
+  createPost(postData)
+});
+
+async function validateDivExistence(elementDiv, infoMessage) {
+  if (elementDiv) {
+      elementDiv.appendChild(infoMessage)
+  } else {
+    console.error("Element not found.");
+  }
+}
+
+async function createPost (dic) {
+  try {
+    const formData = new URLSearchParams(dic).toString();
+    let res = await fetch(`/${user.fullName}/posts`, {
+      method: 'post',
+      body: formData,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      }
+    })
+    res = await res.json()
+    if (res.errors) {
+      document.querySelectorAll('.error-message').forEach((msg) => msg.remove());
+      for (let i = 0; i < res.errors.length; i++) {
+        const infoMessage = document.createElement('small')
+        infoMessage.textContent = res.errors[i].msg
+        infoMessage.style = "color: red; margin-top: 3px"
+        infoMessage.className = 'error-message';
+        const repoLinkDiv = document.getElementsByClassName('repoLinkDiv')[0]
+        const titleDiv = document.getElementsByClassName('titleDiv')[0]
+        const descriptionDiv = document.getElementsByClassName('descriptionDiv')[0]
+        const langPrefDiv = document.getElementsByClassName("langPrefDiv")[0]
+        const yourRoleDiv = document.getElementsByClassName('yourRoleDiv')[0]
+        const roleInputDiv = document.getElementsByClassName('roleInputDiv')[0]
+        if (res.errors[i].path === 'repo') {
+          validateDivExistence(repoLinkDiv, infoMessage)
+        } else if (res.errors[i].path === 'title') {
+            const anchor = titleDiv.querySelector('a')
+            const br = document.createElement('br')
+            if (anchor) {
+              anchor.before(infoMessage)
+              infoMessage.after(br)
+            }
+          // validateDivExistence(titleDiv, infoMessage)
+        } else if (res.errors[i].path === 'description') {
+          validateDivExistence(descriptionDiv, infoMessage)
+        } else if (res.errors[i].path === 'langPref') {
+          validateDivExistence(langPrefDiv, infoMessage)
+        } else if (res.errors[i].path === 'yourRole') {
+          validateDivExistence(yourRoleDiv, infoMessage)
+        } else if (res.errors[i].path === 'roles' ) {
+          validateDivExistence(roleInputDiv, infoMessage)
+        }
+      }
+    } else {
+        const projectRes = await fetch(`/${user.fullName}/posts/${res.post.id}/projects`, {
+          method: 'post'
+        })
+        if (projectRes.ok) {
+          const projectData = await projectRes.json()
+          closeCreateProjectModalBtn.click()
+          document.getElementById('formSuccessPopUp').classList.remove('hidden')
+        } else {
+          showErrorPopup()
+        }
+    }
+  } catch(error) {
+    console.error("the errro", error)
+  }
+}
+
+async function closeSuccessPopup() {
+  const popup = document.getElementById('formSuccessPopUp');
+
+  // Add a fading animation
+  popup.style.transition = 'opacity 0.5s';
+  popup.style.opacity = '0';
+
+  // Wait for the animation to complete
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
+  location.reload();
+
+  // popup.style.display = 'none';
+}
+
+function showErrorPopup() {
+  document.getElementById('serverErrorPopup').classList.remove('hidden');
+}
+
+// Function to close the popup
+function closeErrorPopup() {
+  document.getElementById('serverErrorPopup').classList.add('hidden');
+}
+
