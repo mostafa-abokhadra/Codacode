@@ -36,7 +36,7 @@ router.get(
 router.delete(
     '/:username/requests/:requestId',
     checksession.ensureAuthenticated,
-    checksession.ensureValidUser,
+    // checksession.ensureValidUser,
     requestValidator.validateRequestId,
     handleValidationErrors,
     requestsController.cancelRequest
@@ -55,10 +55,17 @@ router.post(
 router.delete(
     "/:username/requests/:requestId/reject",
     checksession.ensureAuthenticated,
-    checksession.ensureValidUser,
     requestValidator.validateRequestId,
     handleValidationErrors,
     requestsController.rejectRequest
 )
 
+// don't show
+router.put(
+    '/:username/requests/:requestId/show',
+    checksession.ensureAuthenticated,
+    requestValidator.validateRequestId,
+    handleValidationErrors,
+    requestsController.updateShowStatus
+)
 module.exports = router

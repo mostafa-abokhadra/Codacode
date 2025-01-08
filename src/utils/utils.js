@@ -99,9 +99,10 @@ async function getSendToMeRequests(username) {
                                 include: {
                                     requests: {
                                         where: {
-                                            status: {
-                                                notIn: ["accepted", "rejected"]
-                                            }
+                                            // status: {
+                                            //     notIn: ["accepted", "rejected"]
+                                            // }
+                                            show: true
                                         },
                                         include: {
                                             userApplied: {
@@ -151,12 +152,21 @@ async function getPendingRequests(username) {
     try {
         const user = await prisma.user.findFirst({
             where: {fullName: username},
-            include: {pending: true}
+            include: {pending:{
+                include: {
+                    role: {
+                        include: {
+                            post: true
+                        }
+                    }
+                }
+            }}
         })
         if (!user)
             return {"error": "can't find user"}
         return {"message": "pending requests retrieved successfully", pending: user.pending}
     } catch(error) {
+        console.log(error)
         return {"error": "an error occured"}
     }
 }
@@ -227,7 +237,6 @@ const addCollaborator = async (ownerUsername, inviteeUsername, ownerToken, repo)
     });
 
     if (response.ok) {
-        console.log(`Collaboration request sent to ${inviteeUsername}`);
         return {"message": `Collaboration request sent to ${inviteeUsername} Successfully`}
     } else {
         const error = await response.json();

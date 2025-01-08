@@ -1,33 +1,124 @@
 const requestsContainer = document.getElementById('requests-container');
+const requests = JSON.parse(requestsContainer.attributes.requests.value)
+const user = JSON.parse(requestsContainer.attributes.user.value)
 
-if (requestsContainer) {
-    let requests;
-    try {
-        requests = JSON.parse(requestsContainer.attributes.requests.value)
-    } catch (error) {
-        console.error("Failed to parse requests:", error);
-        requests = []; // Default to an empty array if parsing fails
-    }
-    for (let i = 0; i < requests.requests.length; i++) {
-        let card = createCard(requests.requests[i])
-        requestsContainer.appendChild(card)
-    }
-    
-} else {
-    console.error("Element with ID 'requests-container' not found.");
+if (requests.requests.length === 0) {
+    const noReq = document.getElementById('noRequests')
+    noReq.classList.remove('hidden')
 }
 
+for (let i = 0; i < requests.requests.length; i++) {
+    let card;
+    if (requests.requests[i].status == 'accepted' ||
+        requests.requests[i].status == 'rejected') {
+            card = createAccepteAndRejectedCard(requests.requests[i])
+        } else {
+            card = createCard(requests.requests[i])
+        }
+    requestsContainer.appendChild(card)
+}
+
+const acceptRequestButtons = document.querySelectorAll('#accept')
+const acceptSuccessPopup = document.getElementById('acceptSuccessPopup');
+const closeAcceptPopup = document.getElementById('closeAcceptSuccessPopup');
+
+closeAcceptPopup.addEventListener('click', () => {
+    acceptSuccessPopup.classList.add('hidden');
+});
+
+for (let i = 0; i < acceptRequestButtons.length; i++) {
+    
+    acceptRequestButtons[i].addEventListener('click', async(event) => {
+        const res = await fetch(
+            `/${user.urlUserName}/requests/${acceptRequestButtons[i].attributes.requestId.value}/accept`,
+            {method: 'post'})
+        console.log(await res.json())
+        acceptSuccessPopup.classList.remove('hidden')
+    })
+}
+
+const rejectRequestButtons = document.querySelectorAll('#reject')
+const confirmRejectPopup = document.getElementById('confirmRejectPopup')
+
+for (let i = 0; i < rejectRequestButtons.length; i++) {
+    rejectRequestButtons[i].addEventListener('click', async(event) => {
+        confirmRejectPopup.setAttribute('requestId', rejectRequestButtons[i].attributes.requestId.value)
+        confirmRejectPopup.classList.remove('hidden')
+    })
+}
+
+const confirmRejectButton = document.getElementById('confirmRejectButton')
+const closeConfirmRejectPopup = document.getElementById('closeConfirmRejectPopup')
+
+closeConfirmRejectPopup.addEventListener('click', async(event) => {
+    confirmRejectButton.parentElement.parentElement.parentElement.classList.add('hidden')
+})
+confirmRejectButton.addEventListener('click', async(event) => {
+    const thirdParent = confirmRejectButton.parentElement
+    ?.parentElement
+    ?.parentElement;
+    if (thirdParent && thirdParent.id === "confirmRejectPopup") {
+        const requestId = thirdParent.getAttribute('requestId');
+        if (requestId) {
+            const res = await fetch(
+                `/${user.urlUserName}/requests/${requestId}/reject`,
+                {method: 'delete'}
+            )
+            console.log(await res.json())
+            window.location.reload()
+        }
+    }
+})
+
+function createAccepteAndRejectedCard(cardData) {
+    const card = document.createElement('div')
+    card.className = 'card'
+    let statusColor, status; 
+    if (cardData.status == 'rejected') {
+        statusColor = "rgb(165 23 44)"
+        status = 'reject'
+    } else if (cardData.status == 'accepted') {
+        statusColor = 'rgb(0, 80, 18)'
+        status = 'accept'
+    }
+    card.innerHTML = 
+    `
+    <div class="card">
+    <div style="display: flex; justify-content: space-between;">
+        <a href="#" class="card-header" style="width: 87%;">
+            <div
+                class="user-image"
+                style="background-image: url(${cardData.userApplied.profile.image}); background-size: cover;">
+            </div>
+            <div class="user-info">
+                <div class="username">${cardData.userApplied.fullName}</div>
+                <div class="date">some date</div>
+            </div>
+        </a>
+        <button style="height: fit-content;font-size:larger;font-weight:bold;" id="hideRequestCard" requestId="${cardData.id}">x</button>
+    </div>
+        <div class="card-content">
+            Applied to <b>${cardData.role.position}</b> position to your <a href="#"><b>${cardData.role.post.title}</b></a> project
+        </div>
+        <div class="card-footer" style="display: block;">
+            <span style="transition: 0.3s; font-size: 30px;">Status: </span>
+            <button id="${status}" class="button ${status}" requestid="${cardData.id}" disabled style="background-color: ${statusColor}">${cardData.status}</button>
+        </div>
+    </div>
+    `
+    return card
+}
 function createCard(cardData) {
     const card = document.createElement('div')
     card.className = "card"
     card.innerHTML = 
     `
-        <a href="#" class="card-header">
+        <a href="/cardData.userApplied.fullName" class="card-header">
             <div class="user-image" style="background-image: url(${cardData.userApplied.profile.image}); background-size: cover;">
             </div>
             <div class="user-info">
                 <div class="username">${cardData.userApplied.fullName}</div>
-                <div class="date">December 24, 2024</div>
+                <div class="date">some data</div>
             </div>
         </a>
         <div class="card-content">
@@ -41,40 +132,19 @@ function createCard(cardData) {
     return card
 }
 
-const acceptReq = document.getElementById('accept')
-if (!acceptReq) {
-    const noReq = document.getElementById('noRequests')
-    noReq.classList.remove('hidden')
-}
-
-acceptReq.addEventListener('click', async (e) => {
-    try {
-        const user = JSON.parse(requestsContainer.attributes.user.value)
-        const res = await fetch(`/${user.urlUserName}/requests/${acceptReq.attributes.requestId.value}/accept`, {method: 'post'})
-        const data = await res.json()
-        acceptSuccessPopup.classList.remove('hidden')
-        const immediateParent = acceptReq.parentElement
-        const rejectElement = immediateParent.querySelector('.reject');
-        if (rejectElement) {
-            rejectElement.remove();
+const hideRequestCard = document.querySelectorAll('#hideRequestCard')
+for (let i = 0; i < hideRequestCard.length; i++) {
+    hideRequestCard[i].addEventListener('click', async (event)=> {
+        console.log(hideRequestCard[i])
+        const requestId = hideRequestCard[i].attributes.requestId.value
+        if (requestId) {
+            const res = await fetch(
+                `/${user.urlUserName}/requests/${requestId}/show`,
+                {
+                    method: 'put'
+                }
+            )
+            window.location.reload()
         }
-        const span = document.createElement('span')
-        span.textContent = "Status: "
-        span.setAttribute('style', 'transition: 0.3s; font-size: 30px; ')
-        
-
-        immediateParent.insertBefore(span, immediateParent.firstChild)
-        immediateParent.setAttribute('style', 'display: block;')
-        acceptReq.style.backgroundColor = '#005012'
-        acceptReq.disabled = true
-        // const card = immediateParent.parentElement
-        // card.setAttribute('style', 'display: none');
-    } catch(error) {
-        console.error("the error", error)
-    }
-})
-const acceptSuccessPopup = document.getElementById('acceptSuccessPopup');
-const closePopup = document.getElementById('closeAcceptSuccessPopup');
-closePopup.addEventListener('click', () => {
-    acceptSuccessPopup.classList.add('hidden');
-});
+    })
+}

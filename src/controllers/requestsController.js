@@ -93,8 +93,8 @@ class requestsController {
             const pending = await utils.getPendingRequests(req.user.fullName)
             if (pending.hasOwnProperty("error"))
                 return res.status(500).json(pending)
-            // return res.render('pending', {user: req.user, pending: pending})
-            return res.status(200).json(pending)
+            return res.render('pending', {user: req.user, pending: pending})
+            // return res.status(200).json(pending)
         } catch(error) {
             return res.status(500).json({"message": "an error has occured"})
         }
@@ -132,7 +132,7 @@ class requestsController {
                     roleId: request.role.id
                 })
             }
-            return res.redirect(`/${username}/pending`)
+            return res.status(204).json({"message": "canceled successfully"})
         } catch(error) {
             console.log(error)
             return res.status(500).json({"message": "an error has occured"})
@@ -288,7 +288,7 @@ class requestsController {
             })
             if (!exist)
                 return res.status(401).json({"message": "no request exist with give id"})
-            const myRequests = await utils.getSendToMeRequests(username)
+            const myRequests = await utils.getSendToMeRequests(req.user.fullName)
             if (myRequests.hasOwnProperty("error"))
                 return res.status(500).json(myRequests)
             const isInRequests = myRequests.requests.some((item) => {
@@ -325,7 +325,7 @@ class requestsController {
             })
             if (!request)
                 return res.status(500).json({"message": "can't find request"})
-            const currentRequestsAfterReject = await utils.getSendToMeRequests(username) 
+            const currentRequestsAfterReject = await utils.getSendToMeRequests(req.user.fullName) 
             return res.status(200).json({
                 "message": "you have rejected request successfully",
                 currentReqeusts: currentRequestsAfterReject
@@ -335,6 +335,24 @@ class requestsController {
             return res.status(500).json({"message": "an error has occured"})
         }
     }
+
+    static async updateShowStatus(req, res) {
+        try {
+            const {username, requestId} = req.params
+            const request = await prisma.request.update({
+                where: {id: parseInt(requestId)},
+                data: {
+                    show: false
+                }
+            })
+            if (!request)
+                return res.status(500).json({"message": "couldn't update show field"})
+            return res.status(200).json({"message": "show field updated successfully"})
+        } catch(error) {
+            console.log(error)
+        }
+    }
 }
+
 
 module.exports = requestsController

@@ -1,7 +1,12 @@
 const toggleBtn = document.getElementById("toggle-btn");
 const sidebar = document.getElementById("sidebar");
-let user = document.getElementById('username').attributes.user.value
-user = JSON.parse(user)
+let user;
+try {
+  user = document.getElementById('username').attributes.user.value
+  user = JSON.parse(user)
+} catch(error) {
+    console.log(error)
+}
 
 toggleBtn.addEventListener("click", () => {
   sidebar.classList.toggle("open");
