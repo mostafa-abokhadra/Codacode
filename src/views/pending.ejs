@@ -10,44 +10,9 @@
     />
     <link rel="stylesheet" href="/css/dashboard.css" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      function confirmCancel(cardId) {
-        const confirmPopup = document.createElement("div");
-        confirmPopup.className =
-          "fixed inset-0 flex items-center justify-center bg-black bg-opacity-50";
-        confirmPopup.innerHTML = `
-                <div class="bg-white p-6 rounded-lg shadow-lg text-center">
-                    <p class="mb-4 text-gray-800">Are you sure you want to cancel?</p>
-                    <div class="flex justify-center space-x-4">
-                        <button 
-                            class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 focus:outline-none"
-                            onclick="deleteCard('${cardId}'); closePopup(this)">
-                            Cancel
-                        </button>
-                        <button 
-                            class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 focus:outline-none"
-                            onclick="closePopup(this)">
-                            Close
-                        </button>
-                    </div>
-                </div>`;
-        document.body.appendChild(confirmPopup);
-      }
-
-      function closePopup(button) {
-        const popup = button.closest(".fixed");
-        popup.remove();
-      }
-
-      function deleteCard(cardId) {
-        const card = document.querySelector(`#${cardId}`);
-        card.remove();
-      }
-    </script>
   </head>
   <body>
     <!-- Sidebar -->
-
     <div class="sidebar" id="sidebar">
       <a href="/<%=user.urlUserName%>/dashboard">
         <h2 class="font-bold">Dashboard</h2>
@@ -111,54 +76,59 @@
           </form>
         </div>
       </div>
+
       <div
         class="bg-gradient-to-r from-blue-50 to-indigo-100 min-h-screen py-8"
       >
-        <div class="container mx-auto px-4">
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div id="card-1" class="relative bg-white shadow-lg rounded-lg p-6">
-              <h2 class="text-lg font-bold text-indigo-600 mb-2">
-                Project Title
-              </h2>
-              <p class="text-gray-700 mb-2">
-                Role Applied: <span class="font-medium">Developer</span>
-              </p>
-              <p class="text-gray-700 mb-4">
-                Status: <span class="font-medium">Waiting</span>
-              </p>
-              <div class="flex justify-end">
-                <button
-                  class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 focus:outline-none"
-                  onclick="confirmCancel('card-1')"
-                >
-                  Cancel
-                </button>
+        <div id="cardsContainer" class="container mx-auto px-4">
+          <!--  -->
+          <div
+            id="cardsGrid"
+            user="<%= JSON.stringify(user) %>"
+            pending="<%= JSON.stringify(pending) %>"
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            <!-- no pedingRequest element -->
+            <div id="noPendingRequests" class="mt-8 flex justify-center hidden">
+              <div
+                class="bg-white rounded-lg shadow p-6 w-11/12 max-w-md text-center"
+              >
+                <p class="text-lg font-medium text-gray-800">
+                  you have no pending requests
+                </p>
               </div>
             </div>
-
-            <div id="card-2" class="relative bg-white shadow-lg rounded-lg p-6">
-              <h2 class="text-lg font-bold text-indigo-600 mb-2">
-                Project Title
-              </h2>
-              <p class="text-gray-700 mb-2">
-                Role Applied: <span class="font-medium">Tester</span>
-              </p>
-              <p class="text-gray-700 mb-4">
-                Status: <span class="font-medium">Waiting</span>
-              </p>
-              <div class="flex justify-end">
-                <button
-                  class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 focus:outline-none"
-                  onclick="confirmCancel('card-2')"
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
+            <!--  -->
           </div>
+          <!--  -->
         </div>
       </div>
     </div>
-    <script src="/js/dashboard.js"></script>
+    <!-- confirm cancellation popup -->
+    <div
+      id="confirmCancelPopup"
+      class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden"
+    >
+      <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+        <p class="mb-4 text-gray-800">Are you sure you want to cancel?</p>
+        <div class="flex justify-center space-x-4">
+          <button
+            id="confirmCancelButton"
+            class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 focus:outline-none"
+          >
+            Cancel
+          </button>
+          <button
+            id="closeConfirmCancelPopup"
+            class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 focus:outline-none"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- <script src="/js/dashboard.js"></script> -->
+    <script src="/js/pending.js"></script>
   </body>
 </html>
