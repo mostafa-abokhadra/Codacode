@@ -79,6 +79,8 @@ model Request {
   userApplied_id Int
 
   show Boolean @default(true)
+  showInPending Boolean @default(true)
+  
   createdAT DateTime @default(now())
 	UpdatedAt DateTime @default(now()) @updatedAt
 }
