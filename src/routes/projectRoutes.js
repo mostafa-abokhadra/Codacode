@@ -43,6 +43,24 @@ router.get(
     projectController.getAllProjects
 )
 
+// get owner roles in a project
+router.get(
+    "/:username/projects/:projectId/roles",
+    ensureAuthenticated,
+    projectController.getUserProjectsRoles
+)
+
+// get user roles in a project
+router.get(
+    "/:username/assignedProjects/:projectId/roles",
+    ensureAuthenticated,
+    projectController.getUserAssignedProjectsRoles
+)
+router.get(
+    "/:username/projects/:projectId/team/avatars",
+    ensureAuthenticated,
+    projectController.getProjectTeamProfileAvatars
+)
 // still not sure if i will implement these routes beneath
 // router.put("/:username/project/:projectId")
 // router.delete("/:username/project/:projectId")

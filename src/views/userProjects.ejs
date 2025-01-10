@@ -134,128 +134,15 @@
           </form>
         </div>
       </div>
-
       <!-- content -->
       <div
-        class="bg-gradient-to-r from-blue-50 to-indigo-100 flex min-h-screen p-8"
-      >
-        <div
-          id="project-card"
-          class="w-full max-w-lg bg-white shadow-2xl rounded-xl overflow-hidden transform transition hover:scale-105 duration-300"
-          style="height: fit-content"
-        >
-          <div class="p-8">
-            <h2 class="text-2xl font-bold text-indigo-600 mb-4">
-              Project Title
-            </h2>
-            <p class="text-gray-800 mb-4 text-sm">
-              My Role in the Project:
-              <span class="font-medium text-indigo-500">Developer</span>
-            </p>
-            <a
-              href="#"
-              class="text-indigo-500 hover:text-indigo-700 underline text-sm font-medium mb-6 inline-block"
-              >View Project Repo</a
-            >
-
-            <div class="flex items-center mb-6">
-              <div class="flex -space-x-3">
-                <img
-                  class="w-10 h-10 rounded-full border-2 border-indigo-200 shadow-lg"
-                  src="https://via.placeholder.com/40"
-                  alt="Team Member"
-                />
-                <img
-                  class="w-10 h-10 rounded-full border-2 border-indigo-200 shadow-lg"
-                  src="https://via.placeholder.com/40"
-                  alt="Team Member"
-                />
-                <img
-                  class="w-10 h-10 rounded-full border-2 border-indigo-200 shadow-lg"
-                  src="https://via.placeholder.com/40"
-                  alt="Team Member"
-                />
-              </div>
-              <span class="text-sm text-gray-600 ml-4 font-medium"
-                >+3 others</span
-              >
-              <button
-                class="ml-auto text-indigo-600 hover:text-indigo-800 font-bold text-sm focus:outline-none"
-                onclick="openChat()"
-              >
-                Team Chat
-              </button>
-            </div>
-
-            <div>
-              <button
-                class="flex items-center text-indigo-600 hover:text-indigo-800 font-bold text-sm focus:outline-none"
-                onclick="fetchCommits()"
-              >
-                Last Commits
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-5 w-5 ml-1"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M5.23 7.21a.75.75 0 011.06-.02L10 10.586l3.71-3.4a.75.75 0 011.02 1.1l-4 3.673a.75.75 0 01-1.02 0l-4-3.673a.75.75 0 01-.02-1.06z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-              </button>
-              <ul
-                id="dropdown"
-                class="hidden mt-4 bg-white border rounded-md shadow-lg"
-              >
-                <li id="commits-list" class="p-4 text-gray-700">
-                  No commits fetched yet.
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div
-          id="chat-interface"
-          class="hidden w-full max-w-lg bg-white shadow-2xl rounded-xl overflow-hidden"
-        >
-          <div class="p-8 flex flex-col h-full">
-            <div class="flex justify-between items-center mb-4">
-              <h3 class="text-2xl font-bold text-indigo-600">Team Chat</h3>
-              <button
-                class="text-indigo-600 hover:text-indigo-800 font-bold focus:outline-none"
-                onclick="closeChat()"
-              >
-                Close
-              </button>
-            </div>
-            <ul
-              id="message-list"
-              class="flex-grow overflow-y-auto bg-gray-50 p-4 border rounded-md mb-4"
-            >
-              <li class="p-2 border-b">Welcome to the team chat!</li>
-            </ul>
-            <div class="flex items-center">
-              <input
-                id="chat-message-input"
-                type="text"
-                class="flex-grow p-2 border rounded-l-md focus:outline-none"
-                placeholder="Type a message..."
-              />
-              <button
-                class="bg-indigo-600 text-white px-4 py-2 rounded-r-md hover:bg-indigo-700 focus:outline-none"
-                onclick="sendMessage()"
-              >
-                Send
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+        id="userProjectsContainer"
+        user="<%= JSON.stringify(user) %>"
+        class="flex bg-gradient-to-r justify-between flex-wrap from-blue-50 to-indigo-100 flex min-h-screen p-8"
+        style="flex-wrap: wrap"
+      ></div>
     </div>
-    <script src="/js/dashboard.js"></script>
+    <script src="/js/userProjects.js"></script>
+    <!-- <script src="/js/dashboard.js"></script> -->
   </body>
 </html>
