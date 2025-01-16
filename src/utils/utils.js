@@ -214,8 +214,8 @@ async function encryptToken(token) {
 
 // Decrypt function
 async function decryptToken(encryptedToken) {
-    const key = Buffer.from(process.env.ENCRYPTION_KEY, 'hex'); // Convert hex string to Buffer
-    const iv = Buffer.from(process.env.ENCRYPTION_IV, 'hex');   // Convert hex string to Buffer
+    const key = Buffer.from(process.env.ENCRYPTION_KEY, 'hex'); 
+    const iv = Buffer.from(process.env.ENCRYPTION_IV, 'hex');   
     const decipher = crypto.createDecipheriv(process.env.CRYPTO_ALGORITHM, key, iv);
     let decrypted = decipher.update(encryptedToken, 'hex', 'utf8');
     decrypted += decipher.final('utf8');

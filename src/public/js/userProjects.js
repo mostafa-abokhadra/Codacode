@@ -44,7 +44,7 @@ async function cardCreation() {
     for (let i = 0; i < user.Projects.length; i++ ) {
         const avatars = await getProjectTeamProfileAvatars(user.Projects[i].id)
         const roles =  await getUserProjectRoles(user.Projects[i].id)
-        const projectCard = createProjectCard(user.Projects[i], avatars, roles)
+        const projectCard = createProjectCard(user.Projects[i], avatars, roles, i+1)
         userProjectsContainer.append(projectCard)
     }
 }
@@ -59,14 +59,18 @@ async function cardCreation() {
 //     userProjectsContainer.append(projectCard)
 // }
 
-function createProjectCard(projectCardData, avatars, roles) {
+function createProjectCard(projectCardData, avatars, roles, cardNum) {
+    const repoUrlSegements = projectCardData.repo.split('/')
+    const repoName = repoUrlSegements[repoUrlSegements.length - 1]
+    const repoOwner = repoUrlSegements[repoUrlSegements.length - 2]
     const projectCard = document.createElement('div')
     projectCard.id = "project-card"
-    projectCard.className = "bg-white shadow-2xl rounded-xl overflow-hidden transform transition hover:scale-105 duration-300 mb-5"
-    projectCard.style = "height: fit-content; width: 48%;"
+    projectCard.className = `bg-white shadow-2xl rounded-xl overflow-hidden transform transition hover:scale-105 duration-300 mb-5 ml-5`
+    projectCard.style = "height: fit-content; width: 45%;"
+    projectCard.setAttribute('projectCardNumber', `${cardNum}`)
     projectCard.innerHTML = 
         `
-            <div class="p-8">
+            <div class="p-8 project-card-${cardNum}">
                 <h2 class="text-2xl font-bold text-indigo-600 mb-4">
                     ${projectCardData.post.title}
                 </h2>
@@ -76,10 +80,13 @@ function createProjectCard(projectCardData, avatars, roles) {
                         ${roles.role}
                     </span>
                 </p>
-                <a
+                
+                View Project
+               <a
                     href="${projectCardData.repo}"
+                    style="text-decoration:none;"
                     class="text-indigo-500 hover:text-indigo-700 underline text-sm font-medium mb-6 inline-block"
-                    >View Project Repo</a
+                    >Repo</a
                 >
 
                 <div class="flex items-center mb-6">
@@ -91,17 +98,18 @@ function createProjectCard(projectCardData, avatars, roles) {
                     </span>
 
                     <button
+                        id="teamChatBtn"
+                        projectCardNumber=${cardNum}
                         class="ml-auto text-indigo-600 hover:text-indigo-800 font-bold text-sm focus:outline-none"
-                        onclick="openChat()">
+                        onclick="openChat(${cardNum})">
                         Team Chat
                     </button>
-
                 </div>
-
                 <div>
                     <button
+                        id="fetch-commits-${cardNum}"
                         class="flex items-center text-indigo-600 hover:text-indigo-800 font-bold text-sm focus:outline-none"
-                        onclick="fetchCommits()">
+                        onclick="fetchCommits(${cardNum}, '${repoOwner}', '${repoName}')">
                     Last Commits
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -118,8 +126,8 @@ function createProjectCard(projectCardData, avatars, roles) {
                     </button>
 
                     <ul
-                        id="dropdown"
-                        class="hidden mt-4 bg-white border rounded-md shadow-lg"
+                        id="fetch-commits-${cardNum}-dropdown"
+                        class="hidden mt-4 bg-white border rounded-md shadow-lg p-4"
                     >
                         <li id="commits-list" class="p-4 text-gray-700">
                             No commits fetched yet.
@@ -127,13 +135,14 @@ function createProjectCard(projectCardData, avatars, roles) {
                     </ul>
 
                 </div>
+                
 
             </div>
 
         </div>
 
             <div
-                id="chat-interface"
+                id=chat-interface-${cardNum}
                 class="hidden w-full max-w-lg bg-white shadow-2xl rounded-xl overflow-hidden"
             >
                 <div class="p-8 flex flex-col h-full">
@@ -143,14 +152,14 @@ function createProjectCard(projectCardData, avatars, roles) {
                         <h3 class="text-2xl font-bold text-indigo-600">Team Chat</h3>
                         <button
                             class="text-indigo-600 hover:text-indigo-800 font-bold focus:outline-none"
-                            onclick="closeChat()"
+                            onclick="closeChat(${cardNum})"
                         >
                         Close
                         </button>
                     </div>
 
                     <ul
-                        id="message-list"
+                        id="message-list-${cardNum}"
                         class="flex-grow overflow-y-auto bg-gray-50 p-4 border rounded-md mb-4"
                     >
                         <li class="p-2 border-b">Welcome to the team chat!</li>
@@ -177,19 +186,39 @@ function createProjectCard(projectCardData, avatars, roles) {
     return projectCard
 }
 
-async function fetchCommits() {
-    const commitsList = document.getElementById("commits-list");
-    const dropdown = document.getElementById("dropdown");
+function openChat(cardNum) {
+    const card = document.querySelector(`.project-card-${cardNum}`);
+    const chatInterface = document.getElementById(`chat-interface-${cardNum}`);
+    card.classList.add("hidden");
+    chatInterface.classList.remove("hidden");
+}
+function closeChat(cardNum) {
+    const card = document.querySelector(`.project-card-${cardNum}`);
+    const chatInterface = document.getElementById(`chat-interface-${cardNum}`);
+    chatInterface.classList.add("hidden");
+    card.classList.remove("hidden");
+} 
+// const teamChatBtns = document.querySelectorAll('#teamChatBtn')
+// teamChatBtns.forEach((teamChatBtn)=> {
+//     teamChatBtn.addEventListener('click', (e)=>{
+//         const projectCardNumber = teamChatBtn.attributes.projectCardNumber.value
+//         const theCard = 
+//     })
 
+// })
+async function fetchCommits(cardNum, repoOwner, repoName) {
+    // const commitsList = document.querySelector(`commits-list-${cardNum}`);
+    const dropdown = document.getElementById(`fetch-commits-${cardNum}-dropdown`);
     if (dropdown.classList.contains("hidden")) {
         dropdown.classList.remove("hidden");
-        commitsList.innerHTML = "<li>Loading commits...</li>";
+        dropdown.innerHTML = "<li>Loading commits...</li>";
         try {
             const response = await fetch(
-                "https://api.github.com/repos/{owner}/{repo}/commits"
+                `https://api.github.com/repos/${repoOwner}/${repoName}/commits`
             );
+
             const data = await response.json();
-            commitsList.innerHTML = data
+            dropdown.innerHTML = data
                 .slice(0, 5)
                 .map((commit) =>
                     `<li class='p-2 border-b hover:bg-gray-100'>${commit.commit.message}</li>`
@@ -200,13 +229,6 @@ async function fetchCommits() {
     } else {
         dropdown.classList.add("hidden");
     }
-}
-
-function openChat() {
-    const card = document.getElementById("project-card");
-    const chatInterface = document.getElementById("chat-interface");
-    card.classList.add("hidden");
-    chatInterface.classList.remove("hidden");
 }
 
 function sendMessage() {
@@ -222,12 +244,5 @@ function sendMessage() {
         messageInput.value = "";
     }
 }
-
-function closeChat() {
-    const card = document.getElementById("project-card");
-    const chatInterface = document.getElementById("chat-interface");
-    chatInterface.classList.add("hidden");
-    card.classList.remove("hidden");
-} 
 
 (async()=>await cardCreation())()
