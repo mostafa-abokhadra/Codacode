@@ -201,6 +201,27 @@
       </div>
     </div>
 
+    <!-- serverErrorPopup -->
+    <div
+      id="serverErrorPopup"
+      class="hidden fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50"
+    >
+      <div
+        class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full text-center"
+      >
+        <h2 class="text-xl font-semibold text-red-600">Server Error</h2>
+        <p class="mt-4 text-gray-700">
+          There was an issue with the server. or user has cancelled the reqeust.
+        </p>
+        <button
+          onclick="closeErrorPopup()"
+          class="mt-6 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+
     <!-- accept success Popup Container -->
     <div
       id="acceptSuccessPopup"

@@ -1,6 +1,7 @@
 const {PrismaClient} = require("@prisma/client")
 const prisma = new PrismaClient()
 const utils = require("../utils/utils")
+const { profile } = require("console")
 
 class projectController {
     static async createProject(req, res) {
@@ -204,8 +205,36 @@ class projectController {
                 select: {
                     id: true,
                     fullName: true,
-                    Projects: { include: { team: { include: { group: {include: {messages: true} },  members: true } } } },
-                    assignedProjects: { include: { team: { include: { group: {include: {messages: true}}, members: true} } } }
+                    Projects: {
+                        include: {
+                            post: true,
+                            team: { 
+                                include: { 
+                                    group: {
+                                        include: {
+                                            messages: true
+                                        } 
+                                    },
+                                    members: true 
+                                } 
+                            } 
+                        } 
+                    },
+                    assignedProjects: { 
+                        include: { 
+                            post: true,
+                            team: { 
+                                include: { 
+                                    group: { 
+                                        include: { 
+                                            messages: true
+                                        }
+                                    },
+                                    members: true
+                                } 
+                            } 
+                        } 
+                    }
                 },
                 // include: {
                 //     Projects: { include: { team: { include: { group: {include: {messages: true} },  members: true } } } },
@@ -223,6 +252,115 @@ class projectController {
         } catch(error) {
             console.log(error)
             return res.status(500).json({"message": "an error has occured"})
+        }
+    }
+
+    static async getUserAssignedProjectsRoles(req, res) {
+        try {
+            const {username, projectId} = req.params
+            const {user} = req
+            
+            const projectRequests = await prisma.request.findMany({
+                where: { 
+                    role: {
+                        post: {
+                            project: {
+                                id: parseInt(projectId)
+                            }
+                        }
+                    }
+                },
+                include: {
+                    userApplied: true,
+                    role: true
+                }
+            })
+
+            if (!projectRequests || projectRequests.length === 0)
+                return res.status(404).json({"message": "no roles for the given project"})
+
+            const userRequests = projectRequests.filter((request) => {
+                return request.userApplied.fullName === user.fullName && request.status === 'accepted'
+            })
+
+            if (userRequests.length === 0)
+                return res.status(500).json({"message": "user has no requests to given project"})
+
+            const userRoles = userRequests.map((request) => {
+                request.role.position
+            }).filter(Boolean)
+
+            if (userRoles.length === 0)
+                return res.status(404).json({"message": "user has no roles"})
+
+            return res.status(200).json({Roles: userRoles})
+        } catch(error) {
+            console.error("Error fetching user roles:", error);
+            return res.status(500).json({ "message": "An unexpected error occurred" });
+        }
+    }
+
+    static async getProjectTeamProfileAvatars(req, res) {
+        try {
+            const {user} = req
+            const {username, projectId} = req.params
+
+            const team = await prisma.team.findFirst({
+                where: {
+                    project_id: parseInt(projectId)
+                },
+                include: {
+                    members: {
+                        include: {
+                            profile: true
+                        }
+                    }
+                }
+            })
+
+            if (!team)
+                return res.status(404).json({"message": "team not found"})
+
+            const profileAvatars = team.members.map((member) => {
+                return member.profile?.image
+            }).filter(Boolean)
+
+            if (profileAvatars.length === 0)
+                return res.status(404).json({"message": "no profile avatars found for team members"})
+
+            return res.status(200).json({avatars: profileAvatars})
+        } catch(error) {
+            console.error("Error fetching Team Profile Pictures:", error)
+            return res.status(500).json({"message": "An unexpected error occurred"})
+        }
+    }
+
+    static async getUserProjectsRoles(req, res) {
+        try {
+            const {username, projectId} = req.params
+            const {user} = req
+
+            // sending the user role form the post if he is the owner
+            const project = await prisma.project.findFirst({
+                where: {
+                    id: parseInt(projectId),
+                    owner: {
+                        fullName: user.fullName
+                    }
+                },
+                include: {
+                    post: true
+                }
+            })
+
+            if (!project)
+                return res.status(404).json({"message": "user have no project with given id"})
+            
+            return res.status(200).json({"role": project.post.myRole})
+
+        } catch(error) {
+            console.error(error)
+            return res.status(500).json({"message": "An unexpected Error occur"})
         }
     }
 }

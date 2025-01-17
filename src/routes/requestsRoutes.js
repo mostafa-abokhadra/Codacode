@@ -68,4 +68,12 @@ router.put(
     handleValidationErrors,
     requestsController.updateShowStatus
 )
+
+router.put(
+    '/:username/requests/:requestId/showInPending',
+    checksession.ensureAuthenticated,
+    requestValidator.validateRequestId,
+    handleValidationErrors,
+    requestsController.updateShowInPending
+)
 module.exports = router

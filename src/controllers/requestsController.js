@@ -104,10 +104,14 @@ class requestsController {
         try {
             const {username, requestId} = req.params
             const checkRequest = await prisma.request.findFirst({
-                where: {id: parseInt(requestId), userApplied_id: req.user.id}
+                where: {
+                    id: parseInt(requestId),
+                    userApplied_id: req.user.id,
+                    status: 'waiting'
+                }
             })
             if (!checkRequest)
-                return res.status(403).json({"message": "request doesn't exist for given user"})
+                return res.status(403).json({"message": "request doesn't exist for given user or status cahnged"})
             const request = await prisma.request.delete({
                 where: {
                     id: parseInt(requestId),
@@ -348,6 +352,30 @@ class requestsController {
             if (!request)
                 return res.status(500).json({"message": "couldn't update show field"})
             return res.status(200).json({"message": "show field updated successfully"})
+        } catch(error) {
+            console.log(error)
+        }
+    }
+    static async updateShowInPending(req, res) {
+        try {
+            const {username, requestId} = req.params
+            const request = await prisma.request.findFirst({
+                where: {
+                    id: parseInt(requestId),
+                    userApplied: {
+                        fullName: req.user.fullName
+                    }
+                }
+            })
+            if (!request)
+                return res.status(500).json({"message": "can't update showInPending field"})
+            const updateRequest = await prisma.request.update({
+                where: { id: request.id },
+                data: { showInPending: false }
+            })
+            if (!updateRequest)
+                return res.status(500).json({"message": "can't update request showInPending"})
+            return res.status(200).json({"message": "updated successfully"})
         } catch(error) {
             console.log(error)
         }

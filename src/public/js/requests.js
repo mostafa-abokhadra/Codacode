@@ -24,16 +24,25 @@ const closeAcceptPopup = document.getElementById('closeAcceptSuccessPopup');
 
 closeAcceptPopup.addEventListener('click', () => {
     acceptSuccessPopup.classList.add('hidden');
+    window.location.reload()
 });
 
+const serverErrorPopup = document.getElementById('serverErrorPopup')
+function closeErrorPopup() {
+    serverErrorPopup.classList.add('hidden');
+    window.location.reload()
+}
 for (let i = 0; i < acceptRequestButtons.length; i++) {
     
     acceptRequestButtons[i].addEventListener('click', async(event) => {
         const res = await fetch(
             `/${user.urlUserName}/requests/${acceptRequestButtons[i].attributes.requestId.value}/accept`,
             {method: 'post'})
-        console.log(await res.json())
-        acceptSuccessPopup.classList.remove('hidden')
+        if (!res.ok) {
+            serverErrorPopup.classList.remove('hidden')
+        } else {
+            acceptSuccessPopup.classList.remove('hidden')
+        }
     })
 }
 
@@ -52,6 +61,7 @@ const closeConfirmRejectPopup = document.getElementById('closeConfirmRejectPopup
 
 closeConfirmRejectPopup.addEventListener('click', async(event) => {
     confirmRejectButton.parentElement.parentElement.parentElement.classList.add('hidden')
+    window.location.reload()
 })
 confirmRejectButton.addEventListener('click', async(event) => {
     const thirdParent = confirmRejectButton.parentElement
@@ -64,7 +74,9 @@ confirmRejectButton.addEventListener('click', async(event) => {
                 `/${user.urlUserName}/requests/${requestId}/reject`,
                 {method: 'delete'}
             )
-            console.log(await res.json())
+            if (!res.ok) {
+                serverErrorPopup.classList.remove('hidden')
+            }
             window.location.reload()
         }
     }
@@ -95,7 +107,7 @@ function createAccepteAndRejectedCard(cardData) {
                 <div class="date">some date</div>
             </div>
         </a>
-        <button style="height: fit-content;font-size:larger;font-weight:bold;" id="hideRequestCard" requestId="${cardData.id}">x</button>
+        <button style="height: fit-content;font-size:larger;font-weight:bold;" id="hideRequestCard" requestId="${cardData.id}">&#10060;</button>
     </div>
         <div class="card-content">
             Applied to <b>${cardData.role.position}</b> position to your <a href="#"><b>${cardData.role.post.title}</b></a> project

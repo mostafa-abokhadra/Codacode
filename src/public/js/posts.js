@@ -17,10 +17,8 @@ try {
 const createButton = async (role) => {
   try {
       const pending = await getPendingReq();
-
       // Determine if the button should be disabled
       const isDisabled = !pending.some(req => req.role_id === role.id);
-
       // Create button HTML dynamically
       const buttonHTML = `
           <button
@@ -286,9 +284,6 @@ rolesContainer.addEventListener("click", (e) => {
     }
   }
 });
-
-
-// 
 
 // Format the roles data on form submission
 const projectForm = document.getElementById("projectForm");
