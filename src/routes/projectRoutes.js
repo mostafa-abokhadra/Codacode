@@ -2,6 +2,7 @@ const { ensureAuthenticated, ensureValidUser } = require("../middlewares/checkSe
 const projectController = require("../controllers/projectController")
 const projectValidator = require("../validators/projectValidator")
 
+
 const router = require("express").Router()
 
 router.post(
