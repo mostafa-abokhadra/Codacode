@@ -41,23 +41,24 @@ function createAvatarElements(avatars) {
 }
 
 async function cardCreation() {
+    let cardCounter = 0;
     for (let i = 0; i < user.Projects.length; i++ ) {
         const avatars = await getProjectTeamProfileAvatars(user.Projects[i].id)
         const roles =  await getUserProjectRoles(user.Projects[i].id)
-        const projectCard = createProjectCard(user.Projects[i], avatars, roles, i+1)
+        const projectCard = createProjectCard(user.Projects[i], avatars, roles, ++cardCounter)
         userProjectsContainer.append(projectCard)
     }
+    for (let i = 0; i < user.assignedProjects.length; i++ ) {
+        const avatars = await getProjectTeamProfileAvatars(user.assignedProjects[i].id)
+        if (!avatars) {
+            // this will not happen as there will be a default avatar
+        }
+        const roles =  await getUserAssignedProjectRoles(user.assignedProjects[i].id)
+        const projectCard = createProjectCard(user.assignedProjects[i], avatars, roles, ++cardCounter)
+        userProjectsContainer.append(projectCard)
+    }
+    cardCounter = 0
 }
-
-// for (let i = 0; i < user.assignedProjects.length; i++ ) {
-//     const avatars =  getProjectTeamProfileAvatars(user.Projects[i].id)
-//     if (!avatars) {
-//         // this will not happen as there will be a default avatar
-//     }
-//     const roles =  getUserAssignedProjectRoles(user.Projects[i].id)
-//     const projectCard = createProjectCard(user.Projects[i], avatars, roles)
-//     userProjectsContainer.append(projectCard)
-// }
 
 function createProjectCard(projectCardData, avatars, roles, cardNum) {
     const repoUrlSegements = projectCardData.repo.split('/')
@@ -77,12 +78,12 @@ function createProjectCard(projectCardData, avatars, roles, cardNum) {
                 <p class="text-gray-800 mb-4 text-sm">
                     your Role in the Project:
                     <span class="font-medium text-indigo-500">
-                        ${roles.role}
+                        ${Array.isArray(roles.Roles)? roles.Roles: roles.role}
                     </span>
                 </p>
                 
                 View Project
-               <a
+                <a
                     href="${projectCardData.repo}"
                     style="text-decoration:none;"
                     class="text-indigo-500 hover:text-indigo-700 underline text-sm font-medium mb-6 inline-block"
@@ -101,7 +102,7 @@ function createProjectCard(projectCardData, avatars, roles, cardNum) {
                         id="teamChatBtn"
                         projectCardNumber=${cardNum}
                         class="ml-auto text-indigo-600 hover:text-indigo-800 font-bold text-sm focus:outline-none"
-                        onclick="openChat(${cardNum})">
+                        onclick="openChat(${cardNum}, ${projectCardData.id})">
                         Team Chat
                     </button>
                 </div>
@@ -174,7 +175,7 @@ function createProjectCard(projectCardData, avatars, roles, cardNum) {
                         />
                         <button
                             class="bg-indigo-600 text-white px-4 py-2 rounded-r-md hover:bg-indigo-700 focus:outline-none"
-                            onclick="sendMessage()"
+                            onclick="sendMessage(${projectCardData.id})"
                         >
                             Send
                         </button>
@@ -186,26 +187,6 @@ function createProjectCard(projectCardData, avatars, roles, cardNum) {
     return projectCard
 }
 
-function openChat(cardNum) {
-    const card = document.querySelector(`.project-card-${cardNum}`);
-    const chatInterface = document.getElementById(`chat-interface-${cardNum}`);
-    card.classList.add("hidden");
-    chatInterface.classList.remove("hidden");
-}
-function closeChat(cardNum) {
-    const card = document.querySelector(`.project-card-${cardNum}`);
-    const chatInterface = document.getElementById(`chat-interface-${cardNum}`);
-    chatInterface.classList.add("hidden");
-    card.classList.remove("hidden");
-} 
-// const teamChatBtns = document.querySelectorAll('#teamChatBtn')
-// teamChatBtns.forEach((teamChatBtn)=> {
-//     teamChatBtn.addEventListener('click', (e)=>{
-//         const projectCardNumber = teamChatBtn.attributes.projectCardNumber.value
-//         const theCard = 
-//     })
-
-// })
 async function fetchCommits(cardNum, repoOwner, repoName) {
     // const commitsList = document.querySelector(`commits-list-${cardNum}`);
     const dropdown = document.getElementById(`fetch-commits-${cardNum}-dropdown`);
@@ -231,7 +212,25 @@ async function fetchCommits(cardNum, repoOwner, repoName) {
     }
 }
 
-function sendMessage() {
+// const teamChatBtns = document.querySelectorAll('#teamChatBtn')
+// teamChatBtns.forEach((teamChatBtn)=> {
+//     teamChatBtn.addEventListener('click', (e)=>{
+//         const projectCardNumber = teamChatBtn.attributes.projectCardNumber.value
+//     })
+// })
+function openChat(cardNum, projectId) {
+    const card = document.querySelector(`.project-card-${cardNum}`);
+    const chatInterface = document.getElementById(`chat-interface-${cardNum}`);
+    card.classList.add("hidden");
+    chatInterface.classList.remove("hidden");
+}
+function closeChat(cardNum) {
+    const card = document.querySelector(`.project-card-${cardNum}`);
+    const chatInterface = document.getElementById(`chat-interface-${cardNum}`);
+    chatInterface.classList.add("hidden");
+    card.classList.remove("hidden");
+} 
+function sendMessage(projectId) {
     const messageInput = document.getElementById("chat-message-input");
     const messageList = document.getElementById("message-list");
     const message = messageInput.value.trim();
