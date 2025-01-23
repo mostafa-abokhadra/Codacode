@@ -152,6 +152,7 @@ function createProjectCard(projectCardData, avatars, roles, cardNum) {
 
                         <h3 class="text-2xl font-bold text-indigo-600">Team Chat</h3>
                         <button
+                            id=close-chat-interface-${cardNum}
                             class="text-indigo-600 hover:text-indigo-800 font-bold focus:outline-none"
                             onclick="closeChat(${cardNum})"
                         >
@@ -168,14 +169,15 @@ function createProjectCard(projectCardData, avatars, roles, cardNum) {
 
                     <div class="flex items-center">
                         <input
-                            id="chat-message-input"
+                            id="card-${cardNum}-chat-message-input"
                             type="text"
                             class="flex-grow p-2 border rounded-l-md focus:outline-none"
                             placeholder="Type a message..."
                         />
                         <button
-                            class="bg-indigo-600 text-white px-4 py-2 rounded-r-md hover:bg-indigo-700 focus:outline-none"
-                            onclick="sendMessage(${projectCardData.id})"
+                            projectId='${projectCardData.id}'
+                            cardNum='${cardNum}'
+                            class="cardSendBtn${cardNum} bg-indigo-600 text-white px-4 py-2 rounded-r-md hover:bg-indigo-700 focus:outline-none"
                         >
                             Send
                         </button>
@@ -223,25 +225,41 @@ function openChat(cardNum, projectId) {
     const chatInterface = document.getElementById(`chat-interface-${cardNum}`);
     card.classList.add("hidden");
     chatInterface.classList.remove("hidden");
+    const sendMessageButton = document.querySelector(`.cardSendBtn${cardNum}`);
+
+    sendMessageButton.addEventListener("click", (e) => {
+        const messageText = sendMessageButton.previousElementSibling.value;
+        messageText.trim();
+        projectId = sendMessageButton.attributes.projectId.value
+        cardNum = sendMessageButton.attributes.cardNum.value;
+        
+        const socket = io();
+        socket.emit("chat message", {
+            project: projectId,
+            message: messageText,
+            card: cardNum,
+        });
+        
+        socket.on("chat message", (message) => {
+            const messageItem = document.createElement("li");
+            messageItem.textContent = message.message;
+            messageItem.className = "p-2 border-b";
+            const messageList = document.getElementById(
+                `message-list-${message.card}`
+            );
+            messageList.appendChild(messageItem);
+        // window.scrollTo(0, document.body.scrollHeight);
+        });
+        
+        sendMessageButton.previousElementSibling.value = "";
+    })
 }
+
 function closeChat(cardNum) {
     const card = document.querySelector(`.project-card-${cardNum}`);
     const chatInterface = document.getElementById(`chat-interface-${cardNum}`);
     chatInterface.classList.add("hidden");
     card.classList.remove("hidden");
 } 
-function sendMessage(projectId) {
-    const messageInput = document.getElementById("chat-message-input");
-    const messageList = document.getElementById("message-list");
-    const message = messageInput.value.trim();
-
-    if (message) {
-        const messageItem = document.createElement("li");
-        messageItem.className = "p-2 border-b";
-        messageItem.textContent = message;
-        messageList.appendChild(messageItem);
-        messageInput.value = "";
-    }
-}
 
 (async()=>await cardCreation())()
