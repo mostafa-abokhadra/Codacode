@@ -188,7 +188,7 @@ function createProjectCard(projectCardData, avatars, roles, cardNum) {
 }
 
 async function fetchCommits(cardNum, repoOwner, repoName) {
-    // const commitsList = document.querySelector(`commits-list-${cardNum}`);
+
     const dropdown = document.getElementById(`fetch-commits-${cardNum}-dropdown`);
     if (dropdown.classList.contains("hidden")) {
         dropdown.classList.remove("hidden");
@@ -212,17 +212,9 @@ async function fetchCommits(cardNum, repoOwner, repoName) {
     }
 }
 
-// const teamChatBtns = document.querySelectorAll('#teamChatBtn')
-// teamChatBtns.forEach((teamChatBtn)=> {
-//     teamChatBtn.addEventListener('click', (e)=>{
-//         const projectCardNumber = teamChatBtn.attributes.projectCardNumber.value
-//     })
-// })
 const socket = io();
 
 socket.on("sendMessage", (data) => {
-    console.log(`handleing message UI in client ${user.fullName}`)
-    console.log(data)
     const { message, project } = data; 
     const messageList = document.getElementById(`message-list-${project}`);
     console.log(messageList)
@@ -246,7 +238,6 @@ function openChat(cardNum, projectId) {
     chatInterface.classList.remove("hidden");
     
     // 1
-    console.log("send join group request to server from client")
     socket.emit('joinGroup', `team-${projectId}`)
 
     sendMessageButton.removeEventListener("click", sendMessage); 
@@ -261,7 +252,6 @@ function sendMessage(cardNum, projectId) {
     if (!messageText) return;
 
     // 4: Client emits sendMessage with group details and message text.
-    console.log('sendinig message from client')
     socket.emit("sendMessage", {
         groupName: `team-${projectId}`,
         message: messageText,
@@ -275,7 +265,7 @@ function sendMessage(cardNum, projectId) {
 function closeChat(cardNum, projectId) {
     const card = document.querySelector(`.project-card-${projectId}`);
     const chatInterface = document.getElementById(`chat-interface-${projectId}`);
-console.log('leaving group form client')
+
     socket.emit(`leaveGroup`, `team-${projectId}`)
 
     chatInterface.classList.add("hidden");
