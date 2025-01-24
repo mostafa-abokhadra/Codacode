@@ -287,7 +287,7 @@ class projectController {
                 return res.status(500).json({"message": "user has no requests to given project"})
 
             const userRoles = userRequests.map((request) => {
-                request.role.position
+                return request.role.position
             }).filter(Boolean)
 
             if (userRoles.length === 0)

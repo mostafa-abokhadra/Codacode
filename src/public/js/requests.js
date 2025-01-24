@@ -61,7 +61,6 @@ const closeConfirmRejectPopup = document.getElementById('closeConfirmRejectPopup
 
 closeConfirmRejectPopup.addEventListener('click', async(event) => {
     confirmRejectButton.parentElement.parentElement.parentElement.classList.add('hidden')
-    window.location.reload()
 })
 confirmRejectButton.addEventListener('click', async(event) => {
     const thirdParent = confirmRejectButton.parentElement
@@ -75,9 +74,11 @@ confirmRejectButton.addEventListener('click', async(event) => {
                 {method: 'delete'}
             )
             if (!res.ok) {
+                closeConfirmRejectPopup.click()
                 serverErrorPopup.classList.remove('hidden')
+            } else {
+                window.location.reload()
             }
-            window.location.reload()
         }
     }
 })
