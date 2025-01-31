@@ -1,15 +1,10 @@
 const router = require('express').Router()
-const { ensureAuthenticated } = require("../middlewares/checkSession")
+const ensureAuthenticated = require('../middlewares/checkSession').ensureAuthenticated
 const messageController = require('../controllers/messagesController')
 
-router.post(
-    '/:username/projects/:projectId/message',
+router.get(
+    '/:username/projects/:projectId/messages',
     ensureAuthenticated,
-    messageController.createMessage
+    messageController.getProjectMessages
 )
-// router.get(
-//     '/projects/:projectId/messages',
-//     ensureAuthenticated
-// )
-
 module.exports = router

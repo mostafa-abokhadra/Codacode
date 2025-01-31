@@ -205,6 +205,7 @@ class projectController {
                 select: {
                     id: true,
                     fullName: true,
+                    profile: true,
                     Projects: {
                         include: {
                             post: true,

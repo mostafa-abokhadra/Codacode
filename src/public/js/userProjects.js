@@ -66,7 +66,7 @@ function createProjectCard(projectCardData, avatars, roles, cardNum) {
     const repoOwner = repoUrlSegements[repoUrlSegements.length - 2]
     const projectCard = document.createElement('div')
     projectCard.id = "project-card"
-    projectCard.className = `bg-white shadow-2xl rounded-xl overflow-hidden transform transition hover:scale-105 duration-300 mb-5 ml-5`
+    projectCard.className = `bg-white shadow-2xl rounded-xl overflow-hidden mb-5 ml-5`
     projectCard.style = "height: fit-content; width: 45%;"
     projectCard.setAttribute('projectCardNumber', `${cardNum}`)
     projectCard.innerHTML = 
@@ -160,12 +160,13 @@ function createProjectCard(projectCardData, avatars, roles, cardNum) {
                         </button>
                     </div>
 
-                    <ul
+                    <div
                         id="message-list-${projectCardData.id}"
-                        class="flex-grow overflow-y-auto bg-gray-50 p-4 border rounded-md mb-4"
+                        class="flex-grow overflow-y-auto bg-gray-50 p-4 border rounded-md mb-4 messages"
+                        style: style="overflow-y: scroll; height: 300px; width: 400px;";
                     >
-                        <li class="p-2 border-b">Welcome to the team chat!</li>
-                    </ul>
+                        <span class="p-2 border-b">Welcome to the team chat!</span>
+                    </div>
 
                     <div class="flex items-center">
                         <input
@@ -216,17 +217,52 @@ const socket = io();
 
 socket.on("sendMessage", (data) => {
     const { message, project } = data; 
-    const messageList = document.getElementById(`message-list-${project}`);
-    console.log(messageList)
+    const messageList = document.getElementById(`message-list-${project}`); 
+    // const messageList = document.getElementsByClassName(`messages`); 
     if (messageList) {
-        const messageItem = document.createElement("li");
-        messageItem.textContent = message;
-        messageItem.className = "p-2 border-b";
-        messageList.appendChild(messageItem);
+        // const messageItem = document.createElement("li");
+        // messageItem.textContent = message;
+        // messageItem.className = "p-2 border-b";
+        // messageList.appendChild(messageItem);
+
+        // Create the message wrapper div
+        const messageWrapper = document.createElement("div");
+        messageWrapper.classList.add("message-wrapper");
+
+        // Create the user profile photo element
+        const profilePhoto = document.createElement("img");
+        profilePhoto.src = user.profile.image || "default-profile.png";
+        profilePhoto.alt = `${user.fullName}'s profile photo`;
+        profilePhoto.classList.add("profile-photo");
+
+        // Create the message content container
+        const messageContent = document.createElement("div");
+        messageContent.classList.add("message-content");
+
+        // Add the username
+        const username = document.createElement("span");
+        username.classList.add("username");
+        username.textContent = user.fullName;
+
+        // Add the message text
+        const messageText = document.createElement("p");
+        messageText.classList.add("message-text");
+        messageText.textContent = message;
+
+        // Append the username and message text to the message content container
+        messageContent.appendChild(username);
+        messageContent.appendChild(messageText);
+
+        // Append the profile photo and message content to the wrapper
+        messageWrapper.appendChild(profilePhoto);
+        messageWrapper.appendChild(messageContent);
+
+        // Append the wrapper to the messages container
+        messageList.appendChild(messageWrapper);
     } else {
         console.error("Message list not found for card:", project);
     }
-    window.scrollTo(0, document.body.scrollHeight);
+    // window.scrollTo(0, document.body.scrollHeight);
 });
 
 function openChat(cardNum, projectId) {
@@ -240,12 +276,81 @@ function openChat(cardNum, projectId) {
     // 1
     socket.emit('joinGroup', `team-${projectId}`)
 
+    retrieveMessages(projectId)
     sendMessageButton.removeEventListener("click", sendMessage); 
     const newSendMessageButton = document.querySelector(`.cardSendBtn${projectId}`);
     newSendMessageButton.addEventListener("click", (e) => {
         sendMessage(cardNum, projectId)
     })
 }
+async function retrieveMessages(project) {
+    try {
+        const response = await fetch(`/${user.urlUserName}/projects/${project}/messages`)
+        if (!response.ok) {
+            console.error('invalid response', response.status)
+        } else {
+            const data = await response.json()
+            createChatInterface(data)
+        }
+    } catch(error) {
+        console.error('An expected error has occured while fetching messages')
+    }
+}
+function createChatInterface(data) {
+    // tommorow : gather messages sended in the same day in one container
+    // add the date before each container
+    // add each container to the message interface
+    // on overflow veritcally scroll
+    // add function to add to the messageinterface the most recent message 
+    // console.log('i am here')
+    // console.log(data)
+    const messagesContainer = document.getElementById(`message-list-${data.messages[0].group.team.project_id}`);
+    // console.log('here', messagesContainer)
+    if (messagesContainer) {
+        for (let i =0; i < data.messages.length; i++){
+            // Create the message wrapper div
+            const messageWrapper = document.createElement("div");
+            messageWrapper.classList.add("message-wrapper");
+
+            // Create the user profile photo element
+            const profilePhoto = document.createElement("img");
+        
+            profilePhoto.src = data.messages[i].user.profile.image || "default-profile.png";
+            profilePhoto.alt = `${data.messages[i].user.fullName}'s profile photo`;
+            profilePhoto.classList.add("profile-photo");
+            // Create the message content container
+
+            const messageContent = document.createElement("div");
+            messageContent.classList.add("message-content");
+            
+            // Add the username
+            const username = document.createElement("span");
+            username.classList.add("username");
+            username.textContent = data.messages[i].user.fullName;
+            
+
+            // Add the message text
+            const messageText = document.createElement("p");
+            messageText.classList.add("message-text");
+            messageText.textContent = data.messages[i].content;
+
+            // Append the username and message text to the message content container
+            messageContent.appendChild(username);
+            messageContent.appendChild(messageText);
+
+            // Append the profile photo and message content to the wrapper
+            messageWrapper.appendChild(profilePhoto);
+            messageWrapper.appendChild(messageContent);
+
+            // Append the wrapper to the messages container
+            messagesContainer.appendChild(messageWrapper);
+        }
+    } else {
+        console.log('cant get messages container')
+    }
+}
+
+
 function sendMessage(cardNum, projectId) {
     const inputField = document.querySelector(`.cardSendBtn${projectId}`).previousElementSibling;
     const messageText = inputField.value.trim();
@@ -255,7 +360,8 @@ function sendMessage(cardNum, projectId) {
     socket.emit("sendMessage", {
         groupName: `team-${projectId}`,
         message: messageText,
-        project: projectId
+        project: projectId,
+        user: user.id
     });
 
     inputField.value = "";

@@ -1,12 +1,13 @@
-module.exports = (io) => {
-    io.on('connection', (socket) => {
+const messageController = require('./src/controllers/messagesController')
+module.exports = async (io) => {
+    io.on('connection', async(socket) => {
 
-        socket.on('joinGroup', (groupName) => {
+        socket.on('joinGroup', async (groupName) => {
             socket.join(groupName)
 
-            io.in(groupName).fetchSockets().then((sockets) => {
-                console.log(`Sockets in ${groupName}:`, sockets.map((s) => s.id));
-            });
+            // io.in(groupName).fetchSockets().then((sockets) => {
+            //     console.log(`Sockets in ${groupName}:`, sockets.map((s) => s.id));
+            // });
             
             io.to(groupName).emit('userJoined', {
                 message: `a new user has joined the group: ${groupName}`,
@@ -14,7 +15,10 @@ module.exports = (io) => {
             })
         })
 
-        socket.on('sendMessage', ({groupName, message, project}) => {
+        socket.on('sendMessage', async ({groupName, message, project, user}) => {
+
+            const response = await messageController.createMessage(user, message, project)
+            console.log(response)
 
             io.to(groupName).emit('sendMessage', {
                 message: message,
@@ -23,7 +27,7 @@ module.exports = (io) => {
             });
         });
 
-        socket.on('leaveGroup', (groupName) => {
+        socket.on('leaveGroup', async (groupName) => {
 
             socket.leave(groupName)
             
@@ -33,7 +37,7 @@ module.exports = (io) => {
             })
         })
 
-        socket.on('disconnect', () => {
+        socket.on('disconnect', async () => {
             console.log('User disconnected:');
         });
     });
