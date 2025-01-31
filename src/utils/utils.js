@@ -50,7 +50,7 @@ async function getUpdatedUser(email) {
                         }
                     }
                 },
-                GitHub: true
+                GitHub: true,
             }
         });
         
@@ -225,6 +225,7 @@ async function decryptToken(encryptedToken) {
 const fetch = require('node-fetch');
 
 const addCollaborator = async (ownerUsername, inviteeUsername, ownerToken, repo) => {
+    console.log(ownerUsername, inviteeUsername, ownerToken, repo)
 
     const response = await fetch(
         `https://api.github.com/repos/${ownerUsername}/${repo}/collaborators/${inviteeUsername}`, {
@@ -237,7 +238,9 @@ const addCollaborator = async (ownerUsername, inviteeUsername, ownerToken, repo)
     });
 
     if (response.ok) {
+        console.log('sent successfuly')
         return {"message": `Collaboration request sent to ${inviteeUsername} Successfully`}
+      
     } else {
         const error = await response.json();
         console.error('Error:', error.message);

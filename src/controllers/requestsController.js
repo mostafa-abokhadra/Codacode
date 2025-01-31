@@ -258,23 +258,30 @@ class requestsController {
             const inviteeGithub = await prisma.gitHubCredential.findFirst({
                 where: {user_id: request.userApplied.id}
             })
+       
             if(!ownerGithub || !inviteeGithub)
                 return res.status(403).json({"message": "can't get github credentials"})
             const repo = request.role.post.repo.split('/')[4]
             const ownerToken = await utils.decryptToken(ownerGithub.accessToken)
             const ownerUsername = await utils.decryptToken(ownerGithub.githubUsername)
             const inviteeUsername = await utils.decryptToken(inviteeGithub.githubUsername)
+        
 
             const result = await utils.addCollaborator(ownerUsername, inviteeUsername, ownerToken, repo)
+            console.log('after collab req', result)
             if (result.hasOwnProperty("error"))
                 return res.json(500).json(result)
+            console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
             const currentRequestsAfterAccept = await utils.getSendToMeRequests(req.user.fullName) 
+            console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
             return res.status(200).json({
                 "message": "you have accepted request successfully",
                 "info": result.message,
                 currentReqeusts: currentRequestsAfterAccept
             })
+            
         } catch(error) {
+            console.log('the error')
             console.log(error)
             return res.status(500).json({"message": "an error has occured"})
         }

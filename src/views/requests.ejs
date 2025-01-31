@@ -132,12 +132,12 @@
       <a href="/<%= user.urlUserName %>/requests"
         ><i class="fas fa-envelope"></i> Requests</a
       >
-      <a
+      <!-- <a
         href="/<%= user.urlUserName %>/posts"
         id="postsLink"
         username="<%= user.fullName %>"
         ><i class="fas fa-comments"></i> My Posts</a
-      >
+      > -->
       <a href="/<%= user.urlUserName %>/portofolio" id="profile-link-media-768"
         ><i class="fas fa-user"></i> Portofolio</a
       >
@@ -184,13 +184,15 @@
 
       <div
         id="requests-container"
+        class="flex bg-gradient-to-r flex-wrap from-blue-50 to-indigo-100 flex min-h-screen p-8"
         requests="<%= JSON.stringify(requests) %>"
         user="<%= JSON.stringify(user) %>"
       >
         <!-- No Requests Message -->
         <div id="noRequests" class="mt-8 flex justify-center hidden">
           <div
-            class="bg-white rounded-lg shadow p-6 w-11/12 max-w-md text-center"
+            class="bg-white rounded-lg shadow p-6 text-center"
+            style="height: fit-content"
           >
             <p class="text-lg font-medium text-gray-800">
               You have no requests yet. Wait for developers to apply to your

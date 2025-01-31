@@ -24,6 +24,7 @@ module.exports = async (io) => {
                 message: message,
                 project: project,
                 groupName: groupName,
+                user: user
             });
         });
 

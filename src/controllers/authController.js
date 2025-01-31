@@ -40,6 +40,18 @@ class authController {
                     })
                 }
             })
+            const profile = await prisma.profile.create({
+                data: {
+                    image: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png?20200919003010',
+                    user: {
+                        connect: {
+                            id: newUser.id
+                        }
+                    }
+                }
+            })
+            if (!profile)
+                return res.status(500).json({"message": "can't create profile for user"})
             user = await utils.getUpdatedUser(email)
             if (user.hasOwnProperty('error')) {
                 return res.status(500).json({
@@ -115,6 +127,18 @@ class authController {
                             fullName: googleUser.fullName
                         }
                     })
+                    const profile = await prisma.profile.create({
+                        data: {
+                            image: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png?20200919003010',
+                            user: {
+                                connect: {
+                                    id: user.id
+                                }
+                            }
+                        }
+                    })
+                    if (!profile)
+                        return res.status(500).json({"message": "can't create profile for user"})
                 }
                 user = await utils.getUpdatedUser(user.email)
                 if (user.hasOwnProperty("error")) {
@@ -136,6 +160,7 @@ class authController {
                     return res.redirect(`/${req.user.urlUserName}/dashboard`)
                 });
             }catch(err){
+                console.log(err)
                 return res.status(500).json({"message": "an error has occured"})
             }   
         })(req, res, next);

@@ -15,6 +15,8 @@ async function getUserProjectRoles(projectId) {
 
     } else {
         const data = await response.json()
+        if (data.length === 0)
+            return null
         return data
     }
 }
@@ -42,6 +44,11 @@ function createAvatarElements(avatars) {
 
 async function cardCreation() {
     let cardCounter = 0;
+    if (user.Projects.length + user.assignedProjects.length === 0) {
+        const noProject = document.getElementById('noProjectsFound')
+        noProject.classList.remove('hidden')
+    }
+
     for (let i = 0; i < user.Projects.length; i++ ) {
         const avatars = await getProjectTeamProfileAvatars(user.Projects[i].id)
         const roles =  await getUserProjectRoles(user.Projects[i].id)
@@ -51,7 +58,6 @@ async function cardCreation() {
     for (let i = 0; i < user.assignedProjects.length; i++ ) {
         const avatars = await getProjectTeamProfileAvatars(user.assignedProjects[i].id)
         if (!avatars) {
-            // this will not happen as there will be a default avatar
         }
         const roles =  await getUserAssignedProjectRoles(user.assignedProjects[i].id)
         const projectCard = createProjectCard(user.assignedProjects[i], avatars, roles, ++cardCounter)
@@ -134,12 +140,8 @@ function createProjectCard(projectCardData, avatars, roles, cardNum) {
                             No commits fetched yet.
                         </li>
                     </ul>
-
                 </div>
-                
-
             </div>
-
         </div>
 
             <div
@@ -163,7 +165,7 @@ function createProjectCard(projectCardData, avatars, roles, cardNum) {
                     <div
                         id="message-list-${projectCardData.id}"
                         class="flex-grow overflow-y-auto bg-gray-50 p-4 border rounded-md mb-4 messages"
-                        style: style="overflow-y: scroll; height: 300px; width: 400px;";
+                        style: style="overflow-y: scroll; height: 300px; ";
                     >
                         <span class="p-2 border-b">Welcome to the team chat!</span>
                     </div>
@@ -228,6 +230,12 @@ socket.on("sendMessage", (data) => {
         // Create the message wrapper div
         const messageWrapper = document.createElement("div");
         messageWrapper.classList.add("message-wrapper");
+        console.log(user.id, data.user.id)
+        if (user.id === data.user.id) {
+            console.log('jeri')
+            messageWrapper.style = 'margin-left: auto'
+
+        }
 
         // Create the user profile photo element
         const profilePhoto = document.createElement("img");
@@ -311,7 +319,7 @@ function createChatInterface(data) {
             // Create the message wrapper div
             const messageWrapper = document.createElement("div");
             messageWrapper.classList.add("message-wrapper");
-
+            // console.log(user.id, data.messages[i].user.id)
             // Create the user profile photo element
             const profilePhoto = document.createElement("img");
         
@@ -334,6 +342,12 @@ function createChatInterface(data) {
             messageText.classList.add("message-text");
             messageText.textContent = data.messages[i].content;
 
+            if (user.id, data.messages[i].user.id) {
+                console.log('jeri')
+                messageWrapper.style = 'direction: rtl'
+                messageText.style='direction: ltr'
+    
+            }
             // Append the username and message text to the message content container
             messageContent.appendChild(username);
             messageContent.appendChild(messageText);

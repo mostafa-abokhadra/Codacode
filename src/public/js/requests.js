@@ -38,6 +38,7 @@ for (let i = 0; i < acceptRequestButtons.length; i++) {
         const res = await fetch(
             `/${user.urlUserName}/requests/${acceptRequestButtons[i].attributes.requestId.value}/accept`,
             {method: 'post'})
+            console.log(await res.json())
         if (!res.ok) {
             serverErrorPopup.classList.remove('hidden')
         } else {
