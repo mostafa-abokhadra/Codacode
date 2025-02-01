@@ -218,7 +218,8 @@ async function fetchCommits(cardNum, repoOwner, repoName) {
 const socket = io();
 
 socket.on("sendMessage", (data) => {
-    const { message, project } = data; 
+    console.log(data)
+    const { message, project, userSentMessage } = data; 
     const messageList = document.getElementById(`message-list-${project}`); 
     // const messageList = document.getElementsByClassName(`messages`); 
     if (messageList) {
@@ -230,17 +231,12 @@ socket.on("sendMessage", (data) => {
         // Create the message wrapper div
         const messageWrapper = document.createElement("div");
         messageWrapper.classList.add("message-wrapper");
-        console.log(user.id, data.user.id)
-        if (user.id === data.user.id) {
-            console.log('jeri')
-            messageWrapper.style = 'margin-left: auto'
 
-        }
 
         // Create the user profile photo element
         const profilePhoto = document.createElement("img");
-        profilePhoto.src = user.profile.image || "default-profile.png";
-        profilePhoto.alt = `${user.fullName}'s profile photo`;
+        profilePhoto.src = userSentMessage.profile.image || "default-profile.png";
+        profilePhoto.alt = `${userSentMessage.fullName}'s profile photo`;
         profilePhoto.classList.add("profile-photo");
 
         // Create the message content container
@@ -250,12 +246,18 @@ socket.on("sendMessage", (data) => {
         // Add the username
         const username = document.createElement("span");
         username.classList.add("username");
-        username.textContent = user.fullName;
+        username.textContent = userSentMessage.fullName;
 
         // Add the message text
         const messageText = document.createElement("p");
         messageText.classList.add("message-text");
         messageText.textContent = message;
+
+        if (user.id === userSentMessage.id) {
+            console.log('got here')
+                messageWrapper.style = 'direction: rtl'
+                messageText.style='direction: ltr'
+        }
 
         // Append the username and message text to the message content container
         messageContent.appendChild(username);
@@ -342,11 +344,11 @@ function createChatInterface(data) {
             messageText.classList.add("message-text");
             messageText.textContent = data.messages[i].content;
 
-            if (user.id, data.messages[i].user.id) {
-                console.log('jeri')
+            console.log(user.id, data.messages[i].user.id)
+            if (user.id === data.messages[i].user.id) {
+                console.log('got here 2')
                 messageWrapper.style = 'direction: rtl'
                 messageText.style='direction: ltr'
-    
             }
             // Append the username and message text to the message content container
             messageContent.appendChild(username);
@@ -385,7 +387,8 @@ function sendMessage(cardNum, projectId) {
 function closeChat(cardNum, projectId) {
     const card = document.querySelector(`.project-card-${projectId}`);
     const chatInterface = document.getElementById(`chat-interface-${projectId}`);
-
+    const messageList = document.getElementById(`message-list-${projectId}`)
+    messageList.replaceChildren()
     socket.emit(`leaveGroup`, `team-${projectId}`)
 
     chatInterface.classList.add("hidden");

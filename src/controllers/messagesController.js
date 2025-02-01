@@ -33,13 +33,25 @@ class messageController {
                             id: parseInt(userId)
                         }
                     }
+                },
+                include: {
+                    user: {
+                        select: {
+                            fullName: true,
+                            profile: {
+                                select: {
+                                    image: true
+                                }
+                            }
+                        }
+                    }
                 }
             })
 
             if (!createMessage)
                 return {'status': '500', message: `can't create a message`}
             
-            return {status: '200', message: "message created successfully"}
+            return {status: '200', message: "message created successfully", message: createMessage}
         } catch(error) {
             console.error("An Unexpected Error Occur", error)
             return {'status': '500', message: `can't create a message`}

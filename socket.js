@@ -18,13 +18,12 @@ module.exports = async (io) => {
         socket.on('sendMessage', async ({groupName, message, project, user}) => {
 
             const response = await messageController.createMessage(user, message, project)
-            console.log(response)
-
+            console.log('res', response)
             io.to(groupName).emit('sendMessage', {
-                message: message,
+                message: response.message.content,
                 project: project,
                 groupName: groupName,
-                user: user
+                userSentMessage: response.message.user
             });
         });
 
