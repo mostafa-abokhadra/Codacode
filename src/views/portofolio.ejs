@@ -3,9 +3,177 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>My Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "rgb(34 197 94 / var(--tw-bg-opacity, 1))",
+              background: "#f3f4f6",
+              textDark: "#1f2937",
+            },
+            animation: {
+              fadeIn: "fadeIn 2s ease-in-out",
+            },
+            keyframes: {
+              fadeIn: {
+                "0%": { opacity: 0 },
+                "100%": { opacity: 1 },
+              },
+            },
+          },
+        },
+      };
+    </script>
   </head>
-  <body>
-    <h1>portofolio</h1>
+  <body class="bg-background text-textDark">
+    <!-- Hero & About Section Combined -->
+    <section
+      class="h-screen flex flex-col md:flex-row items-center justify-center text-center md:text-left p-10 gap-10 animate-fadeIn relative"
+    >
+      <button
+        class="absolute top-4 right-4 px-3 py-1 bg-primary text-white rounded-md shadow-lg hover:bg-green-700 transition"
+      >
+        Edit
+      </button>
+      <img
+        src="https://www.springboard.com/blog/wp-content/uploads/2023/09/what-exactly-does-a-programmer-do.jpeg"
+        alt="User Image"
+        class="w-60 h-60 rounded-full border-4 border-primary shadow-lg"
+      />
+      <div>
+        <h1 class="text-5xl font-bold">
+          Hi, I'm <span class="text-primary">Your Name</span>
+        </h1>
+        <p class="text-xl mt-4">A Passionate Web Developer</p>
+        <p class="mt-4 max-w-lg">
+          I specialize in modern web development using the latest technologies
+          to build engaging and responsive web applications.
+        </p>
+        <div class="flex gap-4 mt-6">
+          <a
+            href="#projects"
+            class="px-6 py-3 bg-primary rounded-full shadow-lg hover:bg-green-700 transition"
+            >My Projects</a
+          >
+          <a
+            href="#contact"
+            class="px-6 py-3 border border-primary rounded-full shadow-lg hover:bg-primary transition"
+            >Contact</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section class="py-20 bg-white text-center animate-fadeIn relative">
+      <button
+        class="absolute top-4 right-4 px-3 py-1 bg-primary text-white rounded-md shadow-lg hover:bg-green-700 transition"
+      >
+        Edit
+      </button>
+      <h2 class="text-4xl font-bold">Skills</h2>
+      <div class="grid md:grid-cols-4 gap-6 mt-6 max-w-6xl mx-auto">
+        <div class="bg-gray-100 p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold">HTML</h3>
+        </div>
+        <div class="bg-gray-100 p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold">CSS</h3>
+        </div>
+        <div class="bg-gray-100 p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold">JavaScript</h3>
+        </div>
+        <div class="bg-gray-100 p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold">React</h3>
+        </div>
+      </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 text-center animate-fadeIn relative">
+      <button
+        class="absolute top-4 right-4 px-3 py-1 bg-primary text-white rounded-md shadow-lg hover:bg-green-700 transition"
+      >
+        Edit
+      </button>
+      <h2 class="text-4xl font-bold">Projects</h2>
+      <div class="grid md:grid-cols-3 gap-6 mt-6 max-w-6xl mx-auto">
+        <div
+          class="bg-white p-6 rounded-lg shadow-lg hover:scale-105 transition"
+        >
+          <img
+            src="project1.jpg"
+            alt="Project 1"
+            class="w-full h-40 object-cover rounded-lg"
+          />
+          <h3 class="text-xl font-semibold mt-4">Project 1</h3>
+          <p class="mt-2">A short description of the project.</p>
+          <a href="#" class="text-primary mt-4 inline-block">View Project →</a>
+        </div>
+        <div
+          class="bg-white p-6 rounded-lg shadow-lg hover:scale-105 transition"
+        >
+          <img
+            src="project2.jpg"
+            alt="Project 2"
+            class="w-full h-40 object-cover rounded-lg"
+          />
+          <h3 class="text-xl font-semibold mt-4">Project 2</h3>
+          <p class="mt-2">A short description of the project.</p>
+          <a href="#" class="text-primary mt-4 inline-block">View Project →</a>
+        </div>
+        <div
+          class="bg-white p-6 rounded-lg shadow-lg hover:scale-105 transition"
+        >
+          <img
+            src="project3.jpg"
+            alt="Project 3"
+            class="w-full h-40 object-cover rounded-lg"
+          />
+          <h3 class="text-xl font-semibold mt-4">Project 3</h3>
+          <p class="mt-2">A short description of the project.</p>
+          <a href="#" class="text-primary mt-4 inline-block">View Project →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section
+      id="contact"
+      class="py-20 bg-white text-center animate-fadeIn relative"
+    >
+      <button
+        class="absolute top-4 right-4 px-3 py-1 bg-primary text-white rounded-md shadow-lg hover:bg-green-700 transition"
+      >
+        Edit
+      </button>
+      <h2 class="text-4xl font-bold">Contact Me</h2>
+      <p class="mt-4">
+        Let's work together! Fill out the form below to reach out.
+      </p>
+      <form class="mt-6 max-w-lg mx-auto bg-gray-300 p-6 rounded-lg shadow-lg">
+        <input
+          type="text"
+          placeholder="Your Name"
+          class="w-full p-3 mb-4 rounded-md bg-gray-200 shadow-lg"
+        />
+        <input
+          type="email"
+          placeholder="Your Email"
+          class="w-full p-3 mb-4 rounded-md bg-gray-200 shadow-lg"
+        />
+        <textarea
+          placeholder="Your Message"
+          class="w-full p-3 mb-4 rounded-md bg-gray-200 shadow-lg"
+        ></textarea>
+        <button
+          class="px-6 py-3 bg-primary rounded-md shadow-lg hover:bg-green-700 transition"
+        >
+          Send Message
+        </button>
+      </form>
+    </section>
   </body>
 </html>
