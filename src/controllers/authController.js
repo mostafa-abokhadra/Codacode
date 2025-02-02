@@ -4,6 +4,7 @@ const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
 const utils  = require("../utils/utils")
 const passportGithub = require("../config/githubStrategy")
+const profileController = require('../controllers/projectController')
 
 class authController {
 
@@ -37,21 +38,14 @@ class authController {
                                 return reject(error)
                             resolve(hashed)
                         } )
-                    })
-                }
-            })
-            const profile = await prisma.profile.create({
-                data: {
-                    image: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png?20200919003010',
-                    user: {
-                        connect: {
-                            id: newUser.id
+                    }),
+                    profile: {
+                        create: {
+                                image: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png?20200919003010',
                         }
                     }
                 }
             })
-            if (!profile)
-                return res.status(500).json({"message": "can't create profile for user"})
             user = await utils.getUpdatedUser(email)
             if (user.hasOwnProperty('error')) {
                 return res.status(500).json({
@@ -124,21 +118,14 @@ class authController {
                                     resolve(hashed)
                                 })
                             }),
-                            fullName: googleUser.fullName
-                        }
-                    })
-                    const profile = await prisma.profile.create({
-                        data: {
-                            image: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png?20200919003010',
-                            user: {
-                                connect: {
-                                    id: user.id
+                            fullName: googleUser.fullName,
+                            profile: {
+                                create: {
+                                    image: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png?20200919003010',
                                 }
                             }
                         }
                     })
-                    if (!profile)
-                        return res.status(500).json({"message": "can't create profile for user"})
                 }
                 user = await utils.getUpdatedUser(user.email)
                 if (user.hasOwnProperty("error")) {

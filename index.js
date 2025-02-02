@@ -21,6 +21,7 @@ const requestsRoute = require("./src/routes/requestsRoutes")
 const projectRoute = require("./src/routes/projectRoutes")
 const noAuthRoutes = require("./src/routes/noAuthRoutes")
 const messageRoutes = require('./src/routes/messageRoutes')
+const portfoliioRoutes = require('./src/routes/portfolioRoutes')
 
 
 app.set('view engine', 'ejs')
@@ -45,6 +46,7 @@ app.use('/', requestsRoute)
 app.use('/', projectRoute)
 app.use('/', noAuthRoutes)
 app.use('/', messageRoutes)
+app.use('/', portfoliioRoutes)
 
 server.listen(process.env.PORT)
 

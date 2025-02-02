@@ -41,6 +41,7 @@ model Profile {
 	id Int @id @default(autoincrement())
 	image String?
   name String?
+  gender String?
   about String?
   skills skill[] @relation()
   projects portfolioProject[] @relation()
