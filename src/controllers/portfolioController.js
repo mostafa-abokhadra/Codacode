@@ -9,8 +9,9 @@ class portfolioController {
             const portfolio = await prisma.profile.findFirst({
                 where: {id: req.user.id},
                 include: {
+                    education: true,
                     skills: true,
-                    projects: true,
+                    experiences: true,
                     contact: true
                 }
             })

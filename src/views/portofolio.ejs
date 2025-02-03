@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://kit.fontawesome.com/2157171c32.js"
+      crossorigin="anonymous"
+    ></script>
     <script>
       tailwind.config = {
         theme: {
@@ -29,7 +33,6 @@
     </script>
   </head>
   <body class="bg-background text-textDark">
-    <!-- Hero & About Section Combined -->
     <section
       class="h-screen flex flex-col md:flex-row items-center justify-center text-center md:text-left p-10 gap-10 animate-fadeIn relative"
     >
@@ -38,20 +41,17 @@
       >
         Edit
       </button>
-      <img
-        src="https://www.springboard.com/blog/wp-content/uploads/2023/09/what-exactly-does-a-programmer-do.jpeg"
-        alt="User Image"
-        class="w-60 h-60 rounded-full border-4 border-primary shadow-lg"
-      />
+      <img id="portfolio-image"
+      src="https://media.istockphoto.com/id/1332100919/vector/man-icon-black-icon-person-symbol.jpg?s=612x612&w=0&k=20&c=AVVJkvxQQCuBhawHrUhDRTCeNQ3Jgt0K1tXjJsFy1eg=
+      alt="User Image" class="w-60 h-60 rounded-full border-4 border-primary
+      shadow-lg" />
       <div>
         <h1 class="text-5xl font-bold">
-          Hi, I'm <span class="text-primary">Your Name</span>
+          Hi, I'm
+          <span id="portfolio-name" class="text-primary">Your Name</span>
         </h1>
-        <p class="text-xl mt-4">A Passionate Web Developer</p>
-        <p class="mt-4 max-w-lg">
-          I specialize in modern web development using the latest technologies
-          to build engaging and responsive web applications.
-        </p>
+        <p id="portfolio-tagline" class="text-xl mt-4"></p>
+        <p id="portfolio-about" class="mt-4 max-w-lg">.</p>
         <div class="flex gap-4 mt-6">
           <a
             href="#projects"
@@ -67,78 +67,44 @@
       </div>
     </section>
 
-    <!-- Skills Section -->
     <section class="py-20 bg-white text-center animate-fadeIn relative">
       <button
         class="absolute top-4 right-4 px-3 py-1 bg-primary text-white rounded-md shadow-lg hover:bg-green-700 transition"
       >
         Edit
       </button>
-      <h2 class="text-4xl font-bold">Skills</h2>
-      <div class="grid md:grid-cols-4 gap-6 mt-6 max-w-6xl mx-auto">
-        <div class="bg-gray-100 p-6 rounded-lg shadow-md">
-          <h3 class="text-xl font-semibold">HTML</h3>
-        </div>
-        <div class="bg-gray-100 p-6 rounded-lg shadow-md">
-          <h3 class="text-xl font-semibold">CSS</h3>
-        </div>
-        <div class="bg-gray-100 p-6 rounded-lg shadow-md">
-          <h3 class="text-xl font-semibold">JavaScript</h3>
-        </div>
-        <div class="bg-gray-100 p-6 rounded-lg shadow-md">
-          <h3 class="text-xl font-semibold">React</h3>
-        </div>
-      </div>
+      <h2 class="text-4xl font-bold">Education</h2>
+      <div
+        id="education-container"
+        class="grid md:grid-cols-4 gap-6 mt-6 max-w-6xl mx-auto"
+      ></div>
     </section>
 
-    <!-- Projects Section -->
-    <section id="projects" class="py-20 text-center animate-fadeIn relative">
+    <section id="experience" class="py-20 text-center animate-fadeIn relative">
       <button
         class="absolute top-4 right-4 px-3 py-1 bg-primary text-white rounded-md shadow-lg hover:bg-green-700 transition"
       >
         Edit
       </button>
-      <h2 class="text-4xl font-bold">Projects</h2>
-      <div class="grid md:grid-cols-3 gap-6 mt-6 max-w-6xl mx-auto">
-        <div
-          class="bg-white p-6 rounded-lg shadow-lg hover:scale-105 transition"
-        >
-          <img
-            src="project1.jpg"
-            alt="Project 1"
-            class="w-full h-40 object-cover rounded-lg"
-          />
-          <h3 class="text-xl font-semibold mt-4">Project 1</h3>
-          <p class="mt-2">A short description of the project.</p>
-          <a href="#" class="text-primary mt-4 inline-block">View Project →</a>
-        </div>
-        <div
-          class="bg-white p-6 rounded-lg shadow-lg hover:scale-105 transition"
-        >
-          <img
-            src="project2.jpg"
-            alt="Project 2"
-            class="w-full h-40 object-cover rounded-lg"
-          />
-          <h3 class="text-xl font-semibold mt-4">Project 2</h3>
-          <p class="mt-2">A short description of the project.</p>
-          <a href="#" class="text-primary mt-4 inline-block">View Project →</a>
-        </div>
-        <div
-          class="bg-white p-6 rounded-lg shadow-lg hover:scale-105 transition"
-        >
-          <img
-            src="project3.jpg"
-            alt="Project 3"
-            class="w-full h-40 object-cover rounded-lg"
-          />
-          <h3 class="text-xl font-semibold mt-4">Project 3</h3>
-          <p class="mt-2">A short description of the project.</p>
-          <a href="#" class="text-primary mt-4 inline-block">View Project →</a>
-        </div>
-      </div>
+      <h2 class="text-4xl font-bold">Experience</h2>
+      <div
+        id="experience-container"
+        class="grid md:grid-cols-3 gap-6 mt-6 max-w-6xl mx-auto"
+      ></div>
     </section>
 
+    <section id="skills" class="py-20 text-center animate-fadeIn relative">
+      <button
+        class="absolute top-4 right-4 px-3 py-1 bg-primary text-white rounded-md shadow-lg hover:bg-green-700 transition"
+      >
+        Edit
+      </button>
+      <h2 class="text-4xl font-bold">Skills</h2>
+      <div
+        id="skills-container"
+        class="grid md:grid-cols-3 gap-6 mt-6 max-w-6xl mx-auto"
+      ></div>
+    </section>
     <!-- Contact Section -->
     <section
       id="contact"
@@ -150,31 +116,69 @@
         Edit
       </button>
       <h2 class="text-4xl font-bold">Contact Me</h2>
-      <p class="mt-4">
-        Let's work together! Fill out the form below to reach out.
-      </p>
-      <form class="mt-6 max-w-lg mx-auto bg-gray-300 p-6 rounded-lg shadow-lg">
-        <input
-          type="text"
-          placeholder="Your Name"
-          class="w-full p-3 mb-4 rounded-md bg-gray-200 shadow-lg"
-        />
-        <input
-          type="email"
-          placeholder="Your Email"
-          class="w-full p-3 mb-4 rounded-md bg-gray-200 shadow-lg"
-        />
-        <textarea
-          placeholder="Your Message"
-          class="w-full p-3 mb-4 rounded-md bg-gray-200 shadow-lg"
-        ></textarea>
-        <button
-          class="px-6 py-3 bg-primary rounded-md shadow-lg hover:bg-green-700 transition"
-        >
-          Send Message
-        </button>
-      </form>
+
+      <!-- Social Media Links -->
+      <div class="mt-8">
+        <!-- <p class="text-lg font-semibold">Connect with me:</p> -->
+        <div class="flex justify-center space-x-6 mt-4">
+          <a
+            href="https://instagram.com/yourusername"
+            target="_blank"
+            class="text-gray-600 hover:text-primary text-2xl"
+          >
+            <i id="instagrma-icon" class="fab fa-instagram"></i>
+          </a>
+          <a
+            href="https://facebook.com/yourusername"
+            target="_blank"
+            class="text-gray-600 hover:text-primary text-2xl"
+          >
+            <i id="facebook-icon" class="fab fa-facebook"></i>
+          </a>
+          <a
+            href="https://linkedin.com/in/yourusername"
+            target="_blank"
+            class="text-gray-600 hover:text-primary text-2xl"
+          >
+            <i id="linkedin-icon" class="fab fa-linkedin"></i>
+          </a>
+          <a
+            href="https://github.com/yourusername"
+            target="_blank"
+            class="text-gray-600 hover:text-primary text-2xl"
+          >
+            <i id="github-icon" class="fab fa-github"></i>
+          </a>
+          <a
+            href="https://youtube.com/c/yourchannel"
+            target="_blank"
+            class="text-gray-600 hover:text-primary text-2xl"
+          >
+            <i id="youtube-icon" class="fab fa-youtube"></i>
+          </a>
+          <a
+            href="https://yourwebsite.com"
+            target="_blank"
+            class="text-gray-600 hover:text-primary text-2xl"
+          >
+            <i id="website-icon" class="fas fa-globe"></i>
+          </a>
+          <a
+            href="tel:+1234567890"
+            class="text-gray-600 hover:text-primary text-2xl"
+          >
+            <i id="phone-icon" class="fas fa-phone"></i>
+          </a>
+          <a
+            href="mailto:your@email.com"
+            class="text-gray-600 hover:text-primary text-2xl"
+          >
+            <i id="mail-icon" class="fas fa-envelope"></i>
+          </a>
+        </div>
+      </div>
     </section>
+
     <script src="/js/portfolio.js"></script>
   </body>
 </html>

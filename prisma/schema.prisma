@@ -6,7 +6,7 @@ datasource db {
   url      = env("DATABASE_URL")
   //shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
-model portfolioProject {
+model experience {
   id Int @id @default(autoincrement())
   profile Profile @relation(fields: [profile_id], references: [id])
   profile_id Int @unique
@@ -37,14 +37,26 @@ model skill {
 
   name String?
 }
+model education {
+  id Int @id @default(autoincrement())
+  profile Profile @relation(fields: [profile_id], references: [id])
+  profile_id Int @unique
+
+  course String?
+  organization String?
+  startDate DateTime?
+  endDate DateTime?
+}
 model Profile {
 	id Int @id @default(autoincrement())
 	image String?
   name String?
+  tagline String?
   gender String?
   about String?
+  education education[] @relation()
   skills skill[] @relation()
-  projects portfolioProject[] @relation()
+  experiences experience[] @relation()
   contact contactInfo? @relation()
   contactId Int? @unique
   createdAT DateTime @default(now())
