@@ -43,6 +43,7 @@ model education {
   profile_id Int @unique
 
   course String?
+  degree String?
   organization String?
   startDate DateTime?
   endDate DateTime?
