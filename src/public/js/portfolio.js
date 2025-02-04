@@ -93,7 +93,39 @@ function createEducationCard(educationContainer, education) {
     }
 }
 
-// Call the function
+function createExperienceCard(projectContainer, projects) {
+    try {
+        if (!projectContainer)
+            throw new Error(`can't render experience-container`)
+        if (projects.length === 0) {
+            projectContainer.className = "grid md:grid-cols-1 gap-6 mt-6 max-w-6xl mx-auto"
+            const noProjectCardsToRender = document.getElementById('noProjectCardsToRender')
+            noProjectCardsToRender.classList.remove('hidden')
+            noProjectCardsToRender.style = "justify-self: center"
+            return
+        }
+        projects.map((aProject) => {
+            const projectCardElement = document.createElement('div')
+            projectCardElement.className = `bg-white p-6 rounded-lg shadow-lg hover:scale-105 transition a-project`
+            projectCardElement.innerHTML = 
+            `
+                <img
+                    src="${aProject.image}"
+                    alt="Project 1 photo"
+                    class="w-full h-40 object-cover rounded-lg"
+                />
+                <h3 class="text-xl font-semibold mt-4">${aProject.title}</h3>
+                <p class="mt-2">${aProject.description}</p>
+                <a href=${aProject.link} target='_blank' class="text-primary mt-4 inline-block">View Project →</a>
+            `
+            projectContainer.appendChild(projectCardElement)
+        })
+    } catch(error) {
+        console.error('An Unexpected Error Occur: ', error)
+    }
+}
+
+
 (async () => {
     const data = await getPortfolio();
 console.log(data.portfolio)
@@ -111,4 +143,7 @@ console.log(data.portfolio)
 
     const educationContainer = document.getElementById('education-container')
     createEducationCard(educationContainer, data.portfolio.education)
+
+    const projectContainer = document.getElementById('projects-container')
+    createExperienceCard(projectContainer, data.portfolio.projects)
 })();
