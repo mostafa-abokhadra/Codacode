@@ -23,13 +23,22 @@ model contactInfo {
   profile Profile @relation(fields: [profile_id], references: [id])
   profile_id Int @unique
   email String?
-  phoneNumber String?
+  number phoneNumber? @relation()
   facebook String?
   instagram String?
   linkedIn String?
   youtube String?
   website String?
   github String?
+  twitter String?
+}
+model phoneNumber {
+  id Int @id @default(autoincrement())
+  contact contactInfo @relation(fields: [contact_id], references: [id])
+  contact_id Int @unique
+
+  number String?
+  countryCode String?
 }
 model skill {
   id Int @id @default(autoincrement())

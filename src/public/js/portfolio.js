@@ -148,9 +148,40 @@ function createSkillCard(skillsContainer, skills) {
         console.error('An Unexpected Error Occur: ', error)
     }
 }
+function createSocialMediaLinks(contactContainer, links){
+    try {
+        if (!contactContainer)
+            throw new Error(`can't render contact container`)
+        if (!links) {
+            const noContactInfoToRender = document.getElementById('noContactInfoToRender')
+            noContactInfoToRender.classList.remove('hidden')
+            return
+        }
+
+        Object.keys(links).map((key) => {
+            if (links[key] && key !== 'id' && key !=='profile_id' && key !== 'profile') {
+
+                const linkElement = document.getElementById(key)
+                linkElement.classList.remove('hidden')
+
+                if (key === 'email') {
+                    linkElement.setAttribute('href', `mailto:${links[key]}`)
+                } else if (key === 'number') {
+                    if (links[key].number)
+                        linkElement.setAttribute('href', `tel:+${links[key]['countryCode']}${links[key]['number']}`)
+                } else {
+                    linkElement.setAttribute('href', `${links[key]}`)
+                }
+            }
+        })
+    } catch(error) {
+        console.error('An Unexpected Error Occured', error)
+    }
+}
+
 (async () => {
     const data = await getPortfolio();
-console.log(data.portfolio)
+    // console.log(data.portfolio)
     const profilePictureElement = document.getElementById('portfolio-image')
     renderPortfolioData(profilePictureElement, data.portfolio.image)
 
@@ -171,4 +202,7 @@ console.log(data.portfolio)
 
     const skillsContainer = document.getElementById('skills-container')
     createSkillCard(skillsContainer, data.portfolio.skills)
+
+    const contactContainer = document.getElementById('links-container')
+    createSocialMediaLinks(contactContainer, data.portfolio.contact)
 })();

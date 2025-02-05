@@ -9,6 +9,11 @@
       src="https://kit.fontawesome.com/2157171c32.js"
       crossorigin="anonymous"
     ></script>
+    <style>
+      #email:hover {
+        color: rgb(168, 0, 0);
+      }
+    </style>
     <script>
       tailwind.config = {
         theme: {
@@ -135,63 +140,90 @@
       </button>
       <h2 class="text-4xl font-bold">Contact Me</h2>
 
-      <!-- Social Media Links -->
+      <!-- Social Media Links Section -->
       <div class="mt-8">
-        <!-- <p class="text-lg font-semibold">Connect with me:</p> -->
-        <div class="flex justify-center space-x-6 mt-4">
+        <div id="links-container" class="flex justify-center space-x-6 mt-4">
+          <!-- if user has no contact info this element will render -->
+          <p id="noContactInfoToRender" class="mt-4 max-w-lg hidden">
+            edit from top right corner button to add your contact info
+          </p>
+
           <a
+            id="instagram"
             href="https://instagram.com/yourusername"
             target="_blank"
-            class="text-gray-600 hover:text-primary text-2xl"
+            class="text-gray-600 hover:text-primary text-2xl hidden"
           >
             <i id="instagrma-icon" class="fab fa-instagram"></i>
           </a>
+
           <a
+            id="facebook"
             href="https://facebook.com/yourusername"
             target="_blank"
-            class="text-gray-600 hover:text-primary text-2xl"
+            class="text-gray-600 hover:text-primary text-2xl hidden"
           >
             <i id="facebook-icon" class="fab fa-facebook"></i>
           </a>
+
           <a
+            id="linkedIn"
             href="https://linkedin.com/in/yourusername"
             target="_blank"
-            class="text-gray-600 hover:text-primary text-2xl"
+            class="text-gray-600 hover:text-primary text-2xl hidden"
           >
             <i id="linkedin-icon" class="fab fa-linkedin"></i>
           </a>
+
           <a
+            id="github"
             href="https://github.com/yourusername"
             target="_blank"
-            class="text-gray-600 hover:text-primary text-2xl"
+            class="text-gray-600 hover:text-primary text-2xl hidden"
           >
             <i id="github-icon" class="fab fa-github"></i>
           </a>
+
           <a
+            id="youtube"
             href="https://youtube.com/c/yourchannel"
             target="_blank"
-            class="text-gray-600 hover:text-primary text-2xl"
+            class="text-gray-600 hover:text-primary text-2xl hidden"
           >
             <i id="youtube-icon" class="fab fa-youtube"></i>
           </a>
+
           <a
+            id="website"
             href="https://yourwebsite.com"
             target="_blank"
-            class="text-gray-600 hover:text-primary text-2xl"
+            class="text-gray-600 hover:text-primary text-2xl hidden"
           >
             <i id="website-icon" class="fas fa-globe"></i>
           </a>
+
           <a
-            href="tel:+1234567890"
-            class="text-gray-600 hover:text-primary text-2xl"
+            id="number"
+            href=""
+            class="text-gray-600 hover:text-primary text-2xl hidden"
           >
             <i id="phone-icon" class="fas fa-phone"></i>
           </a>
+
           <a
-            href="mailto:your@email.com"
-            class="text-gray-600 hover:text-primary text-2xl"
+            id="email"
+            href=""
+            class="text-gray-600 hover:text-primary text-2xl hidden"
           >
             <i id="mail-icon" class="fas fa-envelope"></i>
+          </a>
+
+          <a
+            id="twitter"
+            href=""
+            class="text-gray-600 hover:text-primary text-2xl hidden"
+          >
+            <i id="twitter-icon" class="fab fa-twitter"></i>
           </a>
         </div>
       </div>
