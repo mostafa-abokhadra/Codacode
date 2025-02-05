@@ -125,7 +125,29 @@ function createExperienceCard(projectContainer, projects) {
     }
 }
 
-
+function createSkillCard(skillsContainer, skills) {
+    try {
+        if (!skillsContainer) {
+            throw new Error('An Unexpected Error Occur')
+        }
+        if (skills.length === 0) {
+            skillsContainer.className = "grid md:grid-cols-1 gap-6 mt-6 max-w-6xl mx-auto"
+            const noSkillCardsToRender = document.getElementById('noSkillCardsToRender')
+            noSkillCardsToRender.classList.remove('hidden')
+            noSkillCardsToRender.style = `justify-self: center`
+            return
+        }
+        skills.map((aSkill) => {
+            const skillElement = document.createElement('div')
+            skillElement.id = aSkill.id
+            skillElement.className = "bg-gray-100 p-6 rounded-lg shadow-md a-skill"
+            skillElement.innerHTML = `<h3 class="text-xl font-semibold">${aSkill.name}</h3>`
+            skillsContainer.appendChild(skillElement)
+        })
+    } catch(error) {
+        console.error('An Unexpected Error Occur: ', error)
+    }
+}
 (async () => {
     const data = await getPortfolio();
 console.log(data.portfolio)
@@ -146,4 +168,7 @@ console.log(data.portfolio)
 
     const projectContainer = document.getElementById('projects-container')
     createExperienceCard(projectContainer, data.portfolio.projects)
+
+    const skillsContainer = document.getElementById('skills-container')
+    createSkillCard(skillsContainer, data.portfolio.skills)
 })();
