@@ -230,7 +230,7 @@
           <!-- Left Section: Logo and Links -->
           <div class="flex items-center space-x-8">
             <!-- Logo -->
-            <a href="/" class="text-xl font-bold text-green-600">Codacode</a>
+            <a id="logo-text" href="/" class="text-xl font-bold text-green-600">Codacode</a>
             <!-- Links beside the logo -->
             <div class="hidden md:flex space-x-6">
               <a href="/projects" class="text-gray-800 hover:text-blue-600"
@@ -251,11 +251,13 @@
           <!-- Right Section: Sign Up and Login -->
           <div class="hidden md:flex items-center space-x-4">
             <a
+            id="sign-up-btn"
               href="/auth/signup"
               class="bg-green-500 text-white px-4 py-2 rounded-md hover:text-blue-600"
               >Sign Up</a
             >
             <a
+              id="login-btn"
               href="/auth/login"
               class="bg-green-500 text-white px-4 py-2 rounded-md hover:text-blue-600"
               >Login</a
@@ -313,11 +315,13 @@
           >About</a
         >
         <a
+          id="mobile-signup-btn"
           href="/auth/signup"
           class="block px-4 py-2 hover:bg-blue-100 border-b border-gray-300"
           >Sign Up</a
         >
         <a
+          id="mobile-login-btn"
           href="/auth/login"
           class="block px-4 py-2 hover:bg-blue-100 border-b border-gray-300"
           >Login</a

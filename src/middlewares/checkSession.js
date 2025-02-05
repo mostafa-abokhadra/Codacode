@@ -15,7 +15,7 @@ async function ensureValidUser(req, res, next) {
 }
 function redirectToDashboardIfAuthenticated(req, res, next) {
     if (req.isAuthenticated())
-        res.redirect(`/${req.user.fullName}/dashboard`)
+        res.redirect(`/${req.user.urlUserName}/dashboard`)
     return next()
 }
 module.exports = {

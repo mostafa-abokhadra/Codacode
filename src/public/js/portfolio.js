@@ -1,3 +1,15 @@
+if (localStorage.getItem('urlUserName')) {
+    const logoText = document.getElementById('logo-text')
+    const signupBtn = document.getElementById('sign-up-btn')
+    const loginBtn = document.getElementById('login-btn')
+    const mobileSignupBtn = document.getElementById('mobile-signup-btn')
+    const mobileloginBtn = document.getElementById('mobile-login-btn')
+    mobileSignupBtn.classList.add('hidden')
+    mobileloginBtn.classList.add('hidden')
+    logoText.textContent = "Dashboard"
+    signupBtn.classList.add('hidden')
+    loginBtn.classList.add('hidden')
+}
 async function getPortfolio() {
     try {
         const username = localStorage.getItem("urlUserName");

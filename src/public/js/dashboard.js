@@ -227,3 +227,10 @@ function showErrorPopup() {
 function closeErrorPopup() {
   document.getElementById('serverErrorPopup').classList.add('hidden');
 }
+
+const portfolioLink = document.getElementById('portfolio-link')
+console.log(portfolioLink)
+portfolioLink.addEventListener('click', (event) => {
+  event.preventDefault()
+  window.location.href = "portofolio"
+})

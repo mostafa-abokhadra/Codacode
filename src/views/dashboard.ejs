@@ -55,13 +55,16 @@
           <span class="dashboard-logo" id="dashboardLogo">Dashboard</span>
         </span>
         <div>
-          <a href="/<%= user.urlUserName %>/portofolio" id="profile-link"
+          <a
+            id="portfolio-link"
+            href="/<%= user.urlUserName %>/portfolio"
+            id="profile-link"
             ><i class="fas fa-user"></i> Portofolio</a
           >
           <a
             id="logout-link"
             href="#"
-            onclick="document.getElementById('logoutForm').submit();"
+            onclick="localStorage.clear(); document.getElementById('logoutForm').submit();"
           >
             <i class="fas fa-sign-out-alt"></i> Logout
           </a>
