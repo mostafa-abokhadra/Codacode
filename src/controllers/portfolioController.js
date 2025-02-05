@@ -11,8 +11,12 @@ class portfolioController {
                 include: {
                     education: true,
                     skills: true,
-                    experiences: true,
-                    contact: true
+                    projects: true,
+                    contact: {
+                        include: {
+                            number: true
+                        }
+                    }
                 }
             })
             if (!portfolio)
