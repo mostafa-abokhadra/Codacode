@@ -7,7 +7,12 @@ class portfolioController {
     static async getPortfolio(req, res) {
         try {
             const portfolio = await prisma.profile.findFirst({
-                where: {id: req.user.id},
+                where: {
+                    id: req.user.id,
+                    user: {
+                        fullName: req.param.username
+                    }
+                },
                 include: {
                     education: true,
                     skills: true,

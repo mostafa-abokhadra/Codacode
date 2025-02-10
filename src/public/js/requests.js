@@ -99,7 +99,7 @@ function createAccepteAndRejectedCard(cardData) {
     `
     <div class="card">
     <div style="display: flex; justify-content: space-between;">
-        <a href="#" class="card-header" style="width: 87%;">
+        <a  href="#" class="card-header" style="width: 87%;">
             <div
                 class="user-image"
                 style="background-image: url(${cardData.userApplied.profile.image}); background-size: cover;">
@@ -125,9 +125,10 @@ function createAccepteAndRejectedCard(cardData) {
 function createCard(cardData) {
     const card = document.createElement('div')
     card.className = "card"
+    card.setAttribute('style', `position: absolute;`)
     card.innerHTML = 
     `
-        <a href="/cardData.userApplied.fullName" class="card-header">
+        <a id="user-applied-portfolio" data-user-applied="${cardData.userApplied.fullName}" class="card-header">
             <div class="user-image" style="background-image: url(${cardData.userApplied.profile.image}); background-size: cover;">
             </div>
             <div class="user-info">
@@ -160,5 +161,55 @@ for (let i = 0; i < hideRequestCard.length; i++) {
             )
             window.location.reload()
         }
+    })
+}
+
+try {
+    const usersAppliedPortfolioLInks = document.querySelectorAll('#user-applied-portfolio')
+    if (usersAppliedPortfolioLInks) {
+        usersAppliedPortfolioLInks.forEach((link) => {
+            link.addEventListener('click', async (clickEvent) => {
+                
+                const userAppliedName = link.dataset.userApplied
+                const data = await getUserAppliedPortfolio(userAppliedName)
+            })
+        })
+    }
+} catch(error) {
+
+}
+
+const userPortfolioPopup = document.getElementById('user-portfolio')
+async function getUserAppliedPortfolio(userAppliedName) {
+    try {
+        const userPortfolio = await fetch(`/${userAppliedName}/portfolio`)
+        if (userPortfolio.ok) {
+            
+            if (userPortfolioPopup) {
+                // userPortfolioPopup.addEventListener("click", (event) => {
+                //     if (event.target === userPortfolioPopup) {
+                //         userPortfolioPopup.classList.add("hidden");
+                //     }
+                // });
+
+                userPortfolioPopup.classList.remove('hidden')
+            } else {
+
+            }
+            const data = await userPortfolio.json()
+            console.log(data)
+        } else {
+            console.error(`An Error Occured With Status Code: ${userPortfolio.status}`)
+        }
+    } catch(error) {
+
+    }
+}
+const closeUserPortfolioBtns = document.querySelectorAll("#closeUserPortfolioPopup")
+if (closeUserPortfolioBtns) {
+    closeUserPortfolioBtns.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+            userPortfolioPopup.classList.add('hidden')
+        })
     })
 }
