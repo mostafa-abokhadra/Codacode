@@ -125,7 +125,7 @@ function createAccepteAndRejectedCard(cardData) {
 function createCard(cardData) {
     const card = document.createElement('div')
     card.className = "card"
-    card.setAttribute('style', `position: absolute;`)
+    // card.setAttribute('style', `position: absolute;`)
     card.innerHTML = 
     `
         <a id="user-applied-portfolio" data-user-applied="${cardData.userApplied.fullName}" class="card-header">
@@ -163,15 +163,22 @@ for (let i = 0; i < hideRequestCard.length; i++) {
         }
     })
 }
+const userPortfolioPopupContainer = document.getElementById('user-portfolio')
 
 try {
     const usersAppliedPortfolioLInks = document.querySelectorAll('#user-applied-portfolio')
     if (usersAppliedPortfolioLInks) {
         usersAppliedPortfolioLInks.forEach((link) => {
             link.addEventListener('click', async (clickEvent) => {
-                
+                const userPortfolioPopupContainer = document.getElementById('user-portfolio')
+                if (userPortfolioPopupContainer.firstChild) {
+                    userPortfolioPopupContainer.firstChild.remove()
+                }
                 const userAppliedName = link.dataset.userApplied
-                const data = await getUserAppliedPortfolio(userAppliedName)
+                await getUserAppliedPortfolio(userAppliedName)
+                window.scrollTo({ top: 0, behavior: "smooth" });
+                // userPortfolioPopupContainer.scrollTo({ top: 0, behavior: "smooth" });
+                
             })
         })
     }
@@ -179,25 +186,37 @@ try {
 
 }
 
-const userPortfolioPopup = document.getElementById('user-portfolio')
+
+
 async function getUserAppliedPortfolio(userAppliedName) {
     try {
         const userPortfolio = await fetch(`/${userAppliedName}/portfolio`)
         if (userPortfolio.ok) {
-            
-            if (userPortfolioPopup) {
+            const portfolioData = await userPortfolio.json()
+            if (userPortfolioPopupContainer) {
                 // userPortfolioPopup.addEventListener("click", (event) => {
                 //     if (event.target === userPortfolioPopup) {
                 //         userPortfolioPopup.classList.add("hidden");
                 //     }
                 // });
+                createUserAppliedPortfolioPopup(portfolioData)
+                const closeBtn = document.getElementById('closeUserPortfolioPopup')
+                closeBtn.addEventListener('click', (e) => {
+                    if (userPortfolioPopupContainer.firstChild) {
+                        userPortfolioPopupContainer.firstChild.remove()
+                        userPortfolioPopupContainer.classList.add('hidden')
+                    }
+                })
+                userPortfolioPopupContainer.classList.remove('hidden')
+                // userPortfolioPopupContainer.addEventListener("click", (e) => {
+                //     if (e.target === userPortfolioPopupContainer) {
+                //         userPortfolioPopupContainer.classList.add("hidden");
+                //     }
+                // });
 
-                userPortfolioPopup.classList.remove('hidden')
             } else {
 
             }
-            const data = await userPortfolio.json()
-            console.log(data)
         } else {
             console.error(`An Error Occured With Status Code: ${userPortfolio.status}`)
         }
@@ -205,11 +224,179 @@ async function getUserAppliedPortfolio(userAppliedName) {
 
     }
 }
-const closeUserPortfolioBtns = document.querySelectorAll("#closeUserPortfolioPopup")
-if (closeUserPortfolioBtns) {
-    closeUserPortfolioBtns.forEach((btn) => {
-        btn.addEventListener('click', (e) => {
-            userPortfolioPopup.classList.add('hidden')
-        })
-    })
+
+
+function createUserAppliedPortfolioPopup(portfolioData) {
+    const userPortfolioElement = document.createElement('div')
+    userPortfolioElement.innerHTML = 
+    `   
+        <button
+            id="closeUserPortfolioPopup"
+            class="absolute top-4 right-4 px-3 py-1 bg-black text-white rounded-md shadow-lg hover:bg-green-700 transition"
+        >
+            close
+        </button>
+        <section
+            class="flex flex-col md:flex-row items-center justify-center text-center md:text-left p-10 gap-10 animate-fadeIn relative mt-10"
+        >
+        <img
+            id="portfolio-image"
+            src="${portfolioData.portfolio.image}"
+            alt="User Image"
+            class="w-60 h-60 rounded-full border-4 border-primary shadow-lg"
+        />
+        <div>
+            <h1 class="text-5xl font-bold">
+                Hi, I'm
+                <span id="portfolio-name" class="text-primary">${portfolioData.portfolio.name}</span>
+            </h1>
+            <p id="portfolio-tagline" class="text-xl mt-4">${portfolioData.portfolio.tagline}</p>
+            <p id="portfolio-about" class="mt-4 max-w-lg">${portfolioData.portfolio.about}</p>
+            <div class="flex gap-4 mt-6">
+            <a
+                href="#projects"
+                class="px-6 py-3 bg-primary rounded-full shadow-lg hover:bg-green-700 transition"
+                >My Projects</a
+            >
+            <a
+                href="#contact"
+                class="px-6 py-3 border border-primary rounded-full shadow-lg hover:bg-primary transition"
+                >Contact</a
+            >
+            </div>
+        </div>
+        </section>
+
+        <section
+            style="width: 90%"
+            class="py-20 bg-white text-center animate-fadeIn relative"
+            >
+            <h2 class="text-4xl font-bold">Education</h2>
+            <div
+                id="education-container"
+                class="grid md:grid-cols-4 gap-6 mt-6 max-w-6xl mx-auto"
+            >
+            </div>
+        </section>
+
+        <section
+            style="width: 90%"
+            id="projects"
+            class="py-20 text-center animate-fadeIn relative"
+        >
+            <h2 class="text-4xl font-bold">Projects</h2>
+            <div
+                id="projects-container"
+                class="grid md:grid-cols-3 gap-6 mt-6 max-w-6xl mx-auto"
+            >
+            </div>
+        </section>
+
+        <section
+            id="skills"
+            class="py-20 text-center animate-fadeIn relative bg-white"
+            style="width: 90%"
+        >
+            <h2 class="text-4xl font-bold">Skills</h2>
+            <div
+                id="skills-container"
+                class="grid md:grid-cols-3 gap-6 mt-6 max-w-6xl mx-auto"
+            >
+            </div>
+        </section>
+
+        <section
+            id="contact"
+            class="py-20 bg-white text-center animate-fadeIn relative"
+            style="width: 90%"
+        >
+            <h2 class="text-4xl font-bold">Contact Me</h2>
+
+            <div class="mt-8">
+                <div
+                    id="links-container"
+                    class="flex justify-center space-x-6 mt-4"
+                >
+                    <a
+                        id="instagram"
+                        href="${portfolioData.portfolio.contact.instagram}"
+                        target="_blank"
+                        class="text-gray-600 hover:text-primary text-2xl hidden"
+                    >
+                        <i id="instagrma-icon" class="fab fa-instagram"></i>
+                    </a>
+                    <a
+                        id="facebook"
+                        href="${portfolioData.portfolio.contact.facebook}"
+                        target="_blank"
+                        class="text-gray-600 hover:text-primary text-2xl hidden"
+                    >
+                        <i id="facebook-icon" class="fab fa-facebook"></i>
+                    </a>
+
+                    <a
+                        id="linkedIn"
+                        href="${portfolioData.portfolio.contact.linkedIn}"
+                        target="_blank"
+                        class="text-gray-600 hover:text-primary text-2xl hidden"
+                    >
+                        <i id="linkedin-icon" class="fab fa-linkedin"></i>
+                    </a>
+
+                    <a
+                        id="github"
+                        href="${portfolioData.portfolio.contact.github}"
+                        target="_blank"
+                        class="text-gray-600 hover:text-primary text-2xl hidden"
+                    >
+                        <i id="github-icon" class="fab fa-github"></i>
+                    </a>
+
+                    <a
+                        id="youtube"
+                        href="${portfolioData.portfolio.contact.youtube}"
+                        target="_blank"
+                        class="text-gray-600 hover:text-primary text-2xl hidden"
+                    >
+                        <i id="youtube-icon" class="fab fa-youtube"></i>
+                    </a>
+
+                    <a
+                        id="website"
+                        href="${portfolioData.portfolio.contact.website}"
+                        target="_blank"
+                        class="text-gray-600 hover:text-primary text-2xl hidden"
+                    >
+                        <i id="website-icon" class="fas fa-globe"></i>
+                    </a>
+
+                    <a
+                        id="number"
+                        href="+${portfolioData.portfolio.contact.number.countryCode}${portfolioData.portfolio.contact.number.number}"
+                        class="text-gray-600 hover:text-primary text-2xl hidden"
+                    >
+                        <i id="phone-icon" class="fas fa-phone"></i>
+                    </a>
+
+                    <a
+                        id="email"
+                        href="${portfolioData.portfolio.contact.email}"
+                        class="text-gray-600 hover:text-primary text-2xl hidden"
+                    >
+                        <i id="mail-icon" class="fas fa-envelope"></i>
+                    </a>
+
+                    <a
+                        id="twitter"
+                        href="${portfolioData.portfolio.contact.twitter}"
+                        class="text-gray-600 hover:text-primary text-2xl hidden"
+                    >
+                        <i id="twitter-icon" class="fab fa-twitter"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    `
+    userPortfolioPopupContainer.appendChild(userPortfolioElement)
 }
