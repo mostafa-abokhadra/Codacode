@@ -201,8 +201,19 @@ async function getUserAppliedPortfolio(userAppliedName) {
                 //         userPortfolioPopup.classList.add("hidden");
                 //     }
                 // });
+                let educationCards = null, experienceCards = null, skillCards = null, socialmediaLinks = null
+                if (portfolioData.portfolio.education.length > 0) 
+                    educationCards = createEducationCard(portfolioData.portfolio.education)
+                if (portfolioData.portfolio.projects.length > 0) 
+                    experienceCards = createExperienceCard(portfolioData.portfolio.projects)
+                if (portfolioData.portfolio.skills.length > 0) {
+                    skillCards = createSkillCard(portfolioData.portfolio.skills)
+                }
+                if (portfolioData.portfolio.contact) {
+                    socialmediaLinks = createSocialMediaLinks(portfolioData.portfolio.contact)
+                }
 
-                createUserAppliedPortfolioPopup(portfolioData)
+                createUserAppliedPortfolioPopup(portfolioData, educationCards, experienceCards, skillCards, socialmediaLinks)
                 const closeBtn = document.getElementById('closeUserPortfolioPopup')
                 closeBtn.addEventListener('click', (e) => {
                     if (userPortfolioPopupContainer.firstChild) {
@@ -229,7 +240,7 @@ async function getUserAppliedPortfolio(userAppliedName) {
 }
 
 
-function createUserAppliedPortfolioPopup(portfolioData) {
+function createUserAppliedPortfolioPopup(portfolioData, educationCards, experienceCards, skillCards, socialmediaLinks) {
     const userPortfolioElement = document.createElement('div')
     userPortfolioElement.innerHTML = 
     `   
@@ -279,9 +290,12 @@ function createUserAppliedPortfolioPopup(portfolioData) {
             <h2 class="text-4xl font-bold">Education</h2>
             <div
                 id="education-container"
-                class="grid ${portfolioData.portfolio.education.length > 0 ? 'md:grid-cols-4' : 'md:grid-cols-1'} gap-6 mt-6 max-w-6xl mx-auto"
+                class="grid ${portfolioData.portfolio.education.length > 0 ? 'md:grid-cols-2' : 'md:grid-cols-1'} gap-6 mt-6 max-w-6xl mx-auto p-10"
             >
-            ${portfolioData.portfolio.education.length === 0 ? `<span style="text-align: center">No information found</span>` : ''}
+            ${portfolioData.portfolio.education.length === 0 ?
+                `<span style="text-align: center">No information found</span>`:
+                educationCards.map((anEducation)=>{return anEducation.outerHTML})
+            }
             </div>
         </section>
 
@@ -293,9 +307,12 @@ function createUserAppliedPortfolioPopup(portfolioData) {
             <h2 class="text-4xl font-bold">Projects</h2>
             <div
                 id="projects-container"
-                class="grid ${portfolioData.portfolio.projects.length > 0 ? 'md:grid-cols-4' : 'md:grid-cols-1'} gap-6 mt-6 max-w-6xl mx-auto"
+                class="grid ${portfolioData.portfolio.projects.length > 0 ? 'md:grid-cols-3' : 'md:grid-cols-1'} gap-6 mt-6 max-w-6xl mx-auto p-10"
             >
-                ${portfolioData.portfolio.projects.length === 0 ? `<span style="text-align: center">No information found</span>` : ''}
+                ${portfolioData.portfolio.projects.length === 0 ?
+                    `<span style="text-align: center">No information found</span>`:
+                    experienceCards.map((anExperience)=>{return anExperience.outerHTML})
+                }
             </div>
         </section>
 
@@ -307,9 +324,12 @@ function createUserAppliedPortfolioPopup(portfolioData) {
             <h2 class="text-4xl font-bold">Skills</h2>
             <div
                 id="skills-container"
-                class="grid ${portfolioData.portfolio.skills.length > 0 ? 'md:grid-cols-4' : 'md:grid-cols-1'} gap-6 mt-6 max-w-6xl mx-auto"
+                class="grid ${portfolioData.portfolio.skills.length > 0 ? 'md:grid-cols-4' : 'md:grid-cols-1'} gap-6 mt-6 max-w-6xl mx-auto p-10"
             >
-            ${portfolioData.portfolio.projects.length === 0 ? `<span style="text-align: center">No information found</span>` : ''}
+            ${portfolioData.portfolio.skills.length === 0 ?
+                `<span style="text-align: center">No information found</span>`:
+                skillCards.map((aSkill)=>{return aSkill.outerHTML})
+            }
             </div>
         </section>
 
@@ -325,91 +345,134 @@ function createUserAppliedPortfolioPopup(portfolioData) {
                     id="links-container"
                     class="flex justify-center space-x-6 mt-4"
                 >
-                ${portfolioData.portfolio.contact? '': `<span style="text-align: center">No information found</span>`}
-                    <a
-                        id="instagram"
-                        href="${portfolioData.portfolio.contact?.instagram? portfolioData.portfolio.contact.instagram: ``}"
-                        target="_blank"
-                        class="text-gray-600 hover:text-primary text-2xl hidden"
-                    >
-                        <i id="instagrma-icon" class="fab fa-instagram"></i>
-                    </a>
-
-                    <a
-                        id="facebook"
-                        href="${portfolioData.portfolio.contact?.facebook? portfolioData.portfolio.contact.facebook: ``}"
-                        target="_blank"
-                        class="text-gray-600 hover:text-primary text-2xl hidden"
-                    >
-                        <i id="facebook-icon" class="fab fa-facebook"></i>
-                    </a>
-
-                    <a
-                        id="linkedIn"
-                        href="${portfolioData.portfolio.contact?.linkedIn? portfolioData.portfolio.contact.linkedIn: ``}"
-                        target="_blank"
-                        class="text-gray-600 hover:text-primary text-2xl hidden"
-                    >
-                        <i id="linkedin-icon" class="fab fa-linkedin"></i>
-                    </a>
-
-                    <a
-                        id="github"
-                        href="${portfolioData.portfolio.contact?.github? portfolioData.portfolio.contact.github: ``}"
-                        target="_blank"
-                        class="text-gray-600 hover:text-primary text-2xl hidden"
-                    >
-                        <i id="github-icon" class="fab fa-github"></i>
-                    </a>
-
-                    <a
-                        id="youtube"
-                        href="${portfolioData.portfolio.contact?.youtube? portfolioData.portfolio.contact.youtube: ``}"
-                        target="_blank"
-                        class="text-gray-600 hover:text-primary text-2xl hidden"
-                    >
-                        <i id="youtube-icon" class="fab fa-youtube"></i>
-                    </a>
-
-                    <a
-                        id="website"
-                        href="${portfolioData.portfolio.contact?.website? portfolioData.portfolio.contact.website: ``}"
-                        target="_blank"
-                        class="text-gray-600 hover:text-primary text-2xl hidden"
-                    >
-                        <i id="website-icon" class="fas fa-globe"></i>
-                    </a>
-
-                    <a
-                        id="number"
-                        href="+${portfolioData.portfolio.contact?.number?.countryCode? portfolioData.portfolio.contact.number.countryCode: ``}
-                        ${portfolioData.portfolio.contact?.number?.number? portfolioData.portfolio.contact.number.number: ``}"
-                        class="text-gray-600 hover:text-primary text-2xl hidden"
-                    >
-                        <i id="phone-icon" class="fas fa-phone"></i>
-                    </a>
-
-                    <a
-                        id="email"
-                        href="${portfolioData.portfolio.contact?.email? portfolioData.portfolio.contact.email: ``}"
-                        class="text-gray-600 hover:text-primary text-2xl hidden"
-                    >
-                        <i id="mail-icon" class="fas fa-envelope"></i>
-                    </a>
-
-                    <a
-                        id="twitter"
-                        href="${portfolioData.portfolio.contact?.twitter? portfolioData.portfolio.contact.twitter: `https://x.com`}"
-                        class="text-gray-600 hover:text-primary text-2xl hidden"
-                    >
-                        <i id="twitter-icon" class="fab fa-twitter"></i>
-                    </a>
+                    ${ portfolioData.portfolio.contact
+                        ? socialmediaLinks.map((aLink)=>{return aLink.outerHTML})
+                        : `<span style="text-align: center">No information found</span>`
+                    }
                 </div>
             </div>
         </section>
-
     `
-
     userPortfolioPopupContainer.appendChild(userPortfolioElement)
 }
 
+function createEducationCard(education) {
+    try {
+        const educationCards = education.map((anEducation)=>{
+            const educationCardElement = document.createElement('div')
+            educationCardElement.className =
+                "group relative bg-gradient-to-r from-green-100 to-blue-100 p-6 \
+                rounded-xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-2"
+            educationCardElement.innerHTML = 
+            `
+                <div
+                    class="absolute top-4 right-4 text-gray-400 group-hover:text-gray-600 transition"
+                >
+                    🎓
+                </div>
+                <h3 class="text-2xl font-semibold text-gray-800">
+                    ${anEducation.organization}
+                </h3>
+                <p class="text-gray-600 text-sm">${anEducation.degree} in ${anEducation.course}</p>
+                <p class="text-gray-700 font-medium mt-2">
+                    ${anEducation.startDate.split('T')[0].replaceAll('-', '/')} - ${anEducation.endDate.split('T')[0].replaceAll('-', '/')}</p>
+                <div class="mt-4">
+                    <span
+                        class="inline-block bg-blue-500 text-white text-xs font-semibold px-3 py-1 rounded-full"
+                    >
+                        Honours
+                    </span>
+                </div>
+            `
+            return educationCardElement
+        })
+        return educationCards
+    } catch(error) {
+        console.error('An Unexpexted Error Occur: ', error)
+    }
+}
+
+function createExperienceCard(projects) {
+    try {
+        const projectCards = projects.map((aProject) => {
+            const projectCardElement = document.createElement('div')
+            projectCardElement.className = `bg-white p-6 rounded-lg shadow-lg hover:scale-105 transition a-project`
+            projectCardElement.innerHTML = 
+            `
+                <img
+                    src="${aProject.image}"
+                    alt="Project 1 photo"
+                    class="w-full h-40 object-cover rounded-lg"
+                />
+                <h3 class="text-xl font-semibold mt-4">${aProject.title}</h3>
+                <p class="mt-2">${aProject.description}</p>
+                <a href=${aProject.link} target='_blank' class="text-primary mt-4 inline-block">View Project →</a>
+            `
+            return projectCardElement
+        })
+        return projectCards
+    } catch(error) {
+        console.error('An Unexpected Error Occur: ', error)
+    }
+}
+
+function createSkillCard(skills) {
+    try {
+        const skillCards = skills.map((aSkill) => {
+            const skillElement = document.createElement('div')
+            skillElement.id = aSkill.id
+            skillElement.className = "bg-gray-100 p-6 rounded-lg shadow-md a-skill"
+            skillElement.innerHTML = `<h3 class="text-xl font-semibold">${aSkill.name}</h3>`
+            return skillElement
+        })
+        return skillCards
+    } catch(error) {
+        console.error('An Unexpected Error Occur: ', error)
+    }
+}
+
+function createSocialMediaLinks(links){
+    try {
+        const socialmediaLinks = Object.keys(links)
+        .filter((key) => links[key] && key !== 'id' && key !== 'profile_id' && key !== 'profile')
+        .map((key) => {
+            let theLink = null
+            if (key === 'email') {
+                theLink = createSocialMediaLinkElement(key, 'fas fa-envelope')
+                theLink.setAttribute('href', `mailto:${links[key]}`)
+            } else if (key === 'number') {
+                theLink = createSocialMediaLinkElement(key, 'fas fa-phone')
+                theLink.setAttribute('href', `tel:+${links[key]['countryCode']}${links[key]['number']}`)
+            } else {
+                const iconClassMap = {
+                    instagram: 'fab fa-instagram',
+                    twitter: 'fab fa-twitter',
+                    youtube: 'fab fa-youtube',
+                    github: 'fab fa-github',
+                    website: 'fas fa-globe',
+                    linkedIn: 'fab fa-linkedin',
+                    facebook: 'fab fa-facebook'
+                };
+                if (iconClassMap[key]) {
+                    theLink = createSocialMediaLinkElement(key, iconClassMap[key]);
+                    theLink.setAttribute('href', links[key]);
+                }
+            }
+            return theLink
+        }).filter(Boolean);
+        return socialmediaLinks
+    } catch(error) {
+        console.error('An Unexpected Error Occured', error)
+    }
+}
+
+function createSocialMediaLinkElement(socialmedia, icon) {
+    const linkElement = document.createElement('a')
+    linkElement.className = "text-gray-600 hover:text-primary text-2xl"
+    const logoElement = document.createElement('i')
+    linkElement.id = socialmedia
+    logoElement.id = `${socialmedia}-icon`
+    logoElement.className = icon
+    linkElement.appendChild(logoElement)
+    return linkElement
+}
