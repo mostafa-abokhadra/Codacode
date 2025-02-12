@@ -8,9 +8,8 @@ class portfolioController {
         try {
             const portfolio = await prisma.profile.findFirst({
                 where: {
-                    id: req.user.id,
                     user: {
-                        fullName: req.param.username
+                        fullName: req.params.username
                     }
                 },
                 include: {

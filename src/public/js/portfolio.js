@@ -12,7 +12,7 @@ if (localStorage.getItem('urlUserName')) {
 }
 async function getPortfolio() {
     try {
-        const username = localStorage.getItem("urlUserName");
+        const username = localStorage.getItem("fullName");
         if (!username) throw new Error("User not found in localStorage");
 
         const getPortfolioResponse = await fetch(`/${username}/portfolio`);

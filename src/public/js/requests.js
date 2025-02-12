@@ -174,6 +174,7 @@ try {
                 if (userPortfolioPopupContainer.firstChild) {
                     userPortfolioPopupContainer.firstChild.remove()
                 }
+            
                 const userAppliedName = link.dataset.userApplied
                 await getUserAppliedPortfolio(userAppliedName)
                 window.scrollTo({ top: 0, behavior: "smooth" });
@@ -191,6 +192,7 @@ try {
 async function getUserAppliedPortfolio(userAppliedName) {
     try {
         const userPortfolio = await fetch(`/${userAppliedName}/portfolio`)
+
         if (userPortfolio.ok) {
             const portfolioData = await userPortfolio.json()
             if (userPortfolioPopupContainer) {
@@ -199,6 +201,7 @@ async function getUserAppliedPortfolio(userAppliedName) {
                 //         userPortfolioPopup.classList.add("hidden");
                 //     }
                 // });
+
                 createUserAppliedPortfolioPopup(portfolioData)
                 const closeBtn = document.getElementById('closeUserPortfolioPopup')
                 closeBtn.addEventListener('click', (e) => {
@@ -248,10 +251,12 @@ function createUserAppliedPortfolioPopup(portfolioData) {
         <div>
             <h1 class="text-5xl font-bold">
                 Hi, I'm
-                <span id="portfolio-name" class="text-primary">${portfolioData.portfolio.name}</span>
+                <span id="portfolio-name" class="text-primary">${portfolioData.portfolio.name ? portfolioData.portfolio.name : `no information found`}</span>
             </h1>
-            <p id="portfolio-tagline" class="text-xl mt-4">${portfolioData.portfolio.tagline}</p>
-            <p id="portfolio-about" class="mt-4 max-w-lg">${portfolioData.portfolio.about}</p>
+                
+            <p id="portfolio-tagline" class="text-xl mt-4">${portfolioData.portfolio.tagline? portfolioData.portfolio.tagline: `no information found`}</p>
+            
+            <p id="portfolio-about" class="mt-4 max-w-lg">${portfolioData.portfolio.about? portfolioData.portfolio.about: `no information found`}</p>
             <div class="flex gap-4 mt-6">
             <a
                 href="#projects"
@@ -274,8 +279,9 @@ function createUserAppliedPortfolioPopup(portfolioData) {
             <h2 class="text-4xl font-bold">Education</h2>
             <div
                 id="education-container"
-                class="grid md:grid-cols-4 gap-6 mt-6 max-w-6xl mx-auto"
+                class="grid ${portfolioData.portfolio.education.length > 0 ? 'md:grid-cols-4' : 'md:grid-cols-1'} gap-6 mt-6 max-w-6xl mx-auto"
             >
+            ${portfolioData.portfolio.education.length === 0 ? `<span style="text-align: center">No information found</span>` : ''}
             </div>
         </section>
 
@@ -287,8 +293,9 @@ function createUserAppliedPortfolioPopup(portfolioData) {
             <h2 class="text-4xl font-bold">Projects</h2>
             <div
                 id="projects-container"
-                class="grid md:grid-cols-3 gap-6 mt-6 max-w-6xl mx-auto"
+                class="grid ${portfolioData.portfolio.projects.length > 0 ? 'md:grid-cols-4' : 'md:grid-cols-1'} gap-6 mt-6 max-w-6xl mx-auto"
             >
+                ${portfolioData.portfolio.projects.length === 0 ? `<span style="text-align: center">No information found</span>` : ''}
             </div>
         </section>
 
@@ -300,8 +307,9 @@ function createUserAppliedPortfolioPopup(portfolioData) {
             <h2 class="text-4xl font-bold">Skills</h2>
             <div
                 id="skills-container"
-                class="grid md:grid-cols-3 gap-6 mt-6 max-w-6xl mx-auto"
+                class="grid ${portfolioData.portfolio.skills.length > 0 ? 'md:grid-cols-4' : 'md:grid-cols-1'} gap-6 mt-6 max-w-6xl mx-auto"
             >
+            ${portfolioData.portfolio.projects.length === 0 ? `<span style="text-align: center">No information found</span>` : ''}
             </div>
         </section>
 
@@ -317,17 +325,19 @@ function createUserAppliedPortfolioPopup(portfolioData) {
                     id="links-container"
                     class="flex justify-center space-x-6 mt-4"
                 >
+                ${portfolioData.portfolio.contact? '': `<span style="text-align: center">No information found</span>`}
                     <a
                         id="instagram"
-                        href="${portfolioData.portfolio.contact.instagram}"
+                        href="${portfolioData.portfolio.contact?.instagram? portfolioData.portfolio.contact.instagram: ``}"
                         target="_blank"
                         class="text-gray-600 hover:text-primary text-2xl hidden"
                     >
                         <i id="instagrma-icon" class="fab fa-instagram"></i>
                     </a>
+
                     <a
                         id="facebook"
-                        href="${portfolioData.portfolio.contact.facebook}"
+                        href="${portfolioData.portfolio.contact?.facebook? portfolioData.portfolio.contact.facebook: ``}"
                         target="_blank"
                         class="text-gray-600 hover:text-primary text-2xl hidden"
                     >
@@ -336,7 +346,7 @@ function createUserAppliedPortfolioPopup(portfolioData) {
 
                     <a
                         id="linkedIn"
-                        href="${portfolioData.portfolio.contact.linkedIn}"
+                        href="${portfolioData.portfolio.contact?.linkedIn? portfolioData.portfolio.contact.linkedIn: ``}"
                         target="_blank"
                         class="text-gray-600 hover:text-primary text-2xl hidden"
                     >
@@ -345,7 +355,7 @@ function createUserAppliedPortfolioPopup(portfolioData) {
 
                     <a
                         id="github"
-                        href="${portfolioData.portfolio.contact.github}"
+                        href="${portfolioData.portfolio.contact?.github? portfolioData.portfolio.contact.github: ``}"
                         target="_blank"
                         class="text-gray-600 hover:text-primary text-2xl hidden"
                     >
@@ -354,7 +364,7 @@ function createUserAppliedPortfolioPopup(portfolioData) {
 
                     <a
                         id="youtube"
-                        href="${portfolioData.portfolio.contact.youtube}"
+                        href="${portfolioData.portfolio.contact?.youtube? portfolioData.portfolio.contact.youtube: ``}"
                         target="_blank"
                         class="text-gray-600 hover:text-primary text-2xl hidden"
                     >
@@ -363,7 +373,7 @@ function createUserAppliedPortfolioPopup(portfolioData) {
 
                     <a
                         id="website"
-                        href="${portfolioData.portfolio.contact.website}"
+                        href="${portfolioData.portfolio.contact?.website? portfolioData.portfolio.contact.website: ``}"
                         target="_blank"
                         class="text-gray-600 hover:text-primary text-2xl hidden"
                     >
@@ -372,7 +382,8 @@ function createUserAppliedPortfolioPopup(portfolioData) {
 
                     <a
                         id="number"
-                        href="+${portfolioData.portfolio.contact.number.countryCode}${portfolioData.portfolio.contact.number.number}"
+                        href="+${portfolioData.portfolio.contact?.number?.countryCode? portfolioData.portfolio.contact.number.countryCode: ``}
+                        ${portfolioData.portfolio.contact?.number?.number? portfolioData.portfolio.contact.number.number: ``}"
                         class="text-gray-600 hover:text-primary text-2xl hidden"
                     >
                         <i id="phone-icon" class="fas fa-phone"></i>
@@ -380,7 +391,7 @@ function createUserAppliedPortfolioPopup(portfolioData) {
 
                     <a
                         id="email"
-                        href="${portfolioData.portfolio.contact.email}"
+                        href="${portfolioData.portfolio.contact?.email? portfolioData.portfolio.contact.email: ``}"
                         class="text-gray-600 hover:text-primary text-2xl hidden"
                     >
                         <i id="mail-icon" class="fas fa-envelope"></i>
@@ -388,7 +399,7 @@ function createUserAppliedPortfolioPopup(portfolioData) {
 
                     <a
                         id="twitter"
-                        href="${portfolioData.portfolio.contact.twitter}"
+                        href="${portfolioData.portfolio.contact?.twitter? portfolioData.portfolio.contact.twitter: `https://x.com`}"
                         class="text-gray-600 hover:text-primary text-2xl hidden"
                     >
                         <i id="twitter-icon" class="fab fa-twitter"></i>
@@ -398,5 +409,7 @@ function createUserAppliedPortfolioPopup(portfolioData) {
         </section>
 
     `
+
     userPortfolioPopupContainer.appendChild(userPortfolioElement)
 }
+
