@@ -33,7 +33,7 @@
         username="<%= user.fullName %>"
         ><i class="fas fa-comments"></i> My Posts</a
       > -->
-      <a href="/<%= user.urlUserName %>/portofolio" id="profile-link-media-768"
+      <a href="/<%= user.fullName %>/portofolio" id="profile-link-media-768"
         ><i class="fas fa-user"></i> Portofolio</a
       >
       <a href="/IdeaBank"><i class="fas fa-lightbulb"></i> Project Idea Bank</a>
@@ -55,13 +55,16 @@
           <span class="dashboard-logo" id="dashboardLogo">Dashboard</span>
         </span>
         <div>
-          <a href="/<%= user.urlUserName %>/portofolio" id="profile-link"
+          <a
+            id="portfolio-link"
+            href="/<%= user.fullName %>/portfolio"
+            id="profile-link"
             ><i class="fas fa-user"></i> Portofolio</a
           >
           <a
             id="logout-link"
             href="#"
-            onclick="document.getElementById('logoutForm').submit();"
+            onclick="localStorage.clear(); document.getElementById('logoutForm').submit();"
           >
             <i class="fas fa-sign-out-alt"></i> Logout
           </a>
@@ -281,6 +284,7 @@
     </div>
     <script>
       localStorage.setItem("urlUserName", "<%- user.urlUserName %>");
+      localStorage.setItem("fullName", "<%- user.fullName %>");
     </script>
     <script src="/js/dashboard.js"></script>
   </body>

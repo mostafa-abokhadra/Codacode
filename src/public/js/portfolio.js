@@ -1,6 +1,18 @@
+if (localStorage.getItem('urlUserName')) {
+    const logoText = document.getElementById('logo-text')
+    const signupBtn = document.getElementById('sign-up-btn')
+    const loginBtn = document.getElementById('login-btn')
+    const mobileSignupBtn = document.getElementById('mobile-signup-btn')
+    const mobileloginBtn = document.getElementById('mobile-login-btn')
+    mobileSignupBtn.classList.add('hidden')
+    mobileloginBtn.classList.add('hidden')
+    logoText.textContent = "Dashboard"
+    signupBtn.classList.add('hidden')
+    loginBtn.classList.add('hidden')
+}
 async function getPortfolio() {
     try {
-        const username = localStorage.getItem("urlUserName");
+        const username = localStorage.getItem("fullName");
         if (!username) throw new Error("User not found in localStorage");
 
         const getPortfolioResponse = await fetch(`/${username}/portfolio`);
@@ -179,30 +191,101 @@ function createSocialMediaLinks(contactContainer, links){
     }
 }
 
+
+
+
 (async () => {
     const data = await getPortfolio();
-    // console.log(data.portfolio)
     const profilePictureElement = document.getElementById('portfolio-image')
-    renderPortfolioData(profilePictureElement, data.portfolio.image)
-
     const nameElement = document.getElementById('portfolio-name')
-    renderPortfolioData(nameElement, data.portfolio.name)
-
     const taglineElement = document.getElementById('portfolio-tagline')
-    renderPortfolioData(taglineElement, data.portfolio.tagline)
-
     const aboutElement = document.getElementById('portfolio-about')
-    renderPortfolioData(aboutElement, data.portfolio.about)
-
     const educationContainer = document.getElementById('education-container')
-    createEducationCard(educationContainer, data.portfolio.education)
-
     const projectContainer = document.getElementById('projects-container')
-    createExperienceCard(projectContainer, data.portfolio.projects)
-
     const skillsContainer = document.getElementById('skills-container')
-    createSkillCard(skillsContainer, data.portfolio.skills)
+    const contactContainer = document.getElementById('links-container');
 
-    const contactContainer = document.getElementById('links-container')
+    renderPortfolioData(profilePictureElement, data.portfolio.image)
+    renderPortfolioData(nameElement, data.portfolio.name)
+    renderPortfolioData(taglineElement, data.portfolio.tagline)
+    renderPortfolioData(aboutElement, data.portfolio.about)
+    createEducationCard(educationContainer, data.portfolio.education)
+    createExperienceCard(projectContainer, data.portfolio.projects)
+    createSkillCard(skillsContainer, data.portfolio.skills)
     createSocialMediaLinks(contactContainer, data.portfolio.contact)
+
+    const eidtAboutDataPopup = document.getElementById('edit-about-popup')
+    const editAboutDataBtn = document.getElementById('edit-about-data')
+    const closeEditAboutPopup = document.getElementById('close-edit-about-popup')
+    const saveAboutData = document.getElementById('save-about-data')
+
+    eidtAboutDataPopup.addEventListener('click', (e) => {
+        if (e.target === eidtAboutDataPopup)
+            eidtAboutDataPopup.setAttribute('style', `display: none`)
+    })
+    editAboutDataBtn.addEventListener('click', (e) => {
+        eidtAboutDataPopup.setAttribute('style', 'display: flex')
+        
+    })
+    closeEditAboutPopup.addEventListener('click', (e) => {
+        eidtAboutDataPopup.setAttribute('style', `display: none`)
+    })
+    
+    saveAboutData.addEventListener('click', async (e) => {
+        document.querySelectorAll('.error-message').forEach((msg) => msg.remove());
+        const name = document.getElementById('edit-name')
+        const tagline = document.getElementById('edit-tagline')
+        const about = document.getElementById('edit-about')
+        const data = {
+            name: name.value,
+            tagline: tagline.value,
+            about: about.value
+        }
+        const updatedData = await updateAboutSection(data)
+        if (updatedData.hasOwnProperty('errors')) {
+            updatedData.errors.map((error) => {
+                const errorSpan =  document.createElement('span')
+                errorSpan.className = "error-message"
+                errorSpan.textContent = error.msg
+                errorSpan.setAttribute('style', 'color: red; font-size: small')
+                if (error.path === 'name') {
+                    name.after(errorSpan)
+                } else if (error.path === 'tagline') {
+                    tagline.after(errorSpan)
+                } else if (error.path === 'about') {
+                    about.after(errorSpan)
+                }
+            })
+        } else {
+            closeEditAboutPopup.click()
+            nameElement.textContent = updatedData.data.name
+            taglineElement.textContent = updatedData.data.tagline
+            aboutElement.textContent = updatedData.data.about
+        }
+    })
+
 })();
+
+async function updateAboutSection(data) {
+    try {
+        const updateAbout = await fetch(
+            `/portfolio/about`, {
+                method: 'put',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: data.name,
+                    tagline: data.tagline,
+                    about:data.about
+                })
+            }
+        )
+        if (updateAbout.status === 500 ) {
+            throw new Error('Network response was not ok');
+        }
+        return await updateAbout.json()
+    } catch(error) {
+        console.error('An Unexpected Error has Occured: ', error)
+    }
+}
