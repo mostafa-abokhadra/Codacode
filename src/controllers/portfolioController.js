@@ -37,20 +37,22 @@ class portfolioController {
             const {name, tagline, about, gender} = req.body
             const  updatedPortfolio = await prisma.profile.update({
                 where: {
-                    user: {
-                        id: req.user.id
-                    }
+                    user_id: req.user.id
                 },
                 data: {
                     name: name,
                     tagline: tagline,
                     about: about,
-                    gendedr: gender
                 }
             })
             if (!updatedPortfolio)
                 return res.status(500).json({"info": `can't update user profile`})
-            return res.status(200).json({portfolio: updatedPortfolio})
+            
+            res.status(200).json({
+                success: true,
+                message: "Portfolio updated successfully",
+                data: updatedPortfolio,
+            });
         } catch(error) {
             console.error(`An Unexpected Error Occur: `, error)
             return res.status(500).json({"Error": "Server Error"})
