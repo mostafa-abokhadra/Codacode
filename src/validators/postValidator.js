@@ -3,7 +3,7 @@ const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient()
 const {URL} = require('url')
 const utils = require("../utils/utils")
-const { json } = require('stream/consumers')
+
 
 const validateGitHubUsername = async (username, repoOwner) => {
     const user = await prisma.user.findFirst({
