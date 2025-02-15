@@ -27,34 +27,42 @@ class portfolioController {
                 return res.status(404).json({"info": "portfolio not found"})
             return res.status(200).json({portfolio: portfolio})
         } catch(error) {
-            console.log(error)
+            console.error(error)
             return res.status(500).json({"Error": "Server Error"})
         }
     }
 
-    static async updatePortfolioAbout(req, res) {
-        try {
-            const {name, tagline, about, gender} = req.body
-            const  updatedPortfolio = await prisma.profile.update({
-                where: {
-                    user_id: req.user.id
-                },
-                data: {
-                    name: name,
-                    tagline: tagline,
-                    about: about,
-                }
-            })
-            if (!updatedPortfolio)
-                return res.status(500).json({"info": `can't update user profile`})
+    // static async updatePortfolioAbout(req, res) {
+    //     try {
+    //         const {name, tagline, about, gender} = req.body
+    //         const  updatedPortfolio = await prisma.profile.update({
+    //             where: {
+    //                 user_id: req.user.id
+    //             },
+    //             data: {
+    //                 name: name,
+    //                 tagline: tagline,
+    //                 about: about,
+    //             }
+    //         })
+    //         if (!updatedPortfolio)
+    //             return res.status(500).json({"info": `can't update user profile`})
             
-            res.status(200).json({
-                success: true,
-                message: "Portfolio updated successfully",
-                data: updatedPortfolio,
-            });
+    //         res.status(200).json({
+    //             success: true,
+    //             message: "Portfolio updated successfully",
+    //             data: updatedPortfolio,
+    //         });
+    //     } catch(error) {
+    //         console.error(`An Unexpected Error Occur: `, error)
+    //         return res.status(500).json({"Error": "Server Error"})
+    //     }
+    // }
+    static async editPortfolio(req, res) {
+        try {
+            return res.render('editPortfolio')
         } catch(error) {
-            console.error(`An Unexpected Error Occur: `, error)
+            console.error('An Unexpected Error has Occured: ', error)
             return res.status(500).json({"Error": "Server Error"})
         }
     }

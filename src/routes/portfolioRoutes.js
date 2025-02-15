@@ -11,13 +11,18 @@ router.get(
     ensureAuthenticated,
     portfolioController.getPortfolio
 )
-router.put(
-    '/portfolio/about',
+// router.put(
+//     '/portfolio/about',
+//     ensureAuthenticated,
+//     portfolioValidator.nameValidator,
+//     portfolioValidator.taglineValidator,
+//     portfolioValidator.aboutValidator,
+//     handleValidationError,
+//     portfolioController.updatePortfolioAbout
+// )
+router.get(
+    `/portfolio/edit`,
     ensureAuthenticated,
-    portfolioValidator.nameValidator,
-    portfolioValidator.taglineValidator,
-    portfolioValidator.aboutValidator,
-    handleValidationError,
-    portfolioController.updatePortfolioAbout
+    portfolioController.editPortfolio
 )
 module.exports = router

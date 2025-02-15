@@ -200,12 +200,14 @@
     <section
       class="h-screen flex flex-col md:flex-row items-center justify-center text-center md:text-left p-10 gap-10 animate-fadeIn relative"
     >
-      <button
-        id="edit-about-data"
-        class="absolute top-4 right-4 px-3 py-1 bg-primary text-white rounded-md shadow-lg hover:bg-green-700 transition"
-      >
-        Edit
-      </button>
+      <a href="/portfolio/edit">
+        <button
+          id="edit-portfolio"
+          class="absolute top-4 right-4 px-3 py-1 bg-primary text-white rounded-md shadow-lg hover:bg-green-700 transition"
+        >
+          Edit
+        </button>
+      </a>
       <img
         id="portfolio-image"
         src="https://media.istockphoto.com/id/1332100919/vector/man-icon-black-icon-person-symbol.jpg?s=612x612&w=0&k=20&c=AVVJkvxQQCuBhawHrUhDRTCeNQ3Jgt0K1tXjJsFy1eg="
@@ -232,32 +234,9 @@
           >
         </div>
       </div>
-
-      <div id="edit-about-popup" class="modal">
-        <div class="modal-content">
-          <div style="display: flex; justify-content: space-between">
-            <h2 style="color: #2e7d32">Edit About Section</h2>
-            <span id="close-edit-about-popup">❌</span>
-          </div>
-          <input name="name" type="text" id="edit-name" placeholder="Name" />
-          <input
-            type="text"
-            name="tagline"
-            id="edit-tagline"
-            placeholder="Tagline"
-          />
-          <textarea name="about" id="edit-about" placeholder="About"></textarea>
-          <button id="save-about-data">Save</button>
-        </div>
-      </div>
     </section>
 
     <section class="py-20 bg-white text-center animate-fadeIn relative">
-      <button
-        class="absolute top-4 right-4 px-3 py-1 bg-primary text-white rounded-md shadow-lg hover:bg-green-700 transition"
-      >
-        Edit
-      </button>
       <h2 class="text-4xl font-bold">Education</h2>
       <div
         id="education-container"
@@ -270,11 +249,6 @@
     </section>
 
     <section id="projects" class="py-20 text-center animate-fadeIn relative">
-      <button
-        class="absolute top-4 right-4 px-3 py-1 bg-primary text-white rounded-md shadow-lg hover:bg-green-700 transition"
-      >
-        Edit
-      </button>
       <h2 class="text-4xl font-bold">Projects</h2>
       <div
         id="projects-container"
@@ -290,11 +264,6 @@
       id="skills"
       class="py-20 text-center animate-fadeIn relative bg-white"
     >
-      <button
-        class="absolute top-4 right-4 px-3 py-1 bg-primary text-white rounded-md shadow-lg hover:bg-green-700 transition"
-      >
-        Edit
-      </button>
       <h2 class="text-4xl font-bold">Skills</h2>
       <div
         id="skills-container"
@@ -305,17 +274,13 @@
         </p>
       </div>
     </section>
+
     <!-- Contact Section -->
     <section
       id="contact"
       class="py-20 bg-white text-center animate-fadeIn relative"
       style="background-color: #f3f4f6"
     >
-      <button
-        class="absolute top-4 right-4 px-3 py-1 bg-primary text-white rounded-md shadow-lg hover:bg-green-700 transition"
-      >
-        Edit
-      </button>
       <h2 class="text-4xl font-bold">Contact Me</h2>
 
       <!-- Social Media Links Section -->

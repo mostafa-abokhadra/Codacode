@@ -195,7 +195,10 @@ function createSocialMediaLinks(contactContainer, links){
 
 
 (async () => {
+
     const data = await getPortfolio();
+    localStorage.setItem('portfolio', JSON.stringify(data.portfolio))
+
     const profilePictureElement = document.getElementById('portfolio-image')
     const nameElement = document.getElementById('portfolio-name')
     const taglineElement = document.getElementById('portfolio-tagline')
@@ -214,78 +217,8 @@ function createSocialMediaLinks(contactContainer, links){
     createSkillCard(skillsContainer, data.portfolio.skills)
     createSocialMediaLinks(contactContainer, data.portfolio.contact)
 
-    const eidtAboutDataPopup = document.getElementById('edit-about-popup')
-    const editAboutDataBtn = document.getElementById('edit-about-data')
-    const closeEditAboutPopup = document.getElementById('close-edit-about-popup')
-    const saveAboutData = document.getElementById('save-about-data')
-
-    eidtAboutDataPopup.addEventListener('click', (e) => {
-        if (e.target === eidtAboutDataPopup)
-            eidtAboutDataPopup.setAttribute('style', `display: none`)
-    })
-    editAboutDataBtn.addEventListener('click', (e) => {
-        eidtAboutDataPopup.setAttribute('style', 'display: flex')
-        
-    })
-    closeEditAboutPopup.addEventListener('click', (e) => {
-        eidtAboutDataPopup.setAttribute('style', `display: none`)
+    const editPortfolio = document.getElementById('edit-portfolio') 
+    editPortfolio.addEventListener('click', async (e)=>{
     })
     
-    saveAboutData.addEventListener('click', async (e) => {
-        document.querySelectorAll('.error-message').forEach((msg) => msg.remove());
-        const name = document.getElementById('edit-name')
-        const tagline = document.getElementById('edit-tagline')
-        const about = document.getElementById('edit-about')
-        const data = {
-            name: name.value,
-            tagline: tagline.value,
-            about: about.value
-        }
-        const updatedData = await updateAboutSection(data)
-        if (updatedData.hasOwnProperty('errors')) {
-            updatedData.errors.map((error) => {
-                const errorSpan =  document.createElement('span')
-                errorSpan.className = "error-message"
-                errorSpan.textContent = error.msg
-                errorSpan.setAttribute('style', 'color: red; font-size: small')
-                if (error.path === 'name') {
-                    name.after(errorSpan)
-                } else if (error.path === 'tagline') {
-                    tagline.after(errorSpan)
-                } else if (error.path === 'about') {
-                    about.after(errorSpan)
-                }
-            })
-        } else {
-            closeEditAboutPopup.click()
-            nameElement.textContent = updatedData.data.name
-            taglineElement.textContent = updatedData.data.tagline
-            aboutElement.textContent = updatedData.data.about
-        }
-    })
-
 })();
-
-async function updateAboutSection(data) {
-    try {
-        const updateAbout = await fetch(
-            `/portfolio/about`, {
-                method: 'put',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: data.name,
-                    tagline: data.tagline,
-                    about:data.about
-                })
-            }
-        )
-        if (updateAbout.status === 500 ) {
-            throw new Error('Network response was not ok');
-        }
-        return await updateAbout.json()
-    } catch(error) {
-        console.error('An Unexpected Error has Occured: ', error)
-    }
-}

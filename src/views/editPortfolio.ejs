@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portfolio Form</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f4f4f9;
+        color: #333;
+        margin: 0;
+        padding: 20px;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      h1,
+      h2 {
+        color: #444;
+      }
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      h2 {
+        margin-top: 30px;
+        margin-bottom: 15px;
+        font-size: 1.5em;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      .form-group input,
+      .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #e0e0e0;
+        border-radius: 6px;
+        font-size: 1em;
+        transition: border-color 0.3s ease;
+      }
+      .form-group input:focus,
+      .form-group textarea:focus {
+        border-color: #007bff;
+        outline: none;
+      }
+      .form-group textarea {
+        resize: vertical;
+        height: 100px;
+      }
+      .inline-group {
+        display: flex;
+        gap: 10px;
+      }
+      .inline-group .form-group {
+        flex: 1;
+      }
+      .social-icons {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+      }
+      .social-icons .form-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .social-icons .form-group i {
+        font-size: 1.2em;
+        color: #555;
+      }
+      button {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        font-size: 1.1em;
+        cursor: pointer;
+        margin-top: 20px;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      .photo-placeholder {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: #e0e0e0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        position: relative;
+      }
+      .photo-placeholder img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .photo-placeholder .edit-button {
+        position: absolute;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        width: 100%;
+        text-align: center;
+        padding: 5px;
+        cursor: pointer;
+      }
+      .card {
+        background: #f9f9f9;
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        border: 1px solid #e0e0e0;
+      }
+      .card h3 {
+        margin: 0;
+        font-size: 1.2em;
+      }
+      .card p {
+        margin: 5px 0;
+      }
+      .hidden {
+        display: none;
+      }
+      .toggle-button {
+        background: #007bff;
+        color: #fff;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-bottom: 15px;
+      }
+      .toggle-button:hover {
+        background: #0056b3;
+      }
+      .date-group {
+        display: flex;
+        gap: 10px;
+      }
+      .date-group input {
+        flex: 1;
+      }
+      .image-upload {
+        border: 2px dashed #e0e0e0;
+        padding: 20px;
+        text-align: center;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      .image-upload:hover {
+        border-color: #007bff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Portfolio</h1>
+
+      <!-- Account Section -->
+      <h2>Account</h2>
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Enter your username" />
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="Enter your email" />
+      </div>
+
+      <!-- About Section -->
+      <h2>About</h2>
+      <div class="inline-group">
+        <div style="flex: 1">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" placeholder="Enter your name" />
+          </div>
+          <div class="form-group">
+            <label for="tagline">Tagline</label>
+            <input type="text" id="tagline" placeholder="Enter a tagline" />
+          </div>
+        </div>
+        <div class="photo-placeholder">
+          <img src="" alt="User Photo" />
+          <div class="edit-button">Edit</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="about">About</label>
+        <textarea id="about" placeholder="Write about yourself"></textarea>
+      </div>
+
+      <!-- Education Section -->
+      <h2>Education</h2>
+      <div class="card">
+        <h3>Bachelor of Science in Computer Science</h3>
+        <p>XYZ University</p>
+        <p>2018 - 2022</p>
+      </div>
+      <button class="toggle-button" onclick="toggleEducationForm()">
+        Add an Education
+      </button>
+      <div id="education-form" class="hidden">
+        <div class="inline-group">
+          <div class="form-group">
+            <label for="course">Course</label>
+            <input type="text" id="course" placeholder="Enter course" />
+          </div>
+          <div class="form-group">
+            <label for="degree">Degree</label>
+            <input type="text" id="degree" placeholder="Enter degree" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="organization">Organization</label>
+          <input
+            type="text"
+            id="organization"
+            placeholder="Enter organization"
+          />
+        </div>
+        <div class="date-group">
+          <div class="form-group">
+            <label for="start-date">Start Date</label>
+            <input type="date" id="start-date" />
+          </div>
+          <div class="form-group">
+            <label for="end-date">End Date</label>
+            <input type="date" id="end-date" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Projects Section -->
+      <h2>Projects</h2>
+      <div class="card">
+        <h3>Project Title</h3>
+        <p>Project Description</p>
+        <p>Role: Developer</p>
+      </div>
+      <button class="toggle-button" onclick="toggleProjectForm()">
+        Add a Project
+      </button>
+      <div id="project-form" class="hidden">
+        <div class="form-group">
+          <label for="project-title">Project Title</label>
+          <input
+            type="text"
+            id="project-title"
+            placeholder="Enter project title"
+          />
+        </div>
+        <div class="form-group">
+          <label for="project-description">Project Description</label>
+          <textarea
+            id="project-description"
+            placeholder="Describe your project"
+          ></textarea>
+        </div>
+        <div class="form-group">
+          <label for="project-image">Project Image</label>
+          <div class="image-upload">
+            <p>Click to upload an image</p>
+            <input type="file" id="project-image" style="display: none" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="project-link">Project Link</label>
+          <input
+            type="url"
+            id="project-link"
+            placeholder="Enter project link"
+          />
+        </div>
+        <div class="form-group">
+          <label for="project-role">Your Role</label>
+          <input type="text" id="project-role" placeholder="Enter your role" />
+        </div>
+        <div class="form-group">
+          <label for="linkedin-post">LinkedIn Post Link</label>
+          <input
+            type="url"
+            id="linkedin-post"
+            placeholder="Enter LinkedIn post link"
+          />
+        </div>
+      </div>
+
+      <!-- Skills Section -->
+      <h2>Skills</h2>
+      <div class="card">
+        <h3>JavaScript, React, Node.js</h3>
+      </div>
+      <button class="toggle-button" onclick="toggleSkillForm()">
+        Add a Skill
+      </button>
+      <div id="skill-form" class="hidden">
+        <div class="form-group">
+          <label for="skills">Skills (comma separated)</label>
+          <textarea id="skills" placeholder="Enter your skills"></textarea>
+        </div>
+      </div>
+
+      <!-- Contact Info Section -->
+      <h2>Contact Info</h2>
+      <div class="social-icons">
+        <div class="form-group">
+          <i class="fab fa-instagram"></i>
+          <input type="text" placeholder="Instagram" />
+        </div>
+        <div class="form-group">
+          <i class="fab fa-facebook"></i>
+          <input type="text" placeholder="Facebook" />
+        </div>
+        <div class="form-group">
+          <i class="fab fa-youtube"></i>
+          <input type="text" placeholder="YouTube" />
+        </div>
+        <div class="form-group">
+          <i class="fab fa-snapchat"></i>
+          <input type="text" placeholder="Snapchat" />
+        </div>
+        <div class="form-group">
+          <i class="fab fa-linkedin"></i>
+          <input type="text" placeholder="LinkedIn" />
+        </div>
+        <div class="form-group">
+          <i class="fab fa-github"></i>
+          <input type="text" placeholder="GitHub" />
+        </div>
+        <div class="form-group">
+          <i class="fab fa-twitter"></i>
+          <input type="text" placeholder="Twitter" />
+        </div>
+        <div class="form-group">
+          <i class="fas fa-envelope"></i>
+          <input type="email" placeholder="Email" />
+        </div>
+        <div class="form-group">
+          <i class="fas fa-phone"></i>
+          <input type="tel" placeholder="Phone Number" />
+        </div>
+        <div class="form-group">
+          <i class="fas fa-globe"></i>
+          <input type="url" placeholder="Website" />
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit">Submit</button>
+    </div>
+
+    <script>
+      function toggleEducationForm() {
+        const form = document.getElementById("education-form");
+        form.classList.toggle("hidden");
+      }
+
+      function toggleProjectForm() {
+        const form = document.getElementById("project-form");
+        form.classList.toggle("hidden");
+      }
+
+      function toggleSkillForm() {
+        const form = document.getElementById("skill-form");
+        form.classList.toggle("hidden");
+      }
+
+      const imageUpload = document.querySelector(".image-upload");
+      const fileInput = document.querySelector("#project-image");
+      imageUpload.addEventListener("click", () => fileInput.click());
+    </script>
+    <script src="/js/editPortfolio.js"></script>
+  </body>
+</html>
