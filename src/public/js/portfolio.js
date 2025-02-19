@@ -256,8 +256,8 @@ function createSocialMediaLinks(contactContainer, links){
     createSkillCard(skillsContainer, data.portfolio.skills)
     createSocialMediaLinks(contactContainer, data.portfolio.contact)
 
-    const editPortfolio = document.getElementById('edit-portfolio') 
-    editPortfolio.addEventListener('click', async (e)=>{
-    })
+    // const editPortfolio = document.getElementById('edit-portfolio') 
+    // editPortfolio.addEventListener('click', async (e)=>{
+    // })
     
 })();
