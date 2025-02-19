@@ -278,10 +278,46 @@
     <!-- Contact Section -->
     <section
       id="contact"
-      class="py-20 bg-white text-center animate-fadeIn relative"
+      class="py-20 bg-white animate-fadeIn relative"
       style="background-color: #f3f4f6"
     >
-      <h2 class="text-4xl font-bold">Contact Me</h2>
+      <div
+        style="
+          display: flex;
+          justify-self: center;
+          justify-content: space-evenly;
+          position: relative;
+          width: 30%;
+        "
+      >
+        <div class="absolute top-2 left-4">
+          <button
+            class="relative focus:outline-none"
+            onclick="toggleMenu(this)"
+          >
+            <span class="text-green-600 text-xl" style="font-weight: bold"
+              >&#x22EE;</span
+            >
+          </button>
+          <div
+            class="hidden absolute left-0 mt-2 w-28 bg-white border border-gray-200 shadow-md rounded-md z-10 py-1"
+          >
+            <button
+              class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              onclick="editEducation()"
+            >
+              Edit
+            </button>
+            <button
+              class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+              onclick="deleteEducation()"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+        <h2 class="text-4xl font-bold">Contact Me</h2>
+      </div>
 
       <!-- Social Media Links Section -->
       <div class="mt-8">

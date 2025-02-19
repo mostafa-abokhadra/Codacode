@@ -62,6 +62,22 @@ function renderPortfolioData(element, elementValue) {
     }
 }
 
+function createEditDeleteMenue(editFunction, deleteFunction, cardId) {
+    const menueElement = document.createElement('div')
+    menueElement.className = "absolute top-4 left-4"
+    menueElement.innerHTML =
+    `
+        <button class="relative focus:outline-none" onclick="toggleMenu(this)">
+            <span class="text-green-600 text-xl" style="font-weight: bold">&#x22EE;</span>
+        </button>
+        <div class="hidden absolute left-0 mt-2 w-28 bg-white border border-gray-200 shadow-md rounded-md z-10 py-1">
+            <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="editEducation()">Edit</button>
+            <button class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100" onclick="deleteEducation()">Delete</button>
+        </div>
+    `
+    return menueElement.outerHTML
+}
+
 function createEducationCard(educationContainer, education) {
     try {
         if (!educationContainer)
@@ -71,16 +87,15 @@ function createEducationCard(educationContainer, education) {
             noEducationCardsToRender.classList.remove('hidden')
             return
         }
-        education.map((anEducation)=>{
+        education.map((anEducation) => {
             const educationCardElement = document.createElement('div')
             educationCardElement.className =
                 "group relative bg-gradient-to-r from-green-100 to-blue-100 p-6 \
                 rounded-xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-2"
-            educationCardElement.innerHTML = 
-            `
-                <div
-                    class="absolute top-4 right-4 text-gray-400 group-hover:text-gray-600 transition"
-                >
+                const menueElement = createEditDeleteMenue(editEducation, deleteEducation, anEducation.id)
+            educationCardElement.innerHTML = `
+                ${menueElement}
+                <div class="absolute top-4 right-4 text-gray-400 group-hover:text-gray-600 transition">
                     🎓
                 </div>
                 <h3 class="text-2xl font-semibold text-gray-800">
@@ -99,10 +114,28 @@ function createEducationCard(educationContainer, education) {
             `
             educationContainer.appendChild(educationCardElement)
         })
-
-    } catch(error) {
-        console.error('An Unexpexted Error Occur: ', error)
+    } catch (error) {
+        console.error('An Unexpected Error Occurred: ', error)
     }
+}
+
+function toggleMenu(button) {
+    const menu = button.nextElementSibling;
+    menu.classList.toggle('hidden');
+    document.addEventListener('click', function hideMenu(event) {
+        if (!button.contains(event.target)) {
+            menu.classList.add('hidden');
+            document.removeEventListener('click', hideMenu);
+        }
+    });
+}
+
+function editEducation() {
+    alert("Edit function triggered");
+}
+
+function deleteEducation() {
+    alert("Delete function triggered");
 }
 
 function createExperienceCard(projectContainer, projects) {
@@ -118,15 +151,20 @@ function createExperienceCard(projectContainer, projects) {
         }
         projects.map((aProject) => {
             const projectCardElement = document.createElement('div')
-            projectCardElement.className = `bg-white p-6 rounded-lg shadow-lg hover:scale-105 transition a-project`
+            projectCardElement.className = `relative bg-white p-6 rounded-lg shadow-lg hover:scale-105 transition a-project`
+            const menue = createEditDeleteMenue()
             projectCardElement.innerHTML = 
             `
+            <div style="display: grid; padding-bottom: 5px">
+                ${menue}
+                <h3 style="margin: 0px"class="text-xl font-semibold mt-4">${aProject.title}</h3>
+            </div>
                 <img
                     src="${aProject.image}"
                     alt="Project 1 photo"
                     class="w-full h-40 object-cover rounded-lg"
                 />
-                <h3 class="text-xl font-semibold mt-4">${aProject.title}</h3>
+                
                 <p class="mt-2">${aProject.description}</p>
                 <a href=${aProject.link} target='_blank' class="text-primary mt-4 inline-block">View Project →</a>
             `
@@ -152,8 +190,9 @@ function createSkillCard(skillsContainer, skills) {
         skills.map((aSkill) => {
             const skillElement = document.createElement('div')
             skillElement.id = aSkill.id
-            skillElement.className = "bg-gray-100 p-6 rounded-lg shadow-md a-skill"
-            skillElement.innerHTML = `<h3 class="text-xl font-semibold">${aSkill.name}</h3>`
+            skillElement.className = "bg-gray-100 p-6 relative rounded-lg shadow-md a-skill"
+            const menue = createEditDeleteMenue()
+            skillElement.innerHTML = `${menue} <h3 class="text-xl font-semibold">${aSkill.name}</h3>`
             skillsContainer.appendChild(skillElement)
         })
     } catch(error) {
