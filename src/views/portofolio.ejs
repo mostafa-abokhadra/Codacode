@@ -155,12 +155,33 @@
         Edit
       </button>
 
-      <img
-        id="portfolio-image"
-        src="https://media.istockphoto.com/id/1332100919/vector/man-icon-black-icon-person-symbol.jpg?s=612x612&w=0&k=20&c=AVVJkvxQQCuBhawHrUhDRTCeNQ3Jgt0K1tXjJsFy1eg="
-        alt="User Image"
-        class="w-60 h-60 rounded-full border-4 border-primary shadow-lg"
-      />
+      <div class="relative" style="height: 300px; width: 300px">
+        <!-- Profile Image -->
+        <img
+          id="portfolio-image"
+          src="https://via.placeholder.com/150"
+          alt="Profile"
+          class="w-full h-full object-cover rounded-full border-4 shadow-md"
+          style="border-color: rgb(34 197 94 / var(--tw-bg-opacity, 1))"
+        />
+
+        <!-- Edit Button -->
+        <label
+          for="profile-upload"
+          class="absolute bottom-9 right-9 transform translate-x-1/3 translate-y-1/3 bg-gray-100 p-2 rounded-full shadow-lg cursor-pointer hover:bg-gray-300 transition"
+        >
+          ✏️
+        </label>
+
+        <!-- Hidden File Input -->
+        <input
+          type="file"
+          id="profile-upload"
+          class="hidden"
+          accept="image/*"
+        />
+      </div>
+
       <div>
         <h1 class="text-5xl font-bold">
           Hi, I'm
@@ -185,7 +206,7 @@
       <div id="aboutPopup" class="popup hidden">
         <div class="popup-content">
           <div class="title-close">
-            <h1>About</h1>
+            <h2>About</h2>
             <span class="close-popup" onclick="closeAboutPopup()">❌</span>
           </div>
           <hr />
@@ -241,7 +262,7 @@
           class="relative"
         >
           <div
-            class="bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 text-green-900 rounded-full p-3 shadow-md"
+            class="add-btn bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 text-black rounded-full p-3 shadow-md"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -272,41 +293,40 @@
       <div id="education-popup" class="popup hidden">
         <div class="popup-content">
           <div class="title-close">
-            <h1>About</h1>
+            <h2>add Education</h2>
             <span class="close-popup" onclick="closeEducationPopup()">❌</span>
           </div>
           <hr />
-          <div class="inline-group">
-            <div>
+          <div id="education-form">
+            <div class="inline-group">
               <div class="form-group">
-                <label for="name">Name</label>
-                <input
-                  name="name"
-                  type="text"
-                  id="name"
-                  placeholder="Enter your name"
-                />
+                <label for="course">Course</label>
+                <input type="text" id="course" placeholder="Enter course" />
               </div>
               <div class="form-group">
-                <label for="tagline">Tagline</label>
-                <input
-                  name="tagline"
-                  type="text"
-                  id="tagline"
-                  placeholder="Enter a tagline"
-                />
+                <label for="degree">Degree</label>
+                <input type="text" id="degree" placeholder="Enter degree" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="organization">Organization</label>
+              <input
+                type="text"
+                id="organization"
+                placeholder="Enter organization"
+              />
+            </div>
+            <div class="date-group">
+              <div class="form-group">
+                <label for="start-date">Start Date</label>
+                <input type="date" id="start-date" />
+              </div>
+              <div class="form-group">
+                <label for="end-date">End Date</label>
+                <input type="date" id="end-date" />
               </div>
             </div>
           </div>
-          <div class="form-group">
-            <label for="about">About</label>
-            <textarea
-              name="about"
-              id="about"
-              placeholder="Write about yourself"
-            ></textarea>
-          </div>
-          <button class="send-data">save</button>
         </div>
       </div>
     </section>
@@ -324,7 +344,7 @@
 
         <!--  -->
         <button onclick="openProjectPopup()" class="relative">
-          <div class="bg-white text-green-900 rounded-full p-3 shadow-md">
+          <div class="add-btn bg-white text-black rounded-full p-3 shadow-md">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-6 w-6"
@@ -352,43 +372,61 @@
       </div>
 
       <div id="project-popup" class="popup hidden">
-        <div class="popup-content">
+        <div class="popup-content" style="height: 90vh; overflow-y: scroll">
           <div class="title-close">
-            <h1>About</h1>
+            <h2>add Project</h2>
             <span class="close-popup" onclick="closeProjectPopup()">❌</span>
           </div>
           <hr />
-          <div class="inline-group">
-            <div>
-              <div class="form-group">
-                <label for="name">Name</label>
-                <input
-                  name="name"
-                  type="text"
-                  id="name"
-                  placeholder="Enter your name"
-                />
-              </div>
-              <div class="form-group">
-                <label for="tagline">Tagline</label>
-                <input
-                  name="tagline"
-                  type="text"
-                  id="tagline"
-                  placeholder="Enter a tagline"
-                />
+
+          <div id="project-form">
+            <div class="form-group">
+              <label for="project-title">Project Title</label>
+              <input
+                type="text"
+                id="project-title"
+                placeholder="Enter project title"
+              />
+            </div>
+            <div class="form-group">
+              <label for="project-description">Project Description</label>
+              <textarea
+                id="project-description"
+                placeholder="Describe your project"
+              ></textarea>
+            </div>
+            <div class="form-group">
+              <label for="project-image">Project Image</label>
+              <div class="image-upload">
+                <p>Click to upload an image</p>
+                <input type="file" id="project-image" style="display: none" />
               </div>
             </div>
+            <div class="form-group">
+              <label for="project-link">Project Link</label>
+              <input
+                type="url"
+                id="project-link"
+                placeholder="Enter project link"
+              />
+            </div>
+            <div class="form-group">
+              <label for="project-role">Your Role</label>
+              <input
+                type="text"
+                id="project-role"
+                placeholder="Enter your role"
+              />
+            </div>
+            <div class="form-group">
+              <label for="linkedin-post">LinkedIn Post Link</label>
+              <input
+                type="url"
+                id="linkedin-post"
+                placeholder="Enter LinkedIn post link"
+              />
+            </div>
           </div>
-          <div class="form-group">
-            <label for="about">About</label>
-            <textarea
-              name="about"
-              id="about"
-              placeholder="Write about yourself"
-            ></textarea>
-          </div>
-          <button class="send-data">save</button>
         </div>
       </div>
     </section>
@@ -410,7 +448,7 @@
         <!--  -->
         <button onclick="openSkillPopup()" class="relative">
           <div
-            class="bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 text-green-900 rounded-full p-3 shadow-md"
+            class="add-btn bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 text-black rounded-full p-3 shadow-md"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -441,41 +479,17 @@
       <div id="skill-popup" class="popup hidden">
         <div class="popup-content">
           <div class="title-close">
-            <h1>About</h1>
+            <h2>add Skill</h2>
             <span class="close-popup" onclick="closeSkillPopup()">❌</span>
           </div>
           <hr />
-          <div class="inline-group">
-            <div>
-              <div class="form-group">
-                <label for="name">Name</label>
-                <input
-                  name="name"
-                  type="text"
-                  id="name"
-                  placeholder="Enter your name"
-                />
-              </div>
-              <div class="form-group">
-                <label for="tagline">Tagline</label>
-                <input
-                  name="tagline"
-                  type="text"
-                  id="tagline"
-                  placeholder="Enter a tagline"
-                />
-              </div>
+
+          <div id="skill-form">
+            <div class="form-group">
+              <label for="skills">Skills (comma separated)</label>
+              <textarea id="skills" placeholder="Enter your skills"></textarea>
             </div>
           </div>
-          <div class="form-group">
-            <label for="about">About</label>
-            <textarea
-              name="about"
-              id="about"
-              placeholder="Write about yourself"
-            ></textarea>
-          </div>
-          <button class="send-data">save</button>
         </div>
       </div>
     </section>
@@ -592,46 +606,58 @@
         </div>
       </div>
 
-      <div id="socialMediaPopup" class="popup hidden">
-        <div class="popup-content">
+      <div id="social-media-popup" class="popup hidden">
+        <div class="popup-content" style="height: 90vh; overflow-y: scroll">
           <div class="title-close">
-            <h1>About</h1>
+            <h2>add Contact</h2>
             <span class="close-popup" onclick="closeSocialMediaPopup()"
               >❌</span
             >
           </div>
           <hr />
-          <div class="inline-group">
-            <div>
-              <div class="form-group">
-                <label for="name">Name</label>
-                <input
-                  name="name"
-                  type="text"
-                  id="name"
-                  placeholder="Enter your name"
-                />
-              </div>
-              <div class="form-group">
-                <label for="tagline">Tagline</label>
-                <input
-                  name="tagline"
-                  type="text"
-                  id="tagline"
-                  placeholder="Enter a tagline"
-                />
-              </div>
+
+          <div class="social-icons">
+            <div class="form-group">
+              <i class="fab fa-instagram"></i>
+              <input type="text" placeholder="Instagram" style="width: 100%" />
+            </div>
+            <div class="form-group">
+              <i class="fab fa-facebook"></i>
+              <input type="text" placeholder="Facebook" />
+            </div>
+            <div class="form-group">
+              <i class="fab fa-youtube"></i>
+              <input type="text" placeholder="YouTube" />
+            </div>
+            <div class="form-group">
+              <i class="fab fa-snapchat"></i>
+              <input type="text" placeholder="Snapchat" />
+            </div>
+            <div class="form-group">
+              <i class="fab fa-linkedin"></i>
+              <input type="text" placeholder="LinkedIn" />
+            </div>
+            <div class="form-group">
+              <i class="fab fa-github"></i>
+              <input type="text" placeholder="GitHub" />
+            </div>
+            <div class="form-group">
+              <i class="fab fa-twitter"></i>
+              <input type="text" placeholder="Twitter" />
+            </div>
+            <div class="form-group">
+              <i class="fas fa-envelope"></i>
+              <input type="email" placeholder="Email" />
+            </div>
+            <div class="form-group">
+              <i class="fas fa-phone"></i>
+              <input type="tel" placeholder="Phone Number" />
+            </div>
+            <div class="form-group">
+              <i class="fas fa-globe"></i>
+              <input type="url" placeholder="Website" />
             </div>
           </div>
-          <div class="form-group">
-            <label for="about">About</label>
-            <textarea
-              name="about"
-              id="about"
-              placeholder="Write about yourself"
-            ></textarea>
-          </div>
-          <button class="send-data">save</button>
         </div>
       </div>
     </section>
@@ -769,10 +795,12 @@
         document.getElementById("skill-popup").classList.add("hidden");
       }
       function openSocialMediaPopup() {
-        document.getElementById("skill-popup").classList.remove("hidden");
+        document
+          .getElementById("social-media-popup")
+          .classList.remove("hidden");
       }
       function closeSocialMediaPopup() {
-        document.getElementById("skill-popup").classList.add("hidden");
+        document.getElementById("social-media-popup").classList.add("hidden");
       }
     </script>
 

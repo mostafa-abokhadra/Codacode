@@ -13,6 +13,14 @@
 .popup.hidden {
     display: none;
 }
+.popup-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    text-align: center;
+}
 
 .close-popup:hover {
     cursor: pointer;
@@ -28,19 +36,14 @@
     justify-content: space-between
 }
 
-#title-closeBtn h1 {
+.title-close h2 {
     width: fit-content;
     font-weight: bold;
     font-size: 20px
 }
-#title-closeBtn hr {
-    margin-bottom: 20px
+.popup-content hr {
+    margin:  10px 0px 20px 0px
 }
-
-#name-label {
-    width: fit-content;
-}
-
 .form-group {
     margin-bottom: 15px;
 }
@@ -81,13 +84,14 @@
 }
 #contact-edit-logo:hover {
     cursor: pointer;
+    font-size: 25px;
+    transition: 0.3s;
 }
 .social-icons {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(1, minmax(150px, 1fr));
     gap: 10px;
 }
-
 .social-icons .form-group {
     display: flex;
     align-items: center;
@@ -107,71 +111,7 @@ button {
     cursor: pointer;
     margin-top: 20px;
 }
-button:hover {
-    background-color: green
-}
-.photo-placeholder {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background-color: #e0e0e0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    position: relative;
-}
-.photo-placeholder img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-.photo-placeholder .edit-button {
-    position: absolute;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    color: #fff;
-    width: 100%;
-    text-align: center;
-    padding: 5px;
-    cursor: pointer;
-}
-.card {
-    background: #f9f9f9;
-    padding: 15px;
-    border-radius: 6px;
-    margin-bottom: 10px;
-    border: 1px solid #e0e0e0;
-}
-.card h3 {
-    margin: 0;
-    font-size: 1.2em;
-}
-.card p {
-    margin: 5px 0;
-}
-.hidden {
-    display: none;
-}
-.toggle-button {
-    background: #007bff;
-    color: #fff;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-bottom: 15px;
-}
-.toggle-button:hover {
-    background: #0056b3;
-}
-.date-group {
-    display: flex;
-    gap: 10px;
-}
-.date-group input {
-    flex: 1;
-}
+
 .image-upload {
     border: 2px dashed #e0e0e0;
     padding: 20px;
@@ -181,82 +121,4 @@ button:hover {
 }
 .image-upload:hover {
     border-color: #007bff;
-}
-h1,
-h2 {
-    color: #444;
-}
-h1 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-h2 {
-    margin-top: 30px;
-    margin-bottom: 15px;
-    font-size: 1.5em;
-}
-#email:hover {
-    color: rgb(168, 0, 0);
-}
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 128, 0, 0.3);
-    align-items: center;
-    justify-content: center;
-}
-.modal-content {
-    background: #fff;
-    padding: 25px;
-    border-radius: 12px;
-    width: 350px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-.modal-content input,
-.modal-content textarea {
-    width: 100%;
-    margin-top: 10px;
-    padding: 10px;
-    border: 2px solid #4caf50;
-    border-radius: 6px;
-    outline: none;
-    transition: border-color 0.3s ease-in-out;
-}
-.modal-content input:focus,
-.modal-content textarea:focus {
-    border-color: #2e7d32;
-}
-.modal-content button {
-    background: #4caf50;
-    color: white;
-    border: none;
-    padding: 12px;
-    width: 100%;
-    cursor: pointer;
-    border-radius: 6px;
-    font-size: 16px;
-    transition: background 0.3s ease-in-out;
-}
-.modal-content button:hover {
-    background: #2e7d32;
-}
-
-.popup-content {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 400px;
-    text-align: center;
-}
-.close {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 20px;
-    cursor: pointer;
 }
