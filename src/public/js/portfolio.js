@@ -230,9 +230,49 @@ function createSocialMediaLinks(contactContainer, links){
     }
 }
 
+async function handlePortfolioImageUpload(portfolioImageUpload){
+    if (portfolioImageUpload) {
+        portfolioImageUpload.addEventListener('change', async (event) => {
+            const file = event.target.files[0]; // Get the selected file
 
+            if (!file) {
+                console.error("No file selected.");
+                return;
+            }
 
+            const formData = new FormData();
+            formData.append('portfolio-image', file);
+            const response = await sendProfilePhoto(formData)
+            console.log('res', response)
 
+            const portfolioImage = document.getElementById('portfolio-image')
+            portfolioImage.setAttribute('src', response.path);
+            window.location.reload()
+        })
+    }
+}
+
+async function sendProfilePhoto(formData) {
+    try {
+        const username = localStorage.getItem("fullName");
+        if (!username) throw new Error("User not found in localStorage");
+
+        const sendProfilePhoto = await fetch(
+            `/${username}/portfolio/image`, {
+                method: 'PUT',
+                body: formData
+            }
+        );
+        
+        if (!sendProfilePhoto.ok) {
+            throw new Error(`HTTP error! Status: ${sendProfilePhoto.status}`);
+        }
+
+        return await sendProfilePhoto.json();
+    } catch(error) {
+
+    }
+}
 (async () => {
 
     const data = await getPortfolio();
@@ -256,8 +296,6 @@ function createSocialMediaLinks(contactContainer, links){
     createSkillCard(skillsContainer, data.portfolio.skills)
     createSocialMediaLinks(contactContainer, data.portfolio.contact)
 
-    // const editPortfolio = document.getElementById('edit-portfolio') 
-    // editPortfolio.addEventListener('click', async (e)=>{
-    // })
-    
+    const portfolioImageUpload = document.getElementById('profile-image-upload')
+    handlePortfolioImageUpload(portfolioImageUpload)
 })();
