@@ -370,6 +370,41 @@ async function  sendAboutDataToServer(name, tagline, about) {
 
     closeAboutPopupBtn.click()
 }
+
+function handleEducationData(sendEducationDataBtn) {
+    sendEducationDataBtn.addEventListener('click', (event) => {
+        const course = document.getElementById('course').value
+        const degree = document.getElementById('degree').value
+        const organization = document.getElementById('organization').value
+        const startDate = document.getElementById('start-date').value
+        const endDate = document.getElementById('end-date').value
+
+        const startDateParts = startDate.split('-')
+        const endDateParts = endDate.split('-')
+
+        const startDateData = {
+            day: Number(startDateParts[2]),
+            month: Number(startDateParts[1]),
+            year: Number(startDateParts[0])
+        }
+
+        const endDateData = {
+            day: Number(endDateParts[2]),
+            month: Number(endDateParts[1]),
+            year: Number(endDateParts[0])
+        }
+        
+        const data = {
+            course: course,
+            degree: degree,
+            organization: organization,
+            startDate: startDateData,
+            endDateData: endDateData
+        }
+        
+    })
+}
+
 (async () => {
 
     const data = await getPortfolio();
@@ -398,5 +433,8 @@ async function  sendAboutDataToServer(name, tagline, about) {
     
     const sendAboutDataBtn = document.getElementById('send-about-data')
     handleAboutData(sendAboutDataBtn)
+
+    const sendEducationDataBtn = document.getElementById('send-education-data')
+    handleEducationData(sendEducationDataBtn)
 
 })();

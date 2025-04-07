@@ -19,9 +19,10 @@
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 400px;
+    /* height: 90%; */
     text-align: center;
+    /* overflow-y:scroll; */
 }
-
 .close-popup:hover {
     cursor: pointer;
 }
@@ -53,6 +54,16 @@
     font-weight: bold;
     width: fit-content;
 }
+.education-popup-content {
+    height: 90%;
+    overflow-y: scroll;
+}
+#start-date {
+
+}
+#end-date {
+
+}
 .form-group input,
 .form-group textarea {
     width: 100%;
@@ -68,7 +79,7 @@
     outline: none;
 }
 
-#send-about-data {
+.send-data {
     padding: 4px 12px; 
     background-color: rgb(34 197 94 / var(--tw-bg-opacity, 1));
     color: white; 
