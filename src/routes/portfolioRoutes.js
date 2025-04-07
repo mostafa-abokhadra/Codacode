@@ -11,6 +11,12 @@ router.get(
     ensureAuthenticated,
     portfolioController.getPortfolio
 )
+
+router.put(
+    '/:username/portfolio/image',
+    ensureAuthenticated,
+    portfolioController.updatePortfolioImage,
+)
 router.put(
     '/portfolio/about',
     ensureAuthenticated,
@@ -20,4 +26,5 @@ router.put(
     handleValidationError,
     portfolioController.updatePortfolioAbout
 )
+
 module.exports = router

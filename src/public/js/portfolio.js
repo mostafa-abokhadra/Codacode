@@ -62,25 +62,41 @@ function renderPortfolioData(element, elementValue) {
     }
 }
 
+function createEditDeleteMenue(editFunction, deleteFunction, cardId) {
+    const menueElement = document.createElement('div')
+    menueElement.className = "absolute top-4 left-4"
+    menueElement.innerHTML =
+    `
+        <button class="relative focus:outline-none" onclick="toggleMenu(this)">
+            <span class="text-green-600 text-xl" style="font-weight: bold">&#x22EE;</span>
+        </button>
+        <div class="hidden absolute left-0 mt-2 w-28 bg-white border border-gray-200 shadow-md rounded-md z-10 py-1">
+            <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="editEducation()">Edit</button>
+            <button class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100" onclick="deleteEducation()">Delete</button>
+        </div>
+    `
+    return menueElement.outerHTML
+}
+
 function createEducationCard(educationContainer, education) {
     try {
         if (!educationContainer)
             throw new Error(`can't render education-container`)
         if (education.length === 0) {
             const noEducationCardsToRender = document.getElementById('noEducationCardsToRender')
+            educationContainer.className = "grid md:grid-cols-1 gap-6 mt-6 max-w-6xl mx-auto"
             noEducationCardsToRender.classList.remove('hidden')
             return
         }
-        education.map((anEducation)=>{
+        education.map((anEducation) => {
             const educationCardElement = document.createElement('div')
             educationCardElement.className =
                 "group relative bg-gradient-to-r from-green-100 to-blue-100 p-6 \
                 rounded-xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-2"
-            educationCardElement.innerHTML = 
-            `
-                <div
-                    class="absolute top-4 right-4 text-gray-400 group-hover:text-gray-600 transition"
-                >
+                const menueElement = createEditDeleteMenue(editEducation, deleteEducation, anEducation.id)
+            educationCardElement.innerHTML = `
+                ${menueElement}
+                <div class="absolute top-4 right-4 text-gray-400 group-hover:text-gray-600 transition">
                     🎓
                 </div>
                 <h3 class="text-2xl font-semibold text-gray-800">
@@ -99,10 +115,28 @@ function createEducationCard(educationContainer, education) {
             `
             educationContainer.appendChild(educationCardElement)
         })
-
-    } catch(error) {
-        console.error('An Unexpexted Error Occur: ', error)
+    } catch (error) {
+        console.error('An Unexpected Error Occurred: ', error)
     }
+}
+
+function toggleMenu(button) {
+    const menu = button.nextElementSibling;
+    menu.classList.toggle('hidden');
+    document.addEventListener('click', function hideMenu(event) {
+        if (!button.contains(event.target)) {
+            menu.classList.add('hidden');
+            document.removeEventListener('click', hideMenu);
+        }
+    });
+}
+
+function editEducation() {
+    alert("Edit function triggered");
+}
+
+function deleteEducation() {
+    alert("Delete function triggered");
 }
 
 function createExperienceCard(projectContainer, projects) {
@@ -118,15 +152,20 @@ function createExperienceCard(projectContainer, projects) {
         }
         projects.map((aProject) => {
             const projectCardElement = document.createElement('div')
-            projectCardElement.className = `bg-white p-6 rounded-lg shadow-lg hover:scale-105 transition a-project`
+            projectCardElement.className = `relative bg-white p-6 rounded-lg shadow-lg hover:scale-105 transition a-project`
+            const menue = createEditDeleteMenue()
             projectCardElement.innerHTML = 
             `
+            <div style="display: grid; padding-bottom: 5px">
+                ${menue}
+                <h3 style="margin: 0px"class="text-xl font-semibold mt-4">${aProject.title}</h3>
+            </div>
                 <img
                     src="${aProject.image}"
                     alt="Project 1 photo"
                     class="w-full h-40 object-cover rounded-lg"
                 />
-                <h3 class="text-xl font-semibold mt-4">${aProject.title}</h3>
+                
                 <p class="mt-2">${aProject.description}</p>
                 <a href=${aProject.link} target='_blank' class="text-primary mt-4 inline-block">View Project →</a>
             `
@@ -152,8 +191,9 @@ function createSkillCard(skillsContainer, skills) {
         skills.map((aSkill) => {
             const skillElement = document.createElement('div')
             skillElement.id = aSkill.id
-            skillElement.className = "bg-gray-100 p-6 rounded-lg shadow-md a-skill"
-            skillElement.innerHTML = `<h3 class="text-xl font-semibold">${aSkill.name}</h3>`
+            skillElement.className = "bg-gray-100 p-6 relative rounded-lg shadow-md a-skill"
+            const menue = createEditDeleteMenue()
+            skillElement.innerHTML = `${menue} <h3 class="text-xl font-semibold">${aSkill.name}</h3>`
             skillsContainer.appendChild(skillElement)
         })
     } catch(error) {
@@ -191,11 +231,150 @@ function createSocialMediaLinks(contactContainer, links){
     }
 }
 
+async function handlePortfolioImageUpload(portfolioImageUpload){
+    if (portfolioImageUpload) {
+        portfolioImageUpload.addEventListener('change', async (event) => {
+            const file = event.target.files[0]; // Get the selected file
 
+            if (!file) {
+                console.error("No file selected.");
+                return;
+            }
 
+            const formData = new FormData();
+            formData.append('portfolio-image', file);
+            const response = await sendProfilePhoto(formData)
+            console.log('res', response)
 
+            const portfolioImage = document.getElementById('portfolio-image')
+            portfolioImage.setAttribute('src', response.path);
+            window.location.reload()
+        })
+    }
+}
+
+async function sendProfilePhoto(formData) {
+    try {
+        const username = localStorage.getItem("fullName");
+        if (!username) throw new Error("User not found in localStorage");
+
+        const sendProfilePhoto = await fetch(
+            `/${username}/portfolio/image`, {
+                method: 'PUT',
+                body: formData
+            }
+        );
+        
+        if (!sendProfilePhoto.ok) {
+            throw new Error(`HTTP error! Status: ${sendProfilePhoto.status}`);
+        }
+
+        return await sendProfilePhoto.json();
+    } catch(error) {
+
+    }
+}
+
+const aboutPopup = document.getElementById("aboutPopup");
+
+function openAboutPopup() {
+    aboutPopup.classList.remove("hidden");
+}
+
+const closeAboutPopupBtn = document.querySelector('.close-popup')
+
+function closeAboutPopup() {
+    const existErrorMessages = document.querySelectorAll(`.error-message`);
+    existErrorMessages.forEach((message) => {
+        message.remove();
+    });
+    aboutPopup.classList.add("hidden");
+}
+
+closeAboutPopupBtn.addEventListener('click', closeAboutPopup)
+
+function handleAboutData(sendAboutDataBtn) {
+    if (sendAboutDataBtn) {
+        sendAboutDataBtn.addEventListener('click', (event) => {
+            const name = document.getElementById('name').value
+            const tagline = document.getElementById('tagline').value
+            const about = document.getElementById('about').value
+            sendAboutDataToServer(name, tagline, about)
+        })
+    }
+}
+function createErrorElement(msg) {
+    const errorElement = document.createElement('small')
+    errorElement.setAttribute(
+        'style', 'color: red; display: flex; margin-bottom: 5px;')
+        errorElement.className = `error-message`
+    errorElement.textContent = msg
+    return errorElement
+}
+async function  sendAboutDataToServer(name, tagline, about) {
+    const data = {
+        name: name,
+        tagline: tagline,
+        about: about
+    }
+    const response = await fetch(
+        `/portfolio/about`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+    if (!response.ok) {
+        if (response.status === 400) {
+            const errors = await response.json()
+            const existErrorMessages = document.querySelectorAll(`.error-message`)
+            existErrorMessages.forEach((message) => {
+                message.remove()
+            })
+            for(let i = 0; i < errors.errors.length; i++) {
+                if (errors.errors[i].path === 'name') {
+                    const nameFormGroup = document.getElementById('name-form-group')
+                    nameFormGroup.setAttribute('style', 'margin-bottom: 5px;')
+                    
+                    errorElement = createErrorElement(errors.errors[i].msg)
+                    nameFormGroup.insertAdjacentElement('afterend', errorElement)
+                }
+                if (errors.errors[i].path === 'tagline') {
+                    const taglineFormGroup = document.getElementById('tagline-form-group')
+                    taglineFormGroup.setAttribute('style', 'margin-bottom: 5px;')
+                    errorElement = createErrorElement(errors.errors[i].msg)
+                    taglineFormGroup.insertAdjacentElement('afterend', errorElement)
+                }
+                if (errors.errors[i].path === 'about') {
+                    const aboutFormGroup = document.getElementById('about-form-group')
+                    aboutFormGroup.setAttribute('style', 'margin-bottom: 5px;')
+                    errorElement = createErrorElement(errors.errors[i].msg)
+                    aboutFormGroup.insertAdjacentElement('afterend', errorElement)
+                }
+            }
+        } else if(response.status === 500) {
+            const serverError = document.getElementById('serverErrorPopup')
+            serverError.classList.remove('hidden')
+        }
+    }
+    const responseData = await response.json()
+    const portfolioName = document.getElementById('portfolio-name')
+    portfolioName.textContent = responseData.data.name
+
+    const portfolioTagline = document.getElementById('portfolio-tagline')
+    portfolioTagline.textContent = responseData.data.tagline
+
+    const portfolioAbout = document.getElementById('portfolio-about')
+    portfolioAbout.textContent = responseData.data.about
+
+    closeAboutPopupBtn.click()
+}
 (async () => {
+
     const data = await getPortfolio();
+    localStorage.setItem('portfolio', JSON.stringify(data.portfolio))
+
     const profilePictureElement = document.getElementById('portfolio-image')
     const nameElement = document.getElementById('portfolio-name')
     const taglineElement = document.getElementById('portfolio-tagline')
@@ -214,78 +393,10 @@ function createSocialMediaLinks(contactContainer, links){
     createSkillCard(skillsContainer, data.portfolio.skills)
     createSocialMediaLinks(contactContainer, data.portfolio.contact)
 
-    const eidtAboutDataPopup = document.getElementById('edit-about-popup')
-    const editAboutDataBtn = document.getElementById('edit-about-data')
-    const closeEditAboutPopup = document.getElementById('close-edit-about-popup')
-    const saveAboutData = document.getElementById('save-about-data')
-
-    eidtAboutDataPopup.addEventListener('click', (e) => {
-        if (e.target === eidtAboutDataPopup)
-            eidtAboutDataPopup.setAttribute('style', `display: none`)
-    })
-    editAboutDataBtn.addEventListener('click', (e) => {
-        eidtAboutDataPopup.setAttribute('style', 'display: flex')
-        
-    })
-    closeEditAboutPopup.addEventListener('click', (e) => {
-        eidtAboutDataPopup.setAttribute('style', `display: none`)
-    })
+    const portfolioImageUpload = document.getElementById('profile-image-upload')
+    handlePortfolioImageUpload(portfolioImageUpload)
     
-    saveAboutData.addEventListener('click', async (e) => {
-        document.querySelectorAll('.error-message').forEach((msg) => msg.remove());
-        const name = document.getElementById('edit-name')
-        const tagline = document.getElementById('edit-tagline')
-        const about = document.getElementById('edit-about')
-        const data = {
-            name: name.value,
-            tagline: tagline.value,
-            about: about.value
-        }
-        const updatedData = await updateAboutSection(data)
-        if (updatedData.hasOwnProperty('errors')) {
-            updatedData.errors.map((error) => {
-                const errorSpan =  document.createElement('span')
-                errorSpan.className = "error-message"
-                errorSpan.textContent = error.msg
-                errorSpan.setAttribute('style', 'color: red; font-size: small')
-                if (error.path === 'name') {
-                    name.after(errorSpan)
-                } else if (error.path === 'tagline') {
-                    tagline.after(errorSpan)
-                } else if (error.path === 'about') {
-                    about.after(errorSpan)
-                }
-            })
-        } else {
-            closeEditAboutPopup.click()
-            nameElement.textContent = updatedData.data.name
-            taglineElement.textContent = updatedData.data.tagline
-            aboutElement.textContent = updatedData.data.about
-        }
-    })
+    const sendAboutDataBtn = document.getElementById('send-about-data')
+    handleAboutData(sendAboutDataBtn)
 
 })();
-
-async function updateAboutSection(data) {
-    try {
-        const updateAbout = await fetch(
-            `/portfolio/about`, {
-                method: 'put',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: data.name,
-                    tagline: data.tagline,
-                    about:data.about
-                })
-            }
-        )
-        if (updateAbout.status === 500 ) {
-            throw new Error('Network response was not ok');
-        }
-        return await updateAbout.json()
-    } catch(error) {
-        console.error('An Unexpected Error has Occured: ', error)
-    }
-}

@@ -1,0 +1,124 @@
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.popup.hidden {
+    display: none;
+}
+.popup-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    text-align: center;
+}
+
+.close-popup:hover {
+    cursor: pointer;
+}
+
+#aboutPopup {
+    margin-top: 10px;
+}
+
+.title-close {
+    display: flex;
+    width: 100%;
+    justify-content: space-between
+}
+
+.title-close h2 {
+    width: fit-content;
+    font-weight: bold;
+    font-size: 20px
+}
+.popup-content hr {
+    margin:  10px 0px 20px 0px
+}
+.form-group {
+    margin-bottom: 15px;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    width: fit-content;
+}
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 1em;
+    transition: border-color 0.3s ease;
+}
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color:rgb(34 197 94 / var(--tw-bg-opacity, 1));
+    outline: none;
+}
+
+#send-about-data {
+    padding: 4px 12px; 
+    background-color: rgb(34 197 94 / var(--tw-bg-opacity, 1));
+    color: white; 
+    border-radius: 6px; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    transition: background-color 0.3s ease; 
+}
+
+#contact-edit-logo {
+    font-weight: bold;
+    display: flex;
+    align-items: center
+}
+#contact-edit-logo:hover {
+    cursor: pointer;
+    font-size: 25px;
+    transition: 0.3s;
+}
+.social-icons {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(150px, 1fr));
+    gap: 10px;
+}
+.social-icons .form-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.social-icons .form-group i {
+    font-size: 1.2em;
+    color: #555;
+}
+button {
+    display: block;
+    padding: 15px;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1em;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.image-upload {
+    border: 2px dashed #e0e0e0;
+    padding: 20px;
+    text-align: center;
+    border-radius: 6px;
+    cursor: pointer;
+}
+.image-upload:hover {
+    border-color: #007bff;
+}
