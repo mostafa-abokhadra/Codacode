@@ -84,6 +84,7 @@ function createEducationCard(educationContainer, education) {
             throw new Error(`can't render education-container`)
         if (education.length === 0) {
             const noEducationCardsToRender = document.getElementById('noEducationCardsToRender')
+            educationContainer.className = "grid md:grid-cols-1 gap-6 mt-6 max-w-6xl mx-auto"
             noEducationCardsToRender.classList.remove('hidden')
             return
         }
@@ -273,6 +274,102 @@ async function sendProfilePhoto(formData) {
 
     }
 }
+
+const aboutPopup = document.getElementById("aboutPopup");
+
+function openAboutPopup() {
+    aboutPopup.classList.remove("hidden");
+}
+
+const closeAboutPopupBtn = document.querySelector('.close-popup')
+
+function closeAboutPopup() {
+    const existErrorMessages = document.querySelectorAll(`.error-message`);
+    existErrorMessages.forEach((message) => {
+        message.remove();
+    });
+    aboutPopup.classList.add("hidden");
+}
+
+closeAboutPopupBtn.addEventListener('click', closeAboutPopup)
+
+function handleAboutData(sendAboutDataBtn) {
+    if (sendAboutDataBtn) {
+        sendAboutDataBtn.addEventListener('click', (event) => {
+            const name = document.getElementById('name').value
+            const tagline = document.getElementById('tagline').value
+            const about = document.getElementById('about').value
+            sendAboutDataToServer(name, tagline, about)
+        })
+    }
+}
+function createErrorElement(msg) {
+    const errorElement = document.createElement('small')
+    errorElement.setAttribute(
+        'style', 'color: red; display: flex; margin-bottom: 5px;')
+        errorElement.className = `error-message`
+    errorElement.textContent = msg
+    return errorElement
+}
+async function  sendAboutDataToServer(name, tagline, about) {
+    const data = {
+        name: name,
+        tagline: tagline,
+        about: about
+    }
+    const response = await fetch(
+        `/portfolio/about`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+    if (!response.ok) {
+        if (response.status === 400) {
+            const errors = await response.json()
+            const existErrorMessages = document.querySelectorAll(`.error-message`)
+            existErrorMessages.forEach((message) => {
+                message.remove()
+            })
+            for(let i = 0; i < errors.errors.length; i++) {
+                if (errors.errors[i].path === 'name') {
+                    const nameFormGroup = document.getElementById('name-form-group')
+                    nameFormGroup.setAttribute('style', 'margin-bottom: 5px;')
+                    
+                    errorElement = createErrorElement(errors.errors[i].msg)
+                    nameFormGroup.insertAdjacentElement('afterend', errorElement)
+                }
+                if (errors.errors[i].path === 'tagline') {
+                    const taglineFormGroup = document.getElementById('tagline-form-group')
+                    taglineFormGroup.setAttribute('style', 'margin-bottom: 5px;')
+                    errorElement = createErrorElement(errors.errors[i].msg)
+                    taglineFormGroup.insertAdjacentElement('afterend', errorElement)
+                }
+                if (errors.errors[i].path === 'about') {
+                    const aboutFormGroup = document.getElementById('about-form-group')
+                    aboutFormGroup.setAttribute('style', 'margin-bottom: 5px;')
+                    errorElement = createErrorElement(errors.errors[i].msg)
+                    aboutFormGroup.insertAdjacentElement('afterend', errorElement)
+                }
+            }
+        } else if(response.status === 500) {
+            const serverError = document.getElementById('serverErrorPopup')
+            serverError.classList.remove('hidden')
+        }
+    }
+    const responseData = await response.json()
+    const portfolioName = document.getElementById('portfolio-name')
+    portfolioName.textContent = responseData.data.name
+
+    const portfolioTagline = document.getElementById('portfolio-tagline')
+    portfolioTagline.textContent = responseData.data.tagline
+
+    const portfolioAbout = document.getElementById('portfolio-about')
+    portfolioAbout.textContent = responseData.data.about
+
+    closeAboutPopupBtn.click()
+}
 (async () => {
 
     const data = await getPortfolio();
@@ -298,4 +395,8 @@ async function sendProfilePhoto(formData) {
 
     const portfolioImageUpload = document.getElementById('profile-image-upload')
     handlePortfolioImageUpload(portfolioImageUpload)
+    
+    const sendAboutDataBtn = document.getElementById('send-about-data')
+    handleAboutData(sendAboutDataBtn)
+
 })();

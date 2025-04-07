@@ -17,14 +17,14 @@ router.put(
     ensureAuthenticated,
     portfolioController.updatePortfolioImage,
 )
-// router.put(
-//     '/portfolio/about',
-//     ensureAuthenticated,
-//     portfolioValidator.nameValidator,
-//     portfolioValidator.taglineValidator,
-//     portfolioValidator.aboutValidator,
-//     handleValidationError,
-//     portfolioController.updatePortfolioAbout
-// )
+router.put(
+    '/portfolio/about',
+    ensureAuthenticated,
+    portfolioValidator.nameValidator,
+    portfolioValidator.taglineValidator,
+    portfolioValidator.aboutValidator,
+    handleValidationError,
+    portfolioController.updatePortfolioAbout
+)
 
 module.exports = router
