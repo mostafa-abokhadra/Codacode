@@ -3,7 +3,7 @@ const prisma = new PrismaClient()
 const upload = require('../config/multer')
 const multer = require('multer')
 const path = require('path')
-const { profile } = require('console')
+
 class portfolioController {
     // creation of profile is during signup
 
@@ -90,6 +90,13 @@ class portfolioController {
         } catch(error) {
             console.error(`An Unexpected Error Occur: `, error)
             return res.status(500).json({"Error": "Server Error"})
+        }
+    }
+    static async updatePortfolioEducation(req, res) {
+        try {
+            return res.status(200).json({"info": "reached the controller"})
+        } catch(error) {
+            return res.status(500).json({"info": "server error"})
         }
     }
 
