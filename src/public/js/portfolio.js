@@ -399,10 +399,31 @@ function handleEducationData(sendEducationDataBtn) {
             degree: degree,
             organization: organization,
             startDate: startDateData,
-            endDateData: endDateData
+            endDate: endDateData
         }
-        
+        sendEducationData(data)
     })
+}
+async function sendEducationData(data) {
+    try {
+        const response  = await fetch(
+            '/portfolio/education', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }
+        )
+        if (!response.ok) {
+            if (response.status === 400) {
+                const errorData = await response.json()
+            }
+        }
+        const responseData = await response.json()
+    } catch(error) {
+        console.log(error)
+    }
 }
 
 (async () => {
