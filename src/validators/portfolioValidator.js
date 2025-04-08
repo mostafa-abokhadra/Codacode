@@ -100,7 +100,7 @@ const validateDateObject = (fieldName) =>
         }
 
         if (typeof value[key] !== 'number') {
-        throw new Error(`${fieldName}.${key} must be a number`);
+        throw new Error(`dates must be numbers`);
         }
 }
     return true;
@@ -110,7 +110,7 @@ const dateRangeValidator = [
     validateDateObject('startDate'),
     validateDateObject('endDate'),
 
-    body().custom((value, { req }) => {
+    body('endDate').custom((value, { req }) => {
         const { startDate, endDate } = req.body;
     
         const start = new Date(startDate.year, startDate.month - 1, startDate.day);

@@ -148,7 +148,6 @@
       class="h-screen flex flex-col md:flex-row items-center justify-center text-center md:text-left p-10 gap-10 animate-fadeIn relative"
     >
       <button
-        onclick="openAboutPopup()"
         id="edit-about-btn"
         class="absolute top-4 right-4 px-3 py-1 bg-primary text-white rounded-md shadow-lg hover:bg-green-700 transition"
       >
@@ -208,7 +207,9 @@
         <div class="popup-content">
           <div class="title-close">
             <h2>About</h2>
-            <span class="close-popup">❌</span>
+            <span class="close-popup close-about-popup" style="display: flex"
+              >❌</span
+            >
           </div>
           <hr />
           <div class="inline-group">
@@ -278,11 +279,7 @@
       >
         <h2 class="text-4xl font-bold">Education</h2>
         <!--  -->
-        <button
-          id="open-education-popup"
-          onclick="openEducationPopup()"
-          class="relative"
-        >
+        <button id="open-education-popup" class="relative">
           <div
             class="add-btn bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 text-black rounded-full p-3 shadow-md"
           >
@@ -320,21 +317,21 @@
         <div class="popup-content education-popup-content">
           <div class="title-close">
             <h2>add Education</h2>
-            <span class="close-popup" onclick="closeEducationPopup()">❌</span>
+            <span class="close-popup close-education-popup">❌</span>
           </div>
           <hr />
           <div id="education-form">
             <div class="inline-group">
-              <div class="form-group">
+              <div class="form-group course">
                 <label for="course">Course</label>
                 <input type="text" id="course" placeholder="Enter course" />
               </div>
-              <div class="form-group">
+              <div class="form-group degree">
                 <label for="degree">Degree</label>
                 <input type="text" id="degree" placeholder="Enter degree" />
               </div>
             </div>
-            <div class="form-group">
+            <div class="form-group organization">
               <label for="organization">Organization</label>
               <input
                 type="text"
@@ -343,11 +340,11 @@
               />
             </div>
             <div class="date-group">
-              <div class="form-group">
+              <div class="form-group startDate">
                 <label for="start-date">Start Date</label>
                 <input type="date" id="start-date" />
               </div>
-              <div class="form-group">
+              <div class="form-group endDate">
                 <label for="end-date">End Date</label>
                 <input type="date" id="end-date" />
               </div>
@@ -796,12 +793,6 @@
       menuButton.addEventListener("click", () => {
         mobileMenu.classList.toggle("hidden"); // Toggle the visibility of the mobile menu
       });
-      function openEducationPopup() {
-        document.getElementById("education-popup").classList.remove("hidden");
-      }
-      function closeEducationPopup() {
-        document.getElementById("education-popup").classList.add("hidden");
-      }
       function openProjectPopup() {
         document.getElementById("project-popup").classList.remove("hidden");
       }

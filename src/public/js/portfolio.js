@@ -1,3 +1,6 @@
+
+
+
 if (localStorage.getItem('urlUserName')) {
     const logoText = document.getElementById('logo-text')
     const signupBtn = document.getElementById('sign-up-btn')
@@ -275,22 +278,24 @@ async function sendProfilePhoto(formData) {
     }
 }
 
-const aboutPopup = document.getElementById("aboutPopup");
-
-function openAboutPopup() {
-    aboutPopup.classList.remove("hidden");
-}
-
-const closeAboutPopupBtn = document.querySelector('.close-popup')
-
-function closeAboutPopup() {
+function removeErrorMessages() {
     const existErrorMessages = document.querySelectorAll(`.error-message`);
     existErrorMessages.forEach((message) => {
         message.remove();
     });
-    aboutPopup.classList.add("hidden");
 }
 
+const editAboutBtn = document.getElementById('edit-about-btn')
+function openAboutPopup() {
+    aboutPopup.classList.remove("hidden");
+}
+editAboutBtn.addEventListener('click', openAboutPopup)
+const closeAboutPopupBtn = document.querySelector('.close-about-popup')
+
+function closeAboutPopup() {
+    removeErrorMessages()
+    aboutPopup.classList.add("hidden");
+}
 closeAboutPopupBtn.addEventListener('click', closeAboutPopup)
 
 function handleAboutData(sendAboutDataBtn) {
@@ -312,6 +317,7 @@ function createErrorElement(msg) {
     return errorElement
 }
 async function  sendAboutDataToServer(name, tagline, about) {
+    removeErrorMessages()
     const data = {
         name: name,
         tagline: tagline,
@@ -371,6 +377,23 @@ async function  sendAboutDataToServer(name, tagline, about) {
     closeAboutPopupBtn.click()
 }
 
+const educationPopup = document.getElementById("education-popup")
+const openEducationPopupBtn = document.getElementById('open-education-popup')
+
+openEducationPopupBtn.addEventListener('click', openEducationPopup)
+
+function openEducationPopup() {
+    educationPopup.classList.remove("hidden");
+}
+
+const closeEducationPopupBtn = document.querySelector('.close-education-popup')
+closeEducationPopupBtn.addEventListener('click', closeEducationPopup)
+
+function closeEducationPopup() {
+    removeErrorMessages()
+    educationPopup.classList.add('hidden')
+}
+
 function handleEducationData(sendEducationDataBtn) {
     sendEducationDataBtn.addEventListener('click', (event) => {
         const course = document.getElementById('course').value
@@ -406,6 +429,7 @@ function handleEducationData(sendEducationDataBtn) {
 }
 async function sendEducationData(data) {
     try {
+        removeErrorMessages()
         const response  = await fetch(
             '/portfolio/education', {
                 method: 'PUT',
@@ -416,14 +440,31 @@ async function sendEducationData(data) {
             }
         )
         if (!response.ok) {
-            if (response.status === 400) {
-                const errorData = await response.json()
-            }
+            const existErrorMessages = document.querySelectorAll(`.error-message`)
+            existErrorMessages.forEach((message) => {
+                message.remove()
+            })
+            const errors = await response.json()
+            handleEducationErrors(response.status, errors.errors)
         }
         const responseData = await response.json()
     } catch(error) {
         console.log(error)
     }
+}
+
+function handleEducationErrors(status, errors) {
+    if (status === 400) {
+        for(let i = 0; i < errors.length; i++) {
+            const error = createErrorElement(errors[i].msg)
+            const appendAfterElement = document.querySelector(`.${errors[i].path}`)
+            appendErrorMessage(appendAfterElement, error)
+        }
+    }
+}
+
+function appendErrorMessage(appendAfterElement, errorElement) {
+    appendAfterElement.insertAdjacentElement('afterend', errorElement)
 }
 
 (async () => {
