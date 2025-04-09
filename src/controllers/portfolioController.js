@@ -94,9 +94,27 @@ class portfolioController {
     }
     static async updatePortfolioEducation(req, res) {
         try {
-            return res.status(200).json({"info": "reached the controller"})
+            const {course, degree, organization, startDate, endDate} = req.body
+            const newEducation = await prisma.education.create({
+                data: {
+                    course,
+                    degree,
+                    organization,
+                    startDate: new Date(startDate.year, startDate.month - 1, startDate.day),
+                    endDate: new Date(endDate.year, endDate.month - 1, endDate.day),
+                    profile: {
+                        connect: {
+                            user_id: req.user.id
+                        }
+                    }
+                }
+            });
+            if (!newEducation)
+                return res.status(500).json({'info': 'can not create new education'})
+            return res.status(201).json({"info": "education created successfully", education: newEducation})
         } catch(error) {
-            return res.status(500).json({"info": "server error"})
+            console.log(error)
+            return res.status(500).json({"info": "server error", error: error})
         }
     }
 
