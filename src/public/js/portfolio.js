@@ -85,6 +85,7 @@ function educationElement(anEducation) {
         "group relative bg-gradient-to-r from-green-100 to-blue-100 p-6 \
         rounded-xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-2"
     const menueElement = createEditDeleteMenue(editEducation, deleteEducation, anEducation.id)
+    educationCardElement.setAttribute('data-education-id', anEducation.id)
     educationCardElement.innerHTML = 
         `
             ${menueElement}
@@ -111,6 +112,7 @@ function educationElement(anEducation) {
 function createEducationCard(educationContainer, education) {
     try {
         let educationCardElement = document.createElement('div')
+        const noEducationCardsToRender = document.getElementById('noEducationCardsToRender')
         if (!educationContainer)
             throw new Error(`can't render education-container`)
         if (
@@ -118,42 +120,22 @@ function createEducationCard(educationContainer, education) {
             !Array.isArray(education) &&
             education !== null
         ) {
-            console.log(typeof education)
             educationCardElement = educationElement(education)
-            return
+            closeEducationPopupBtn.click()
+            noEducationCardsToRender.classList.add('hidden')
+            educationContainer.className = "grid md:grid-cols-3 gap-6 mt-6 max-w-6xl mx-auto"
+            educationContainer.appendChild(educationCardElement)
         }  else if (education.length === 0) {
-            const noEducationCardsToRender = document.getElementById('noEducationCardsToRender')
             educationContainer.className = "grid md:grid-cols-1 gap-6 mt-6 max-w-6xl mx-auto"
             noEducationCardsToRender.classList.remove('hidden')
             return
         } else {
             education.map((anEducation) => {
-                educationCardElement.className =
-                    "group relative bg-gradient-to-r from-green-100 to-blue-100 p-6 \
-                    rounded-xl shadow-lg hover:shadow-xl transition transform hover:-translate-y-2"
-                    const menueElement = createEditDeleteMenue(editEducation, deleteEducation, anEducation.id)
-                educationCardElement.innerHTML = `
-                    ${menueElement}
-                    <div class="absolute top-4 right-4 text-gray-400 group-hover:text-gray-600 transition">
-                        🎓
-                    </div>
-                    <h3 class="text-2xl font-semibold text-gray-800">
-                        ${anEducation.organization}
-                    </h3>
-                    <p class="text-gray-600 text-sm">${anEducation.degree} in ${anEducation.course}</p>
-                    <p class="text-gray-700 font-medium mt-2">
-                        ${anEducation.startDate.split('T')[0].replaceAll('-', '/')} - ${anEducation.endDate.split('T')[0].replaceAll('-', '/')}</p>
-                    <div class="mt-4">
-                        <span
-                            class="inline-block bg-blue-500 text-white text-xs font-semibold px-3 py-1 rounded-full"
-                        >
-                            Honours
-                        </span>
-                    </div>
-                `
+                educationCardElement = educationElement(anEducation)
+                educationContainer.appendChild(educationCardElement)
             })
         }
-        educationContainer.appendChild(educationCardElement)
+        
     } catch (error) {
         console.error('An Unexpected Error Occurred: ', error)
     }
@@ -484,8 +466,8 @@ async function sendEducationData(data) {
             handleEducationErrors(response.status, errors.errors)
         }
         const responseData = await response.json()
-        console.log(responseData)
-        createEducationCard(responseData.education)
+        const educationContainer = document.getElementById('education-container')
+        createEducationCard(educationContainer, responseData.education)
     } catch(error) {
         console.log(error)
     }
