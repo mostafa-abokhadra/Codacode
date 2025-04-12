@@ -159,6 +159,8 @@ function editEducation() {
 function deleteEducation() {
     alert("Delete function triggered");
 }
+//////////////////////////////////////////////////
+
 
 function projectElement(aProject) {
     const projectCardElement = document.createElement('div')
@@ -222,6 +224,42 @@ function createExperienceCard(projectContainer, projects) {
     }
 }
 
+const sendProjectDataBtn = document.getElementById('send-project-data')
+sendProjectDataBtn.addEventListener('click', sanitizeProjectData)
+
+const projectImageUploadBtn = document.querySelector('.project-photo-upload')
+const projectImageInput = document.getElementById('project-image')
+
+projectImageUploadBtn.addEventListener('click', (event) => {
+    if(event.isTrusted) 
+        projectImageInput.click()
+})
+projectImageInput.addEventListener('change', (event) => {
+    const projectPhotoMessage = document.getElementById('project-photo-message')
+    const file = projectImageInput.files[0]
+    projectPhotoMessage.textContent = `file: ${file.name} with file size: ${file.size}`
+    
+})
+function sanitizeProjectData() {
+
+    const formData = new FormData()
+    formData.append('projectTitle', document.getElementById('project-title').value)
+    formData.append('projectDescription', document.getElementById('project-description').value)
+    formData.append('porjectImage', document.getElementById('project-image').files[0])
+    formData.append('projectRole', document.getElementById('project-role').value)
+    formData.append('projectLink', document.getElementById('project-link').value)
+    formData.append('linkedinPost', document.getElementById('linkedin-post').value)
+
+    for (const [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+    }
+}
+
+
+
+
+
+///////////////////////////////////////
 function createSkillCard(skillsContainer, skills) {
     try {
         if (!skillsContainer) {
@@ -290,7 +328,6 @@ async function handlePortfolioImageUpload(portfolioImageUpload){
             const formData = new FormData();
             formData.append('portfolio-image', file);
             const response = await sendProfilePhoto(formData)
-            console.log('res', response)
 
             const portfolioImage = document.getElementById('portfolio-image')
             portfolioImage.setAttribute('src', response.path);

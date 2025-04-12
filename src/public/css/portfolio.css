@@ -118,13 +118,13 @@ button {
     margin-top: 20px;
 }
 
-.image-upload {
+.project-photo-upload {
     border: 2px dashed #e0e0e0;
     padding: 20px;
     text-align: center;
     border-radius: 6px;
     cursor: pointer;
 }
-.image-upload:hover {
+.project-photo-upload:hover {
     border-color: #007bff;
 }
