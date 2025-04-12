@@ -160,36 +160,61 @@ function deleteEducation() {
     alert("Delete function triggered");
 }
 
+function projectElement(aProject) {
+    const projectCardElement = document.createElement('div')
+    projectCardElement.className = `relative bg-white p-6 rounded-lg shadow-lg hover:scale-105 transition a-project`
+    const menue = createEditDeleteMenue()
+    projectCardElement.innerHTML = 
+    `
+    <div style="display: grid; padding-bottom: 5px">
+        ${menue}
+        <h3 style="margin: 0px"class="text-xl font-semibold mt-4">${aProject.title}</h3>
+    </div>
+        <img
+            src="${aProject.image}"
+            alt="Project 1 photo"
+            class="w-full h-40 object-cover rounded-lg"
+        />
+        
+        <p class="mt-2">${aProject.description}</p>
+        <a href=${aProject.link} target='_blank' class="text-primary mt-4 inline-block">View Project →</a>
+    `
+    return projectCardElement
+}
+
+const closeProjectPopupBtn = document.querySelector('.close-project-popup')
+closeProjectPopupBtn.addEventListener('click', closeProjectPopup)
+
+function closeProjectPopup() {
+    const projectPopup = document.getElementById('project-popup')
+    projectPopup.classList.add('hidden')
+}
 function createExperienceCard(projectContainer, projects) {
     try {
+        let projectCardElement = document.createElement('div')
+        const noProjectCardsToRender = document.getElementById('noProjectCardsToRender')
+
         if (!projectContainer)
-            throw new Error(`can't render experience-container`)
+            throw new Error(`can't render projects container`)
+        if (
+            typeof projects === 'object' &&
+            !Array.isArray(projects) &&
+            projects !== null
+        ) {
+            projectCardElement = projectElement(projects)
+            closeProjectPopupBtn.click()
+            noProjectCardsToRender.classList.add('hidden')
+            // projectContainer.className = "grid md:grid-cols-3 gap-6 mt-6 max-w-6xl mx-auto"
+            projectContainer.appendChild(projectCardElement)
+        }
         if (projects.length === 0) {
             projectContainer.className = "grid md:grid-cols-1 gap-6 mt-6 max-w-6xl mx-auto"
-            const noProjectCardsToRender = document.getElementById('noProjectCardsToRender')
             noProjectCardsToRender.classList.remove('hidden')
             noProjectCardsToRender.style = "justify-self: center"
             return
         }
         projects.map((aProject) => {
-            const projectCardElement = document.createElement('div')
-            projectCardElement.className = `relative bg-white p-6 rounded-lg shadow-lg hover:scale-105 transition a-project`
-            const menue = createEditDeleteMenue()
-            projectCardElement.innerHTML = 
-            `
-            <div style="display: grid; padding-bottom: 5px">
-                ${menue}
-                <h3 style="margin: 0px"class="text-xl font-semibold mt-4">${aProject.title}</h3>
-            </div>
-                <img
-                    src="${aProject.image}"
-                    alt="Project 1 photo"
-                    class="w-full h-40 object-cover rounded-lg"
-                />
-                
-                <p class="mt-2">${aProject.description}</p>
-                <a href=${aProject.link} target='_blank' class="text-primary mt-4 inline-block">View Project →</a>
-            `
+            projectCardElement = projectElement(aProject)
             projectContainer.appendChild(projectCardElement)
         })
     } catch(error) {
@@ -506,7 +531,10 @@ function appendErrorMessage(appendAfterElement, errorElement) {
     renderPortfolioData(taglineElement, data.portfolio.tagline)
     renderPortfolioData(aboutElement, data.portfolio.about)
     createEducationCard(educationContainer, data.portfolio.education)
+
     createExperienceCard(projectContainer, data.portfolio.projects)
+
+
     createSkillCard(skillsContainer, data.portfolio.skills)
     createSocialMediaLinks(contactContainer, data.portfolio.contact)
 
