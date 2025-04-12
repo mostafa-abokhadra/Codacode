@@ -10,7 +10,6 @@ CREATE TABLE `portfolioProject` (
     `role` VARCHAR(191) NULL,
     `linkedInPost` VARCHAR(191) NULL,
 
-    UNIQUE INDEX `portfolioProject_profile_id_key`(`profile_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
