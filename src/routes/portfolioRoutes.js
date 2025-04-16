@@ -36,4 +36,9 @@ router.put(
     handleValidationError,
     portfolioController.updatePortfolioEducation
 )
+router.put(
+    '/portfolio/experience',
+    ensureAuthenticated,
+    portfolioController.updatePortfolioExperience
+)
 module.exports = router

@@ -118,6 +118,18 @@ class portfolioController {
         }
     }
 
+    static async updatePortfolioExperience(req, res) {
+        try {
+            console.log(req.body)
+            // console.log(req.file)
+            // console.log(req.files[0])
+            // const {projectTitle, projectDescription, projectLink} = req.body
+            return res.status(200).json({experiences: {'1': 'ok'}})
+        } catch(error) {
+            console.log(error)
+            return res.status(500).json({'info': 'an Error'})
+        }
+    }
 }
 
 module.exports = portfolioController
