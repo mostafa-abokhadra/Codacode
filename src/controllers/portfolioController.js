@@ -1,6 +1,7 @@
 const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient()
-const upload = require('../config/multer')
+const profilePictureUpload = require('../config/multerPortfolioPictures')
+const projectPrictureUpload = require('../config/multerProjectsPhotos')
 const multer = require('multer')
 const path = require('path')
 
@@ -36,35 +37,38 @@ class portfolioController {
     }
 
     static async updatePortfolioImage(req, res) {
-        upload.single('portfolio-image')(req, res, async function(err) {
+        profilePictureUpload.single('portfolio-image')(req, res, async function(err) {
             if (err instanceof multer.MulterError) {
                 return res.status(400).json({ error: "Multer error occurred", details: err.message });
             } else if (err) {
                 return res.status(500).json({ error: "Unknown error occurred", details: err.message });
             }
             if (!req.file) {
-                return res.status(400).json({ error: "No file uploaded" });
+                return res.status(400).json({ error: "No file profilePicture Uploaded" });
             }
-            const updateImage = await prisma.user.update({
-                where: {fullName: req.user.fullName},
-                data: {
-                    profile: {
-                        update: {
-                            image: path.join('/avatars', req.file.filename)  
-                        }
+           // console.log(req.file)
+        // console.log(req.file.filename)
+        const updateImage = await prisma.user.update({
+            where: {fullName: req.user.fullName},
+            data: {
+                profile: {
+                    update: {
+                        image: path.join('/avatars', req.file.filename)  
                     }
-                },
-                include: {
-                    profile: true
                 }
-            })
-            if (!updateImage)
-                return res.status(403).json({info: "can't update image"})
-            return res.status(200).json({
-                message: "File uploaded successfully",
-                path: updateImage.profile.image
-            });
+            },
+            include: {
+                profile: true
+            }
         })
+        if (!updateImage)
+            return res.status(403).json({info: "can't update image"})
+        return res.status(200).json({
+            message: "File profilePictureUploaded successfully",
+            path: updateImage.profile.image
+        });
+        })
+        
     }
     static async updatePortfolioAbout(req, res) {
         try {
@@ -119,17 +123,38 @@ class portfolioController {
     }
 
     static async updatePortfolioExperience(req, res) {
-        try {
-            console.log(req.body)
-            // console.log(req.file)
-            // console.log(req.files[0])
-            // const {projectTitle, projectDescription, projectLink} = req.body
-            return res.status(200).json({experiences: {'1': 'ok'}})
-        } catch(error) {
-            console.log(error)
-            return res.status(500).json({'info': 'an Error'})
-        }
+        projectPrictureUpload.single('project-image')(req, res, async function (err) {
+            if (err instanceof multer.MulterError) {
+                return res.status(400).json({ error: "Multer error occurred", details: err.message });
+            } else if (err) {
+                return res.status(500).json({ error: "Unknown error occurred", details: err.message });
+            }
+
+            try {
+                if (!req.file) {
+                    return res.status(400).json({ error: "No file for project photo has uploaded" });
+                }
+                
+                const newExperience = await prisma.portfolioProject.create({
+                    data: {
+                        profile_id: req.user.profile.id,
+                        title: req.body.experienceTitle,
+                        description: req.body.experienceDescription,
+                        link: req.body.experienceLink,
+                        image: path.join('/projectPhoto', req.file.filename)  
+                    }
+                })
+                if (!newExperience) {
+                    return res.status(500).json({"info": `can't create new experience`})
+                }
+                return res.status(200).json({ message: "Portfolio experience updated successfully" , data: newExperience});
+            } catch (error) {
+                console.error('Error handling profilePictureUploaded data:', error);
+                return res.status(500).json({ error: "Internal server error", details: error.message });
+            }
+        });
     }
+    
 }
 
 module.exports = portfolioController

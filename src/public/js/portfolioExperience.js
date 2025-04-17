@@ -70,7 +70,7 @@ function createExperienceCard(experienceContainer, experiences) {
             experienceCardElement = experienceElement(experiences)
             closeExperiencePopupBtn.click()
             noExperienceCardsToRender.classList.add('hidden')
-            // experienceContainer.className = "grid md:grid-cols-3 gap-6 mt-6 max-w-6xl mx-auto"
+            experienceContainer.className = "grid md:grid-cols-3 gap-6 mt-6 max-w-6xl mx-auto"
             experienceContainer.appendChild(experienceCardElement)
         } else if (experiences.length === 0) {
             experienceContainer.className = "grid md:grid-cols-1 gap-6 mt-6 max-w-6xl mx-auto"
@@ -107,7 +107,7 @@ function sanitizeExperienceData() {
     const formData = new FormData()
     formData.append('experienceTitle', document.getElementById('project-title').value)
     formData.append('experienceDescription', document.getElementById('project-description').value)
-    formData.append('porjectImage', document.getElementById('project-image').files[0])
+    formData.append('project-image', document.getElementById('project-image').files[0])
     // formData.append('experienceRole', document.getElementById('project-role').value)
     formData.append('experienceLink', document.getElementById('project-link').value)
     // formData.append('linkedinPost', document.getElementById('linkedin-post').value)
@@ -118,17 +118,17 @@ function sanitizeExperienceData() {
 async function sendExperienceData(formData) {
 
     try {
-        const response = await fetch(`/portfolio/experience`, {
+        const response = await fetch(
+            `/portfolio/experience`, {
             method: 'PUT',
-            body: JSON.stringify(formData)
+            body: formData
         })
         if (!response.ok) {
             console.error('an Error')
         }
         const data = await response.json()
-        console.log(data)
         const projectContainer = document.getElementById('projects-container')
-        createExperienceCard(projectContainer, data.experience)
+        createExperienceCard(projectContainer, data.data)
     } catch(error) {
         console.log('an error', error)
     }

@@ -55,7 +55,7 @@ function renderAboutData(element, elementValue) {
             if (!elementValue) {
                 if (element.id === 'portfolio-image') {
                     element.setAttribute(
-                        'src', 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png?20200919003010')
+                        'src', 'https://www.treasury.gov.ph/wp-content/uploads/2022/01/male-placeholder-image.jpeg')
                 } else if (element.id === 'portfolio-name'){
                     element.textContent = localStorage.getItem('urlUserName')
                 } else if (element.id == 'portfolio-tagline') {
@@ -190,13 +190,15 @@ function experienceElement(aProject) {
         />
         
         <p class="mt-2">${aProject.description}</p>
-        <a href=${aProject.link} target='_blank' class="text-primary mt-4 inline-block">View Project →</a>
+        <a href="${aProject.link}" target='_blank' class="text-primary mt-4 inline-block">View Project →</a>
     `
+    
     return projectCardElement
 }
 
 function createExperienceCard(projectContainer, projects) {
     try {
+        
         let projectCardElement = document.createElement('div')
         const noProjectCardsToRender = document.getElementById('noProjectCardsToRender')
 
@@ -305,6 +307,7 @@ function createSocialMediaLinks(contactContainer, links){
 
     createEducationCard(educationContainer, data.portfolio.education)
     createExperienceCard(projectContainer, data.portfolio.projects)
+    console.log( data.portfolio.projects)
 
     createSkillCard(skillsContainer, data.portfolio.skills)
     createSocialMediaLinks(contactContainer, data.portfolio.contact)

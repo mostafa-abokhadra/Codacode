@@ -30,35 +30,6 @@ async function getPortfolio() {
 
 }
 
-function createEditDeleteMenue(editFunction, deleteFunction, cardId) {
-    const menueElement = document.createElement('div')
-    menueElement.className = "absolute top-4 left-4"
-    menueElement.innerHTML =
-    `
-        <button class="relative focus:outline-none" onclick="toggleMenu(this)">
-            <span class="text-green-600 text-xl" style="font-weight: bold">&#x22EE;</span>
-        </button>
-        <div class="hidden absolute left-0 mt-2 w-28 bg-white border border-gray-200 shadow-md rounded-md z-10 py-1">
-            <button class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onclick="editEducation()">Edit</button>
-            <button class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100" onclick="deleteEducation()">Delete</button>
-        </div>
-    `
-    return menueElement.outerHTML
-}
-
-function toggleMenu(button) {
-    const menu = button.nextElementSibling;
-    menu.classList.toggle('hidden');
-    document.addEventListener('click', function hideMenu(event) {
-        if (!button.contains(event.target)) {
-            menu.classList.add('hidden');
-            document.removeEventListener('click', hideMenu);
-        }
-    });
-}
-
-
-
 async function handlePortfolioImageUpload(portfolioImageUpload){
     if (portfolioImageUpload) {
         portfolioImageUpload.addEventListener('change', async (event) => {
@@ -71,7 +42,10 @@ async function handlePortfolioImageUpload(portfolioImageUpload){
 
             const formData = new FormData();
             formData.append('portfolio-image', file);
+
             const response = await sendProfilePhoto(formData)
+
+            console.log(response)
 
             const portfolioImage = document.getElementById('portfolio-image')
             portfolioImage.setAttribute('src', response.path);
