@@ -1,0 +1,111 @@
+body {
+    background-color: #f3f4f6;
+}
+nav {
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+            0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+.nav-container {
+    max-width: 80rem; /* 1280px */
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;  /* 16px (base) */
+    padding-right: 1rem;
+}
+
+/* Small screens and up (640px+) */
+@media (min-width: 640px) {
+    .container {
+        padding-left: 1.5rem;  /* 24px */
+        padding-right: 1.5rem;
+    }
+}
+
+/* Large screens and up (1024px+) */
+@media (min-width: 1024px) {
+    .container {
+        padding-left: 2rem;  /* 32px */
+        padding-right: 2rem;
+    }
+}
+.nav-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 4rem; /* 64px */
+}
+.logo-and-links {
+    display: flex;
+    align-items: center;
+}
+.logo-and-links > *:not(:last-child) {
+    margin-right: 2rem; /* 32px spacing between items */
+}
+.logo-and-links .home-logo{
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #16a34a;       
+}
+
+.logo-and-links .links-list {
+    display: none;
+}
+
+@media (min-width: 768px) { /* md breakpoint */
+    .logo-and-links .links-list{
+        display: flex;
+    }
+    .logo-and-links .links-list > *:not(:last-child) {
+        margin-right: 1.5rem; /* 24px spacing between items */
+    }
+}
+
+.logo-and-links .links-list a {
+    color: #1f2937;
+    transition: color 0.2s ease-in-out;
+}
+.logo-and-links .links-list a:hover {
+    color: #16a34a; 
+}
+.auth-btns {
+    display: none;
+}
+@media (min-width: 768px) { /* md breakpoint */
+    .auth-btns {
+        display: flex;
+        align-items: center;
+    }
+    .auth-btns > *:not(:last-child) {
+        margin-right: 1rem; /* 16px spacing between items */
+    }
+}
+.auth-btns .auth-btn {
+    background-color: #22c55e; 
+    color: #ffffff;
+    padding: 0.5rem 1rem; /* 8px top/bottom, 16px left/right */
+    border-radius: 0.375rem; /* 6px */
+    transition: color 0.2s ease-in-out;
+}
+.button:hover {
+    color: #22c55e; 
+}
+
+.hamburger-menue  {
+    display: block; /* Default behavior for mobile (visible) */
+    position: relative;
+    z-index: 50;
+}
+
+@media (min-width: 768px) { 
+    .hamburger-menue{
+        display: none; 
+    }
+}
+.hamburger-menue .menue-button {
+    color: #1f2937;
+}
+.hamburger-menue .menue-button:focus {
+    outline: none;
+    padding-left: 5px; 
+}

@@ -7,8 +7,14 @@ class noAuthController {
         try {
             return res.render('ideasBank')
         } catch(error) {
-            console.log(error)
             return res.status(500).json({"message": "an error has occured"})
+        }
+    }
+    static async getAbout(req, res) {
+        try {
+            return res.render('about')
+        } catch(error) {
+            return res.status(500).json({'info': 'an error occur while rendering tempelate'})
         }
     }
 
