@@ -63,7 +63,6 @@ model Profile {
 	image String?
   name String?
   tagline String?
-  gender String?
   about String?
   education education[] @relation()
   skills skill[] @relation()
