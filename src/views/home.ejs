@@ -20,15 +20,15 @@
               <a href="/projects"
                 >Projects</a
               >
-              <a href="/IdeasBank" 
+              <!-- <a href="/IdeasBank" 
                 >IdeasBank</a
               >
               <a href="/guide" 
               >Guide</a
-            >
-            <a href="/about" 
-              >About</a
-            >
+              > -->
+              <a href="/about" 
+                >About</a
+              >
             </div>
           </div>
 
@@ -71,54 +71,49 @@
       <!-- Mobile Menu -->
       <div
         id="mobile-menu"
-        class="hidden bg-white shadow-md absolute top-0 left-0 w-full z-40"
-        style="margin-top:60px;"
+        class="hidden"
       >
         <a
           href="/projects"
-          class="block px-4 py-2 text-gray-800 hover:bg-blue-100 border-b border-gray-300"
           >Projects</a
         >
-        <a 
-        class="block px-4 py-2 text-gray-800 hover:bg-blue-100 border-b border-gray-300"
-        href="/ideasBank" class="text-gray-800 hover:text-blue-600"
-        >IdeasBank</a
-      >
-      <a 
-      class="block px-4 py-2 text-gray-800 hover:bg-blue-100 border-b border-gray-300"
-      href="/guide" class="text-gray-800 hover:text-blue-600"
-        >Guide</a
-      >
+        <!-- <a 
+          href="/ideasBank" class="text-gray-800 hover:text-blue-600"
+          >IdeasBank</a
+        > -->
+        <!-- <a 
+          href="/guide" class="text-gray-800 hover:text-blue-600"
+            >Guide</a
+        > -->
         <a
           href="/about"
-          class="block px-4 py-2 text-gray-800 hover:bg-blue-100 border-b border-gray-300"
           >About</a
         >
         <a
           href="/auth/signup"
-          class="block px-4 py-2 hover:bg-blue-100 border-b border-gray-300"
           >Sign Up</a
         >
         <a
           href="/auth/login"
-          class="block px-4 py-2 hover:bg-blue-100 border-b border-gray-300"
           >Login</a
         >
       </div>
     </nav>
 
-    <section class="bg-green-500 text-white py-20 relative">
-      <!-- Background Image with Low Opacity -->
+    <!-- ---------------------------------------------------------------------- -->
+    <!-- ----------------------------------------------------------------------- -->
+
+    <section class="bg-green-500 text-white py-20 relative" >
       <div
         class="absolute inset-0 bg-cover bg-center"
-        style="background-image: url('imgs/wallpaper.webp'); opacity: 0.2"
+        id="intro-image"
       ></div>
 
       <div
         class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10"
       >
         <h1 class="text-4xl font-extrabold">
-          We Help People Collaborate on Projects
+          We Help You Collaborate on Projects
         </h1>
         <p class="mt-4 text-lg">
           Increase your network, enhance your chances, and strengthen your
@@ -128,6 +123,7 @@
     </section>
 
     <!-- Collaborate on Projects Section -->
+    <!-- -------------------------------------------------- -->
     <section class="py-16 bg-white">
       <div
         class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-center"
@@ -156,12 +152,13 @@
             Showcase your work with real-world projects to impress potential
             employers.
           </p>
-          <button id="get-started-btn" class="mt-6 bg-green-600 text-white px-6 py-3 rounded-md text-lg flex items-center hover:bg-green-700">
-            Get Started
+          <button id="get-started-btn"
+            class="mt-6 bg-green-600 text-white px-6 py-3 rounded-md text-lg flex items-center hover:bg-green-700">
+              Get Started
         </div>
         <div>
           <img
-            src="imgs/protfolio.webp"
+            src="imgs/1-homeFirstSection.png"
             alt="Collaborate on Projects"
             class="rounded-lg shadow-md"
           />
@@ -169,6 +166,8 @@
       </div>
     </section>
 
+    <!-- -------------------------------------- -->
+    <!-- --------------------------------------------------------- -->
     <section class="bg-green-50 py-16">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-3xl font-bold text-green-700">
@@ -182,7 +181,7 @@
         <div class="mt-8 flex justify-center">
           <div class="bg-white shadow-lg rounded-lg overflow-hidden max-w-sm">
             <img
-              src="https://via.placeholder.com/400x300"
+              src="imgs/2-homePortfolio.webp"
               alt="Portfolio Example"
               class="w-full"
             />
@@ -206,9 +205,11 @@
       </div>
     </section>
 
+      <!-- ------------------------------------------------------- -->
+      <!-- ------------------------------------------------------- -->
+
     <footer class="bg-gray-800 text-white py-12">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-        <!-- Feedback Section -->
         <div class="text-center">
           <h2 class="text-3xl font-bold text-green-400">
             Your Feedback Matters
@@ -219,9 +220,7 @@
           </p>
         </div>
 
-        <!-- Actions Section -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <!-- Bug Report Section -->
           <div class="bg-gray-700 p-6 rounded-lg shadow-lg text-center">
             <h3 class="text-xl font-bold text-red-400">Report a Bug</h3>
             <p class="mt-2 text-gray-400">
@@ -229,12 +228,12 @@
             </p>
             <a
               href="#"
+              id="report-bug"
               class="mt-4 inline-block bg-red-500 text-white px-6 py-3 rounded-md text-lg hover:bg-red-600 transition"
             >
               Report Bug
             </a>
           </div>
-          <!-- Enhancement Suggestion Section -->
           <div class="bg-gray-700 p-6 rounded-lg shadow-lg text-center">
             <h3 class="text-xl font-bold text-blue-400">
               Suggest an Enhancement
@@ -244,6 +243,7 @@
             </p>
             <a
               href="#"
+              id="suggent-enhance"
               class="mt-4 inline-block bg-blue-500 text-white px-6 py-3 rounded-md text-lg hover:bg-blue-600 transition"
             >
               Suggest Enhancement
@@ -299,24 +299,11 @@
           </div>
         </div>
 
-        <!-- Bottom Note -->
         <div class="text-center text-gray-500 text-sm">
           &copy; 2024 Codacode. All rights reserved.
         </div>
       </div>
     </footer>
-
-    <script>
-      // JavaScript to toggle the mobile menu visibility
-      const menuButton = document.getElementById("menu-button");
-      const mobileMenu = document.getElementById("mobile-menu");
-
-      menuButton.addEventListener("click", () => {
-        mobileMenu.classList.toggle("hidden"); // Toggle the visibility of the mobile menu
-      });
-      document.getElementById('get-started-btn').addEventListener('click', function() {
-    window.location.href = '/auth/signup'; // Redirect to sign-up page
-  });
-    </script>
+    <script src="/js/home.js"></script>
   </body>
 </html>
