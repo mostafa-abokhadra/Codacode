@@ -77,18 +77,17 @@
     <!-- -------------------------------------------------- -->
 
     <div
-      class="justify-center items-center min-h-screen bg-opacity-70 bg-black"
-      id="signup-container"
+      class="flex justify-center items-center min-h-screen bg-opacity-70 bg-black"
+      id="signup-parent"
     >
       <div
+        id="signup-container"
         class="w-full max-w-md bg-white p-8 rounded-lg shadow-lg"
-        style="margin: 10px 0 10px 0"
       >
         <h2 class="text-3xl font-bold text-center text-gray-700">
           Create an Account
         </h2>
-        <form action="/auth/signup" method="POST" class="mt-6 space-y-4">
-          <!-- Full Name Field -->
+        <form id="signup-form" class="mt-6 space-y-4">
           <div>
             <label
               for="fullName"
@@ -98,9 +97,9 @@
             <input
               type="text"
               id="fullName"
+              class="signup-input"
               name="fullName"
               required
-              class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#48bb78] focus:border-transparent"
               placeholder="Your full name"
             />
           </div>
@@ -113,9 +112,9 @@
             <input
               type="email"
               id="email"
+              class="signup-input"
               name="email"
               required
-              class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#48bb78] focus:border-transparent"
               placeholder="Your email address"
             />
           </div>
@@ -130,9 +129,9 @@
             <input
               type="password"
               id="password"
+              class="signup-input"
               name="password"
               required
-              class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#48bb78] focus:border-transparent"
               placeholder="Create a password"
             />
           </div>
@@ -147,21 +146,16 @@
             <input
               type="password"
               id="confirmPassword"
+              class="signup-input"
               name="confirmPassword"
               required
-              class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#48bb78] focus:border-transparent"
               placeholder="Confirm your password"
             />
           </div>
 
           <!-- Sign Up Button -->
           <div>
-            <button
-              type="submit"
-              class="w-full py-2 bg-[#48bb78] text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-[#48bb78] focus:ring-opacity-50"
-            >
-              Sign Up
-            </button>
+            <button type="submit" id="signup-submit-btn">Sign Up</button>
           </div>
         </form>
 
@@ -169,10 +163,10 @@
         <div class="mt-4 flex items-center justify-center space-x-2">
           <button
             onclick="window.location.href='/auth/google'"
-            class="w-full py-2 flex items-center justify-center bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50"
+            id="signup-google-btn"
           >
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg"
+              src="/imgs/4-signup-google-logo.svg"
               alt="Google Logo"
               class="w-5 h-5 mr-2"
             />
@@ -180,31 +174,11 @@
           </button>
         </div>
 
-        <!-- Sign Up with github Button -->
-
-        <!-- <div class="mt-4 flex items-center justify-center space-x-2">
-          <button
-            onclick="window.location.href='/auth/github'"
-            class="w-full py-2 flex items-center justify-center bg-white text-black border border-black rounded-md rounded-md hover:bg-gray-100 hover:text-black focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50"
-          >
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg"
-              alt="GitHub Logo"
-              class="w-5 h-5 mr-2"
-            />
-            Sign Up with GitHub
-          </button>
-        </div> -->
-
         <!-- Already have an account? -->
         <div class="mt-6 text-center">
           <p class="text-sm text-gray-600">
             Already have an account?
-            <a
-              href="/auth/login"
-              class="text-[#48bb78] hover:text-green-600 font-semibold"
-              >Login</a
-            >
+            <a href="/auth/login" id="already-have-account-login-btn">Login</a>
           </p>
         </div>
       </div>
@@ -310,5 +284,6 @@
       </div>
     </footer>
     <script src="/js/nav.js"></script>
+    <script src="/js/signup.js"></script>
   </body>
 </html>
