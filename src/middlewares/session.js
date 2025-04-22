@@ -12,5 +12,6 @@ module.exports = session({
         sameSite: process.env.NODE_ENV === "production" ? 'lax' : 'Lax',
         httpOnly: true,
         maxAge:  24 * 60 * 60 * 1000 // one day
+        // store: new RedisStore({ client: redisClient }),
     }
 });

@@ -2,20 +2,32 @@ const {body} = require("express-validator")
 const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient()
 
+async function checkFullNameAvailability(req, res) {
+    let availablity = true
+    const user = await prisma.user.findFirst({
+        where: {fullName: req.body.fullName}
+    })
+    if (user)
+        availablity = false
+    return res.status(403).json({available: availablity})
+}
+
+async function checkEmailAvailability(req, res) {
+    let availablity = true
+    const user = await prisma.user.findFirst({
+        where: {email: req.body.email}
+    })
+    if (user)
+        availablity = false
+    return res.status(403).json({available: availablity})
+}
+
 const fullNameValidator = [
     body('fullName')
     .trim()
     .escape()
     .notEmpty().withMessage("fullName field is required")
     .isString().withMessage("name must be a string")
-    .custom(async (value) => {
-        const user = await prisma.user.findFirst({
-            where: {fullName: value}
-        })
-        if (user)
-            throw new Error("name already exist, please try another name")
-        return true
-    })
 ]
 
 const emailValidator = [
@@ -49,5 +61,7 @@ const passwordValidator = [
 module.exports = {
     fullNameValidator,
     emailValidator,
-    passwordValidator
+    passwordValidator,
+    checkFullNameAvailability,
+    checkEmailAvailability
 }

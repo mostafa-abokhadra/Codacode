@@ -18,6 +18,35 @@ class authController {
         return res.render('login', {message: message});
     }
 
+    static async  checkFullNameAvailability(req, res) {
+        try {
+            let availablity = true
+            const user = await prisma.user.findFirst({
+                where: {fullName: req.body.fullName}
+            })
+            if (user)
+                availablity = false
+            return res.status(200).json({availablity: availablity})
+        } catch(error) {
+            return res.status(500).json({'info': 'An Error while validating fullName presence'})
+        }
+    }
+
+    static async  checkEmailAvailability(req, res) {
+        try {
+            let availablity = true
+            const user = await prisma.user.findFirst({
+                where: {email: req.body.email}
+            })
+            if (user)
+                availablity = false
+            return res.status(200).json({availablity: availablity})
+        } catch(error) {
+            return res.status(500).json({"info": 'an error while checking email presence'})
+        }
+    }
+    
+
     static async postSignup(req, res){
         const {fullName, email, password} = req.body
         try {

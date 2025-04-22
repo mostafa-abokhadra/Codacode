@@ -16,6 +16,15 @@ router.get(
     authController.getSignup
 )
 router.post(
+    '/check-email',
+    authController.checkEmailAvailability
+)
+router.post(
+    '/check-name',
+    authController.checkFullNameAvailability
+)
+
+router.post(
     '/signup',
     blockAuthenticatedUsers,
     authValidator.fullNameValidator,
