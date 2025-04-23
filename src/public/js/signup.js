@@ -1,9 +1,3 @@
-const singubBtn = document.getElementById('signup-submit-btn')
-singubBtn.addEventListener('click', (e) => {
-    e.preventDefault()
-})
-
-const fullNameInput = document.getElementById('fullName')
 function feedback(beforeElement, feedbackMessage) {
     const feedback = document.createElement('p')
     feedback.id = 'feedback'
@@ -11,18 +5,36 @@ function feedback(beforeElement, feedbackMessage) {
     feedback.textContent = feedbackMessage
     beforeElement.parentNode.insertBefore(feedback, beforeElement.nextSibling)
 }
-fullNameInput.addEventListener('input', async (e) => {
-    removePreviousFeedbackMessages()
+
+function removePreviousFeedbackMessages() {
+    const feedbackMessages = document.querySelectorAll('#feedback')
+    feedbackMessages.forEach((message) => {
+        message.remove()
+    })
+}
+
+async function checkFullNameValidity() {
     const fullName = fullNameInput.value
     let feedbackMessage;
     const isAlphanum = /^[a-z0-9]$/i.test(fullName[0]);
-    if (!isAlphanum) 
+    if (fullName === ''){
+        feedbackMessage = feedback(fullNameInput, 'full name is required')
+        return 0
+    }
+    if (!isAlphanum) {
         feedbackMessage = feedback(fullNameInput, 'first char must be letter or number')
-    if (fullName.length < 10)
+        return 0
+    }
+    if (fullName.length < 10) {
         feedbackMessage = feedback(fullNameInput, 'name must be 10 to 20 character')
-    if (!(await checkFullNameAvailability(fullName)))
+        return 0
+    }
+    if (!(await checkFullNameAvailability(fullName))) {
         feedbackMessage = feedback(fullNameInput, 'name already found, please try another name')
-})
+        return 0
+    }
+    return 1
+}
 
 async function checkFullNameAvailability(fullName) {
     try {
@@ -47,13 +59,25 @@ async function checkFullNameAvailability(fullName) {
     }
 }
 
-function removePreviousFeedbackMessages() {
-    const feedbackMessages = document.querySelectorAll('#feedback')
-    feedbackMessages.forEach((message) => {
-        message.remove()
-    })
-}
+
+// //////////////////////////////////////////////////////////////////////////////
 
 // async function checkEmailAvailability() {
 
 // }
+
+const fullNameInput = document.getElementById('fullName')
+fullNameInput.addEventListener('input', async (e) => {
+    removePreviousFeedbackMessages()
+    await checkFullNameValidity()
+})
+
+const singubBtn = document.getElementById('signup-submit-btn')
+singubBtn.addEventListener('click', async (e) => {
+    e.preventDefault()
+    removePreviousFeedbackMessages()
+    if (!(await checkFullNameValidity())) {
+        return 
+    }
+
+})
