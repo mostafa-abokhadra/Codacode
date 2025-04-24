@@ -32,7 +32,7 @@ function containsLowercase(password) {
     return contains
 }
 function containsUppercase(password) {
-    let contains = false // assumning password don't contain capital letter
+    let contains = false 
     for(let i =0; i < password.length; i++) {
         const charCode = password.charCodeAt(i)
         if (charCode >= 65 && charCode <= 90) {
@@ -43,7 +43,7 @@ function containsUppercase(password) {
     return contains
 }
 function containsNumber(password) {
-    let contains = false // assumning password don't contain capital letter
+    let contains = false 
     for(let i =0; i < password.length; i++) {
         const charCode = password.charCodeAt(i)
         if (charCode >= 48 && charCode <= 57) {
@@ -54,7 +54,7 @@ function containsNumber(password) {
     return contains
 }
 function containsSpecialCharacter(password) {
-    let contains = false // assumning password don't contain any digits 
+    let contains = false 
     for(let i =0; i < password.length; i++) {
         if (!CheckIsAlphaNum(password[i])) {
             contains = true
@@ -64,7 +64,6 @@ function containsSpecialCharacter(password) {
     return contains
 }
 async function checkFullNameValidity() {
-
     const fullName = fullNameInput.value
     fullNameInput.classList.remove('input-error')
     if (fullName === ''){
@@ -109,9 +108,6 @@ async function checkFullNameAvailability(fullName) {
         console.log(error)
     }
 }
-
-
-// //////////////////////////////////////////////////////////////////////////////
 
 async function checkEmailAvailability(email) {
     try {
@@ -160,8 +156,8 @@ async function checkEmailValidity() {
 
 function checkPasswordValidity() {
     const password = passwordInput.value
+    passwordInput.classList.remove('input-error')
     if (password === '') {
-        console.log('here')
         feedback(passwordInput, 'password is required')
         return 0;
     }
@@ -185,17 +181,32 @@ function checkPasswordValidity() {
         feedback(passwordInput, 'password should be 8 letters or more')
         return 0;
     }
+    return 1
 }
 
+function checkConfirmationValidity() {
+    confirmPasswordInput.classList.remove('input-error')
+    if (confirmPasswordInput.value === '') {
+        feedback(confirmPasswordInput, 'confirmation is required')
+        return 0;
+    }
+    if (confirmPasswordInput.value !== passwordInput.value) {
+        feedback(confirmPasswordInput, `password don't match`)
+        return 0;
+    }
+    return 1
+}
 const passwordInput = document.getElementById('password')
 const confirmPasswordInput = document.getElementById('confirm-password')
+
 passwordInput.addEventListener('input', (e) => {
     removePreviousFeedbackMessages()
     checkPasswordValidity()
-    // similarToConfirmationInput
 })
-
-
+confirmPasswordInput.addEventListener('input', (e) =>{
+    removePreviousFeedbackMessages()
+    checkConfirmationValidity()
+})
 const emailInput = document.getElementById('email')
 emailInput.addEventListener('input', async (e) => {
     removePreviousFeedbackMessages()
@@ -210,10 +221,28 @@ fullNameInput.addEventListener('input', async (e) => {
 
 const singubBtn = document.getElementById('signup-submit-btn')
 singubBtn.addEventListener('click', async (e) => {
+    let allValidated = true
     e.preventDefault()
     removePreviousFeedbackMessages()
-    await checkFullNameValidity()
-    await checkEmailValidity()
-    checkPasswordValidity()
+    if (!(await checkFullNameValidity())) {
+        allValidated = false
+    }
+    if (!(await checkEmailValidity())) {
+        allValidated = false
+    }
+    if (!checkPasswordValidity()) {
+        allValidated = false
+    } 
+    if (!checkConfirmationValidity()) {
+        allValidated = false
+    } 
+
+    if (allValidated) {
+        sendRegistrationData()
+    }
 
 })
+/////////
+// async function sendRegistrationData() {
+//     // sanitize it first (make name in small letters except first letters from each word)
+// }
