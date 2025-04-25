@@ -240,9 +240,35 @@ singubBtn.addEventListener('click', async (e) => {
     if (allValidated) {
         sendRegistrationData()
     }
+    await sendRegistrationData()
 
 })
-/////////
-// async function sendRegistrationData() {
-//     // sanitize it first (make name in small letters except first letters from each word)
-// }
+
+async function sendRegistrationData() {
+    const fullName  = fullNameInput.value
+    const email = emailInput.value
+    const password = passwordInput.value
+    const confirmPassword = confirmPasswordInput.value
+    try {
+        const response = await fetch(
+            '/auth/signup',
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({fullName, email, password, confirmPassword})
+            }
+        )
+        const data = await response.json()
+        if (response.status === 400) {
+            // show errors from the backend
+            // already handled in the client side
+        } else {
+            
+        }
+        return
+    } catch(error) {
+        console.log(error)
+    }
+}
