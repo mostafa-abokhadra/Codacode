@@ -5,7 +5,7 @@ passport.use(
     new GitHubStrategy({
         clientID: process.env.GITHUB_CLIENT_ID,
         clientSecret: process.env.GITHUB_CLIENT_SECRET,
-        callbackURL: "http://localhost:8080/auth/github/redirect"
+        callbackURL: process.env.GITHUB_CALLBACK_URL || "http://localhost:8080/auth/github/redirect",
     },
     function(accessToken, freshToken, profile, done) {
         process.nextTick(function() {
@@ -16,7 +16,7 @@ passport.use(
                 }
                 return done(null, user)
             } catch(error) {
-                return done(error)
+                return done(null, error)
             }
         })
     }

@@ -222,7 +222,6 @@ async function decryptToken(encryptedToken) {
     return decrypted;
 }
 
-const fetch = require('node-fetch');
 
 const addCollaborator = async (ownerUsername, inviteeUsername, ownerToken, repo) => {
     console.log(ownerUsername, inviteeUsername, ownerToken, repo)

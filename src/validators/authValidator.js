@@ -15,14 +15,14 @@ const fullNameValidator = [
             throw new Error('first char must be a letter or number')
         return 1
     })
-    .custom(async (value) => {
-        const user = await prisma.user.findFirst({
-            where: {fullName: value}
-        })
-        if (user)
-            throw new Error('name exists, try another name')
-        return 1
-    })
+    // .custom(async (value) => {
+    //     const user = await prisma.user.findFirst({
+    //         where: {fullName: value}
+    //     })
+    //     if (user)
+    //         throw new Error('name exists, try another name')
+    //     return 1
+    // })
 ]
 
 const emailValidator = [

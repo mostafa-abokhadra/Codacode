@@ -22,6 +22,7 @@ const projectRoute = require("./src/routes/projectRoutes")
 const noAuthRoutes = require("./src/routes/noAuthRoutes")
 const messageRoutes = require('./src/routes/messageRoutes')
 const portfoliioRoutes = require('./src/routes/portfolioRoutes')
+const errorsRoutes = require('./src/routes/errorsRoute')
 
 
 app.set('view engine', 'ejs')
@@ -48,6 +49,7 @@ app.use('/', projectRoute)
 app.use('/', noAuthRoutes)
 app.use('/', messageRoutes)
 app.use('/', portfoliioRoutes)
+app.use('/', errorsRoutes)
 
 server.listen(process.env.PORT)
 

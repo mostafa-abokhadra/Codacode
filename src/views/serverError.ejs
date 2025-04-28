@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Server Error | Something Went Wrong</title>
+    <style>
+      :root {
+        --primary-color: #2ecc71;
+        --primary-dark: #27ae60;
+        --text-color: #333;
+        --light-bg: #f9f9f9;
+        --white: #ffffff;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: var(--text-color);
+        background-color: var(--light-bg);
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .error-container {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 0;
+      }
+
+      .error-content {
+        text-align: center;
+        background: var(--white);
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        width: 100%;
+      }
+
+      .error-icon {
+        font-size: 80px;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+      }
+
+      h1 {
+        font-size: 36px;
+        margin-bottom: 15px;
+        color: var(--primary-dark);
+      }
+
+      p {
+        font-size: 18px;
+        margin-bottom: 25px;
+        color: #666;
+      }
+
+      .btn {
+        display: inline-block;
+        background: var(--primary-color);
+        color: var(--white);
+        padding: 12px 30px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+      }
+
+      .btn:hover {
+        background: var(--primary-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+      }
+
+      .error-details {
+        margin-top: 30px;
+        padding: 15px;
+        background: #f5f5f5;
+        border-radius: 5px;
+        font-size: 14px;
+        text-align: left;
+        display: none;
+      }
+
+      .toggle-details {
+        margin-top: 20px;
+        color: var(--primary-color);
+        text-decoration: underline;
+        cursor: pointer;
+        font-size: 14px;
+        display: inline-block;
+      }
+
+      footer {
+        text-align: center;
+        padding: 20px;
+        color: #777;
+        font-size: 14px;
+      }
+
+      @media (max-width: 768px) {
+        .error-content {
+          padding: 30px 20px;
+        }
+
+        h1 {
+          font-size: 28px;
+        }
+
+        p {
+          font-size: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="error-container">
+      <div class="container">
+        <div class="error-content">
+          <div class="error-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="80"
+              height="80"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+          </div>
+          <h1>Oops! Something Went Wrong</h1>
+          <p>
+            We're experiencing technical difficulties on our end. Our team has
+            been notified and we're working to fix the issue.
+          </p>
+          <p>
+            Please try again later or contact support if the problem persists.
+          </p>
+
+          <a href="/" class="btn">Return Home</a>
+          <a
+            href="mailto:support@yourdomain.com"
+            class="btn"
+            style="margin-left: 15px; background: #555"
+            >Contact Support</a
+          >
+
+          <div class="toggle-details" onclick="toggleDetails()">
+            Show Technical Details
+          </div>
+          <div class="error-details" id="errorDetails">
+            <p><strong>Error:</strong> 500 Internal Server Error</p>
+            <p><strong>Time:</strong> <span id="errorTime"></span></p>
+            <p><strong>Request ID:</strong> <span id="requestId"></span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="container">
+        &copy; <span id="currentYear"></span> Your Company Name. All rights
+        reserved.
+      </div>
+    </footer>
+
+    <script>
+      // Set current year
+      document.getElementById("currentYear").textContent =
+        new Date().getFullYear();
+
+      // Set error time
+      document.getElementById("errorTime").textContent =
+        new Date().toLocaleString();
+
+      // Generate a random request ID (in a real app, this would come from your server)
+      document.getElementById("requestId").textContent =
+        "REQ-" + Math.random().toString(36).substr(2, 9).toUpperCase();
+
+      function toggleDetails() {
+        const details = document.getElementById("errorDetails");
+        const toggle = document.querySelector(".toggle-details");
+
+        if (details.style.display === "block") {
+          details.style.display = "none";
+          toggle.textContent = "Show Technical Details";
+        } else {
+          details.style.display = "block";
+          toggle.textContent = "Hide Technical Details";
+        }
+      }
+    </script>
+  </body>
+</html>

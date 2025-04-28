@@ -71,16 +71,18 @@ model Profile {
   contactId Int? @unique
   createdAT DateTime @default(now())
 	updatedAt DateTime @default(now()) @updatedAt
-  user User @relation(name: "UserProfile", fields: [user_id], references: [id])
-	user_id Int @unique
+
+  user User @relation(name: "UserProfile", fields: [userId], references: [id], onDelete: Cascade)
+	userId Int @unique
 }
 model User {
 	id Int @id @default(autoincrement())
-	fullName String @db.VarChar(50) @unique
+	fullName String @db.VarChar(50)
 	email String @unique @db.VarChar(255)
 	password String 
 
 	profile Profile? @relation(name: "UserProfile")
+
 	posts Post[] @relation(name: "UserPosts")
   pending Request[] // request i sent
 

@@ -19,10 +19,10 @@ router.post(
     '/check-email',
     authController.checkEmailAvailability
 )
-router.post(
-    '/check-name',
-    authController.checkFullNameAvailability
-)
+// router.post(
+//     '/check-name',
+//     authController.checkFullNameAvailability
+// )
 
 router.post(
     '/signup',
@@ -59,7 +59,7 @@ router.get(
 
 router.get(
     "/github",
-    passportGithub.authenticate('github', {scope: ["repo", "user:email"]})
+    passportGithub.authenticate('github', {scope: ["repo"]})
 )
 router.get(
     '/github/redirect',

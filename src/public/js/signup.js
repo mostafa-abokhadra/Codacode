@@ -79,35 +79,35 @@ async function checkFullNameValidity() {
         feedback(fullNameInput, 'name must be 10 to 20 character')
         return 0
     }
-    if (!(await checkFullNameAvailability(fullName))) {
-        feedback(fullNameInput, 'name already found, please try another name')
-        return 0
-    }
+    // if (!(await checkFullNameAvailability(fullName))) {
+    //     feedback(fullNameInput, 'name already found, please try another name')
+    //     return 0
+    // }
     return 1
 }
 
-async function checkFullNameAvailability(fullName) {
-    try {
-        const response = await fetch(
-            '/auth/check-name',
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ fullName })
-            }
-        )
-        if (!response.ok) {
-            console.error('an error occured')
-        } else {
-            const data = await response.json()
-            return data.availablity
-        }
-    } catch(error) {
-        console.log(error)
-    }
-}
+// async function checkFullNameAvailability(fullName) {
+//     try {
+//         const response = await fetch(
+//             '/auth/check-name',
+//             {
+//                 method: 'POST',
+//                 headers: {
+//                     'Content-Type': 'application/json'
+//                 },
+//                 body: JSON.stringify({ fullName })
+//             }
+//         )
+//         if (!response.ok) {
+//             console.error('an error occured')
+//         } else {
+//             const data = await response.json()
+//             return data.availablity
+//         }
+//     } catch(error) {
+//         console.log(error)
+//     }
+// }
 
 async function checkEmailAvailability(email) {
     try {
@@ -245,6 +245,7 @@ singubBtn.addEventListener('click', async (e) => {
 })
 
 async function sendRegistrationData() {
+    console.log('here')
     const fullName  = fullNameInput.value
     const email = emailInput.value
     const password = passwordInput.value
@@ -264,8 +265,10 @@ async function sendRegistrationData() {
         if (response.status === 400) {
             // show errors from the backend
             // already handled in the client side
+        } else if(response.status === 500){
+            window.location.href = '/server-error'
         } else {
-            
+            window.location.href = '/dashboard'
         }
         return
     } catch(error) {
