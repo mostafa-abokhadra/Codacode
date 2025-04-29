@@ -77,13 +77,13 @@ class authController {
             req.logIn(newUser, (error) => {
                 if (error){
                     // console.log('1: error', error)
-                    return res.status(500).json(`can't save user into session`)
+                    return res.status(500).json({'info': `can't save user into session`})
                 }
                 // const urlUserName = user.fullName.replaceAll(" ", '-')
                 // req.user.urlUserName = urlUserName
                 // console.log('4: ', req.user)
                 return res.status(201).json({
-                    'info': 'new user created successfully', user: req.user})
+                    'info': 'new user created successfully', user: newUser})
                 // return res.redirect("/auth/github")
                 // return res.redirect(`/${req.user.urlUserName}/dashboard`)
             })
@@ -91,11 +91,11 @@ class authController {
             if (error.code === 'P2002' && error.meta?.target?.includes('User_email_key')) {
                 // console.log('fuck this shit')
                 return res.status(201).json({
-                    error: 'Email already registered (race condition)' , user: req.user
+                    error: 'Email already registered (race condition)'
                 });
             }
             // console.log('2: error', error)
-            return res.status(500).json({"message": "an error has occured"})
+            return res.status(500).json({"info": "an error has occured"})
         }
     }
 
