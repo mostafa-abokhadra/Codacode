@@ -245,7 +245,6 @@ singubBtn.addEventListener('click', async (e) => {
 })
 
 async function sendRegistrationData() {
-    console.log('here')
     const fullName  = fullNameInput.value
     const email = emailInput.value
     const password = passwordInput.value
@@ -268,6 +267,11 @@ async function sendRegistrationData() {
         } else if(response.status === 500){
             window.location.href = '/server-error'
         } else {
+            console.log("string", JSON.stringify(data.user))
+            localStorage.setItem('user', JSON.stringify(data.user))
+            const user = JSON.parse(localStorage.getItem('user'))
+            console.log("parsend", JSON.parse(user))
+            console.log(user)
             window.location.href = '/dashboard'
         }
         return

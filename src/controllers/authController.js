@@ -61,11 +61,11 @@ class authController {
                     id: true
                 }
             })
-            console.log('1: ', newUser)
+            // console.log('1: ', newUser)
             if (!newUser) {
-                return res.status(500).json({'info': 'dbError'})
+                return res.status(400).json({'info': `can't create new user`})
             }
-            console.log("2: ", newUser)
+            // console.log("2: ", newUser)
             // user = await utils.getUpdatedUser(email)
             // if (user.hasOwnProperty('error')) {
             //     return res.status(500).json({
@@ -76,18 +76,25 @@ class authController {
             // const {GitHub, ...theUser} = user
             req.logIn(newUser, (error) => {
                 if (error){
-                    console.log('1: error', error)
-                    return res.status(500).json('loginError')
+                    // console.log('1: error', error)
+                    return res.status(500).json(`can't save user into session`)
                 }
                 // const urlUserName = user.fullName.replaceAll(" ", '-')
                 // req.user.urlUserName = urlUserName
-                console.log('4: ', req.user)
-                return res.status(200).json({'info': 'tamam'})
+                // console.log('4: ', req.user)
+                return res.status(201).json({
+                    'info': 'new user created successfully', user: req.user})
                 // return res.redirect("/auth/github")
                 // return res.redirect(`/${req.user.urlUserName}/dashboard`)
             })
         } catch(error) {
-            console.log('2: error', error)
+            if (error.code === 'P2002' && error.meta?.target?.includes('User_email_key')) {
+                // console.log('fuck this shit')
+                return res.status(201).json({
+                    error: 'Email already registered (race condition)' , user: req.user
+                });
+            }
+            // console.log('2: error', error)
             return res.status(500).json({"message": "an error has occured"})
         }
     }
