@@ -279,32 +279,19 @@ async function sendRegistrationData() {
         }
 
         if (response.status === 400) {
+            console.log('400 error')
             // show errors from the backend
             // already handled in the client side
         } else if(response.status === 500){
-            console.log(response, data)
+            console.log('500 error')
             // window.location.href = '/server-error'
         } else {
+            console.log('no error')
             window.location.href = '/auth/github'
         }
+        console.log(data)
         return
     } catch(error) {
         console.log(error)
-    }
-}
-
-async function getGithubAuthentication() {
-    try {
-        console.log('front here')
-        const response = await fetch(
-            '/auth/github'
-        )
-        console.log("front here2")
-        if (!response.ok)
-            console.log('an error while getting github authentication')
-        const data = await response.json()
-        console.log(data)
-    } catch(error) {
-        console.error('an error occured', error)
     }
 }

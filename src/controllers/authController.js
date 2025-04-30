@@ -33,23 +33,25 @@ class authController {
         passport.authenticate('github', async(err, user, info)=> {
             if (err)
                 return res.status(500).json({'info': `error with github auth`})
-            const encryptedToken = await utils.encryptToken(user.token)
-            const encryptedGitHubUsername = await utils.encryptToken(user.username)
-            const githubCredentials = await prisma.gitHubCredential.create({
-                data: {
-                    user: {
-                        connect: {
-                            id: req.user.id
-                        }
-                    },
-                    accessToken: encryptedToken,
-                    githubUsername: encryptedGitHubUsername
-                }})
-            if (!githubCredentials)
-                return res.status(200).json({'info': `can't save user github credentials`, user: req.user})
-            req.user = {
-                ...req.user, 
-                github: true
+            if (!user)
+                req.user = {...req.user, github: false}
+            else {
+                const encryptedToken = await utils.encryptToken(user.token)
+                const encryptedGitHubUsername = await utils.encryptToken(user.username)
+                const githubCredentials = await prisma.gitHubCredential.create({
+                    data: {
+                        user: {
+                            connect: {
+                                id: req.user.id
+                            }
+                        },
+                        accessToken: encryptedToken,
+                        githubUsername: encryptedGitHubUsername
+                    }})
+                if (!githubCredentials)
+                    req.user = {...req.user, github: false}
+                else
+                    req.user = {...req.user, github: true}
             }
             req.logIn(req.user, (err) => {
                 if (err)
