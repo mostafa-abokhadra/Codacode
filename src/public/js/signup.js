@@ -223,7 +223,7 @@ const signupBtb = document.getElementById('signup-submit-btn')
 signupBtb.addEventListener('click', async (e) => {
     let allValidated = true
     e.preventDefault()
-    signupBtb.disabled = true; 
+    // signupBtb.disabled = true; 
     removePreviousFeedbackMessages()
     if (!(await checkFullNameValidity())) {
         allValidated = false
@@ -282,12 +282,29 @@ async function sendRegistrationData() {
             // show errors from the backend
             // already handled in the client side
         } else if(response.status === 500){
-            window.location.href = '/server-error'
+            console.log(response, data)
+            // window.location.href = '/server-error'
         } else {
-            window.location.href = '/dashboard'
+            window.location.href = '/auth/github'
         }
         return
     } catch(error) {
         console.log(error)
+    }
+}
+
+async function getGithubAuthentication() {
+    try {
+        console.log('front here')
+        const response = await fetch(
+            '/auth/github'
+        )
+        console.log("front here2")
+        if (!response.ok)
+            console.log('an error while getting github authentication')
+        const data = await response.json()
+        console.log(data)
+    } catch(error) {
+        console.error('an error occured', error)
     }
 }

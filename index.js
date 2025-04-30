@@ -10,7 +10,7 @@ const io = require('socket.io')(server)
 socketHandler(io)
 
 const flash = require('express-flash');
-const passport = require('./src/config/localAuthStrategy')
+const passport = require('passport')
 
 const session = require('./src/middlewares/session')
 const homeRoute = require('./src/routes/homeRoute')
@@ -38,7 +38,7 @@ app.use(flash());
 app.use(passport.initialize())
 app.use(passport.session())
 
-
+require('./src/config/passport/passport')(passport)
 
 app.use('/', homeRoute)
 app.use('/auth', authRoute)

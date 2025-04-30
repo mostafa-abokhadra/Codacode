@@ -1,6 +1,5 @@
 const router = require("express").Router()
-const passport = require('../config/googleStrategy')
-const passportGithub = require("../config/githubStrategy")
+const passport = require('passport')
 
 const ensureAuthenticated = require('../middlewares/checkSession').ensureAuthenticated
 const blockAuthenticatedUsers = require('../middlewares/checkSession').blockAuthenticatedUsers
@@ -15,14 +14,6 @@ router.get(
     blockAuthenticatedUsers,
     authController.getSignup
 )
-router.post(
-    '/check-email',
-    authController.checkEmailAvailability
-)
-// router.post(
-//     '/check-name',
-//     authController.checkFullNameAvailability
-// )
 
 router.post(
     '/signup',
@@ -32,6 +23,17 @@ router.post(
     authValidator.passwordValidator,
     handleValidationErrors,
     authController.postSignup
+)
+router.get(
+    "/github",
+    passport.authenticate('github', {
+        scope: ["repo"],
+    }),
+    // authController.getGitHubAuth
+)
+router.get(
+    '/github/redirect',
+    authController.getGitHubRedirect
 )
 
 router.get(
@@ -48,7 +50,6 @@ router.post(
 router.get(
     '/google',
     blockAuthenticatedUsers,
-    passport.authenticate('google',  { scope: ['profile', 'email'] }),
     authController.getGoogleLogin
 )
 router.get(
@@ -57,15 +58,11 @@ router.get(
 );
 
 
-router.get(
-    "/github",
-    passportGithub.authenticate('github', {scope: ["repo"]})
-)
-router.get(
-    '/github/redirect',
-    authController.getGitHubRedirect
-)
-
 router.post('/logout', ensureAuthenticated, authController.logout)
 
+////////
+router.post(
+    '/check-email',
+    authController.checkEmailAvailability
+)
 module.exports = router

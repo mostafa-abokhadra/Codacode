@@ -1,7 +1,7 @@
 const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient()
-const profilePictureUpload = require('../config/multerPortfolioPictures')
-const projectPrictureUpload = require('../config/multerProjectsPhotos')
+const profilePictureUpload = require('../config/multer/multerPortfolioPictures')
+const projectPrictureUpload = require('../config/multer/multerProjectsPhotos')
 const multer = require('multer')
 const path = require('path')
 

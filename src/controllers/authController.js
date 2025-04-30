@@ -1,161 +1,65 @@
-const passport = require("../config/localAuthStrategy")
+const passport = require("passport")
 const {PrismaClient} = require("@prisma/client")
 const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
 const utils  = require("../utils/utils")
-const passportGithub = require("../config/githubStrategy")
+const passportGithub = require("../config/passport/githubStrategy")
 const profileController = require('../controllers/projectController')
 
 class authController {
 
     static async getSignup(req, res){
         return res.render('signup')
-    }
+    }    
 
-    // static async  checkFullNameAvailability(req, res) {
-    //     try {
-    //         let availablity = true
-    //         const user = await prisma.user.findFirst({
-    //             where: {fullName: req.body.fullName}
-    //         })
-    //         if (user)
-    //             availablity = false
-    //         return res.status(200).json({availablity: availablity})
-    //     } catch(error) {
-    //         return res.status(500).json({'info': 'An Error while validating fullName presence'})
-    //     }
-    // }
-
-    static async  checkEmailAvailability(req, res) {
-        try {
-            let availablity = true
-            const user = await prisma.user.findFirst({
-                where: {email: req.body.email}
+    static async postSignup(req, res, next){
+        passport.authenticate('local-signup', async (err, user, info) => {
+            if (err)
+                return res.status(500).json({'info': `can't create new user`})
+            req.logIn(user, (err) => {
+                if (err)
+                    return res.status(500).json({'info': `can't login new user to session`})
+                return res.status(200).json({'info': 'user created successfully', user: user})
             })
-            if (user)
-                availablity = false
-            return res.status(200).json({availablity: availablity})
-        } catch(error) {
-            return res.status(500).json({"info": 'an error while checking email presence'})
-        }
-    }
-    
-
-    static async postSignup(req, res){
-        const {fullName, email, password} = req.body
-        try {
-            const hashedPassword = await bcrypt.hash(password, parseInt(process.env.HASHING_SALT) || 10);
-            let newUser = await prisma.user.create({
-                data: {
-                    email: email,
-                    fullName: fullName,
-                    password: hashedPassword,
-                    profile: {
-                        create: {
-                                image: '/imgs/User_default_Icon.png',
-                        }
-                    }
-                },
-                select: {
-                    fullName: true,
-                    id: true
-                }
-            })
-            // console.log('1: ', newUser)
-            if (!newUser) {
-                return res.status(400).json({'info': `can't create new user`})
-            }
-            // console.log("2: ", newUser)
-            // user = await utils.getUpdatedUser(email)
-            // if (user.hasOwnProperty('error')) {
-            //     return res.status(500).json({
-            //         "info": "an error occured while fetching updated user",
-            //         "message": user.message
-            //     })
-            // }
-            // const {GitHub, ...theUser} = user
-            req.logIn(newUser, (error) => {
-                if (error){
-                    // console.log('1: error', error)
-                    return res.status(500).json({'info': `can't save user into session`})
-                }
-                // const urlUserName = user.fullName.replaceAll(" ", '-')
-                // req.user.urlUserName = urlUserName
-                // console.log('4: ', req.user)
-                return res.status(201).json({
-                    'info': 'new user created successfully', user: newUser})
-                // return res.redirect("/auth/github")
-                // return res.redirect(`/${req.user.urlUserName}/dashboard`)
-            })
-        } catch(error) {
-            if (error.code === 'P2002' && error.meta?.target?.includes('User_email_key')) {
-                // console.log('fuck this shit')
-                return res.status(201).json({
-                    error: 'Email already registered (race condition)'
-                });
-            }
-            // console.log('2: error', error)
-            return res.status(500).json({"info": "an error has occured"})
-        }
+        })(req, res, next)
     }
 
     static async getGitHubAuth(req, res, next) {
-        return res.status(200).json({"message": "github auth page"})
+        console.log('in github auth')
+        
     }
 
     static async getGitHubRedirect(req, res, next){
-        passportGithub.authenticate('github', async(err, user, info)=> {
-            try {
-                let githubAuthenticated = false
-                if (!user) {
-                    console.log(user, err, info, 'no user credentials given')
-                    // return res.status(200).json({user: req.user, github: false })
-                } else {
-                    const encryptedToken = await utils.encryptToken(user.token)
-                    const encryptedGitHubUsername = await utils.encryptToken(user.username)
-                    const githubCredentials = await prisma.gitHubCredential.create({
-                        data: {
-                            user: {
-                                connect: {
-                                    id: req.user.id
-                                }
-                            },
-                            accessToken: encryptedToken,
-                            githubUsername: encryptedGitHubUsername
+        passport.authenticate('github', async(err, user, info)=> {
+            if (err)
+                return res.status(500).json({'info': `error with github auth`})
+            const encryptedToken = await utils.encryptToken(user.token)
+            const encryptedGitHubUsername = await utils.encryptToken(user.username)
+            const githubCredentials = await prisma.gitHubCredential.create({
+                data: {
+                    user: {
+                        connect: {
+                            id: req.user.id
                         }
-                    })
-                    if (!githubCredentials) {
-                        console.log('3: error', githubCredentials)
-                        return res.status(500).json({'info': `can't save user github credentials`})
-                    }
-                    console.log('4: ', githubCredentials)
-                    githubAuthenticated = true
-                }
-                if (!githubAuthenticated) {
-                    req.user = {
-                        ...req.user,
-                        GitHub: false
-                    }
-                } else {
-                    req.user = {
-                        ...req.user,
-                        GitHub: true
-                    }
-                }
-                console.log('5: ', req.user)
-                req.logIn(req.user, (error) => {
-                    if (error)
-                        console.log('4: error', 'login issure in github', req.user)
-                        return res.status(500).json({"message": "can't login after github auth"})
-                })
-                console.log('signed up user', req.user)
-                return res.status(200).json({'user': req.user})
-            } catch(error) {
-                console.log(error)
-                return res.status(500).json({"'message": "an error has occured"})
+                    },
+                    accessToken: encryptedToken,
+                    githubUsername: encryptedGitHubUsername
+                }})
+            if (!githubCredentials)
+                return res.status(200).json({'info': `can't save user github credentials`, user: req.user})
+            req.user = {
+                ...req.user, 
+                github: true
             }
+            req.logIn(req.user, (err) => {
+                if (err)
+                    return res.status(500).json({"info": `can't login github authenticated user`})
+                return res.status(200).json({"info": 'user created successfully', user: req.user})
+            })
         })(req, res, next);
     }
+
+    
     static async getLogin(req, res){
         let message = req.session.info
         req.session.info = null
@@ -185,8 +89,11 @@ class authController {
         })(req, res, next)
     }
 
-    static async getGoogleLogin(req, res) {
-        return res.status(200).json({"message": "googleAuthConsentPage"})
+    static async getGoogleLogin(req, res, next) {
+        passport.authenticate('google',  { scope: ['profile', 'email'] }, (err, user, info) => {
+            console.log('from google controller', err, user, info)
+            // return res.status(200).json({"message": "googleAuthConsentPage"})
+        })(req, res, next)
     }
 
     static async redirectGoogle(req, res, next) {
@@ -246,14 +153,47 @@ class authController {
         })(req, res, next);
         
     }
-    static async logout(req, res){
+    static async logout(req, res) {
         req.logout((err) => {
             if (err) {
-                return res.status(500).json({"message": "logout failed"})
+                return res.status(500).json({"message": "logout failed"});
             }
-            res.clearCookie("codacodeCookie")
-            return res.redirect("/")
-        })
+            
+            req.session.destroy(function(err) {
+                if (err) {
+                    return res.status(500).json({ error: 'Session destruction failed' });
+                }
+                
+                res.clearCookie('codacodeCookie', {
+                    path: '/',
+                    httpOnly: true,
+                    // secure: process.env.NODE_ENV === 'production', // Should be enabled in production
+                    // sameSite: 'lax' // Recommended for CSRF protection
+                });
+                
+                return res.status(200).json({ 
+                    success: true, 
+                    message: 'Logged out successfully' 
+                });
+            });
+        });
+    }
+
+    /////////////////
+    static async  checkEmailAvailability(req, res) {
+        try {
+            let availablity = true
+            const user = await prisma.user.findFirst({
+                where: {email: req.body.email}
+            })
+            if (user)
+                availablity = false
+            return res.status(200).json({availablity: availablity})
+        } catch(error) {
+            return res.status(500).json({"info": 'an error while checking email presence'})
+        }
     }
 }
+
+
 module.exports = authController
