@@ -3,8 +3,6 @@ const {PrismaClient} = require("@prisma/client")
 const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
 const utils  = require("../utils/utils")
-const passportGithub = require("../config/passport/githubStrategy")
-const profileController = require('../controllers/projectController')
 
 class authController {
 
@@ -14,50 +12,79 @@ class authController {
 
     static async postSignup(req, res, next){
         passport.authenticate('local-signup', async (err, user, info) => {
-            if (err)
-                return res.status(500).json({'info': `can't create new user`})
-            req.logIn(user, (err) => {
-                if (err)
-                    return res.status(500).json({'info': `can't login new user to session`})
-                return res.status(200).json({'info': 'user created successfully', user: user})
-            })
+            try {
+                if (err || !user)
+                    return res.status(500).json({'info': `can't create new user`})
+                req.logIn(user, (err) => {
+                    if (err)
+                        return res.status(500).json({'info': `can't login new user to session`})
+                    return res.status(200).json({'info': 'user created successfully', user: user})
+                })
+            } catch(error){
+                console.log(error)
+            }
         })(req, res, next)
     }
 
     static async getGitHubAuth(req, res, next) {
-        console.log('in github auth')
         
     }
 
+    static async alreadyAuthenticated(username) {
+        try {
+            const authenticatedUsers = await prisma.user.findMany({
+                where: {
+                    GitHub: {
+                        isNot: null
+                    }
+                },
+                include: {
+                    GitHub: true
+                }
+            })
+            if (authenticatedUsers.length === 0) 
+                return 0
+            for (const user of authenticatedUsers) {
+                const githubUsername = await utils.decryptToken(user.GitHub.githubUsername)
+                if (githubUsername === username) 
+                    return 1;
+            }
+            return 0;
+        } catch(error){
+            console.log(error)
+        } 
+    }
     static async getGitHubRedirect(req, res, next){
         passport.authenticate('github', async(err, user, info)=> {
-            if (err)
-                return res.status(500).json({'info': `error with github auth`})
-            if (!user)
-                req.user = {...req.user, github: false}
-            else {
-                const encryptedToken = await utils.encryptToken(user.token)
-                const encryptedGitHubUsername = await utils.encryptToken(user.username)
-                const githubCredentials = await prisma.gitHubCredential.create({
-                    data: {
-                        user: {
-                            connect: {
-                                id: req.user.id
-                            }
-                        },
-                        accessToken: encryptedToken,
-                        githubUsername: encryptedGitHubUsername
-                    }})
-                if (!githubCredentials)
-                    req.user = {...req.user, github: false}
-                else
-                    req.user = {...req.user, github: true}
+            try {
+                if (err || !user)
+                    req.user = {...req.user, info: 'error in github auth api call'}
+                else if (await authController.alreadyAuthenticated(user.username))
+                    req.user = {...req.user, info: `github account belongs to another user`}
+                else {
+                    const encryptedToken = await utils.encryptToken(user.token)
+                    const encryptedGitHubUsername = await utils.encryptToken(user.username)
+                    const githubCredentials = await prisma.gitHubCredential.create({
+                        data: {
+                            user: {
+                                connect: {
+                                    id: req.user.id
+                                }
+                            },
+                            accessToken: encryptedToken,
+                            githubUsername: encryptedGitHubUsername
+                        }})
+                    if (!githubCredentials)
+                        req.user = {...req.user, info: `can't create github credentials`}
+                }
+                req.logIn(req.user, req.user, (err) => {
+                    if (err)
+                        return res.status(500).json({"info": `can't login github authenticated user`})
+                    return res.redirect('/dashboard')
+                })
+            } catch(error) {
+                console.log(error)
             }
-            req.logIn(req.user, (err) => {
-                if (err)
-                    return res.status(500).json({"info": `can't login github authenticated user`})
-                return res.status(200).json({"info": 'user created successfully', user: req.user})
-            })
         })(req, res, next);
     }
 

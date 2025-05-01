@@ -223,7 +223,6 @@ const signupBtb = document.getElementById('signup-submit-btn')
 signupBtb.addEventListener('click', async (e) => {
     let allValidated = true
     e.preventDefault()
-    // signupBtb.disabled = true; 
     removePreviousFeedbackMessages()
     if (!(await checkFullNameValidity())) {
         allValidated = false
@@ -239,10 +238,9 @@ signupBtb.addEventListener('click', async (e) => {
     } 
 
     if (allValidated) {
-        sendRegistrationData()
+        await sendRegistrationData()
+        signupBtb.disabled = true; 
     }
-    await sendRegistrationData()
-
 })
 
 async function sendRegistrationData() {
@@ -263,34 +261,30 @@ async function sendRegistrationData() {
         )
         const data = await response.json()
 
-        localStorage.setItem('user', JSON.stringify(data.user))
-        const rawUser = localStorage.getItem('user');
-        let theUser = null;
-
-        if (rawUser) {
-            try {
-                theUser = JSON.parse(rawUser);
-                console.log("Parsed user:", theUser);
-            } catch (e) {
-                console.error("Couldn't parse user JSON:", e);
-            }
-        } else {
-            console.warn("No user found in localStorage");
-        }
-
         if (response.status === 400) {
             console.log('400 error')
             // show errors from the backend
             // already handled in the client side
         } else if(response.status === 500){
-            console.log('500 error')
             // window.location.href = '/server-error'
         } else {
-            console.log('no error')
+            localStorage.setItem('user', JSON.stringify(data.user))
+            const rawUser = localStorage.getItem('user');
+            let theUser = null;
+    
+            if (rawUser) {
+                try {
+                    theUser = JSON.parse(rawUser);
+                    console.log("Parsed user:", theUser);
+                } catch (e) {
+                    console.error("Couldn't parse user JSON:", e);
+                }
+            } else {
+                console.warn("No user found in localStorage");
+            }
             window.location.href = '/auth/github'
         }
-        console.log(data)
-        return
+
     } catch(error) {
         console.log(error)
     }

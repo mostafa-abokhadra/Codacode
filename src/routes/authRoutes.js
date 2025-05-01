@@ -24,6 +24,7 @@ router.post(
     handleValidationErrors,
     authController.postSignup
 )
+
 router.get(
     "/github",
     passport.authenticate('github', {
@@ -31,6 +32,7 @@ router.get(
     }),
     // authController.getGitHubAuth
 )
+
 router.get(
     '/github/redirect',
     authController.getGitHubRedirect

@@ -13,13 +13,21 @@ module.exports = (passport) => {
 
     passport.deserializeUser(async (theUser, done) => {
         try {
+            // for now this is the data that i want in req.user
             const user = await prisma.user.findUnique({
                 where: {id: theUser.id},
                 select: {
                     id: true,
                     fullName: true,
+                    GitHub: true
                 }
             });
+            if (user.GitHub)
+                user.GitHub = true
+            else
+                user.GitHub = false
+            if (theUser.info)
+                user.info = theUser.info
             done(null, user);
         } catch (err) {
             done(err);

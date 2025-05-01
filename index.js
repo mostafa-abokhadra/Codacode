@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require("express")
 const path = require("path")
+const cors = require('cors');
 
 const app = express()
 const {createServer} = require('http')
@@ -39,6 +40,13 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 require('./src/config/passport/passport')(passport)
+
+// app.use((req, res, next) => {
+//     console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+//     next();
+// });
+
+app.use(cors()); // Properly handle preflight
 
 app.use('/', homeRoute)
 app.use('/auth', authRoute)

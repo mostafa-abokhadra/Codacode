@@ -12,12 +12,10 @@ module.exports = (passport) => {
         async (req, email, password, done) => {
             try {
                 const existingUser = await prisma.user.findUnique({ where: { email } });
-                if (existingUser) {
+                if (existingUser)
                     return done(null, false, { message: 'Email is already taken' });
-                } 
                 const hashedPassword = await bcrypt.hash(
                         password, parseInt(process.env.HASHING_SALT) || 10);
-
                 let newUser = await prisma.user.create({
                     data: {
                         email: email,
