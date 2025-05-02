@@ -1,6 +1,6 @@
 #signup-parent {
-    background-image: url('/imgs/3-signup.png');
-    background-size: cover;
+    background-image: url('../imgs/new.png');
+    background-size: 100% 100%;
 }
 
 #signup-container {
