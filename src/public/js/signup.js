@@ -1,4 +1,5 @@
 function feedback(beforeElement, feedbackMessage) {
+    console.log('here')
     const feedback = document.createElement('p')
     feedback.id = 'feedback'
     feedback.className="text-sm mt-2 text-red-500"
@@ -8,6 +9,7 @@ function feedback(beforeElement, feedbackMessage) {
 }
 
 function removePreviousFeedbackMessages() {
+    console.log('here two')
     const feedbackMessages = document.querySelectorAll('#feedback')
     feedbackMessages.forEach((message) => {
         message.remove()
@@ -238,8 +240,8 @@ signupBtb.addEventListener('click', async (e) => {
     } 
 
     if (allValidated) {
+        signupBtb.disabled = true;
         await sendRegistrationData()
-        signupBtb.disabled = true; 
     }
 })
 
@@ -263,10 +265,12 @@ async function sendRegistrationData() {
 
         if (response.status === 400) {
             console.log('400 error')
+            signupBtb.disabled = false;
             // show errors from the backend
             // already handled in the client side
         } else if(response.status === 500){
             // window.location.href = '/server-error'
+            signupBtb.disabled = false;
         } else {
             localStorage.setItem('user', JSON.stringify(data.user))
             const rawUser = localStorage.getItem('user');

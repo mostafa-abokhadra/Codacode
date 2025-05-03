@@ -90,24 +90,14 @@ class authController {
     }
 
     static async postLogin(req, res, next){
-        passport.authenticate('local', (err, user, info) => {
-            if (err) {
-                return res.status(500).json({"message": "server error"})
+        passport.authenticate('local-login', (err, user, info) => {
+            if (err || !user) {
+                return res.status(400).json({message: info.message})
             }
-            if (!user) {
-                return res.status(401).json({message: info.message})
-            }
-            // const flag = user.GitHub? true: false;
-            // const {GitHub, ...theUser} = user
             req.logIn(user, (error) => {
-                if (error) {
+                if (error)
                     return res.status(500).json({"message": "error in login"})
-                }
-                const urlUserName = user.fullName.replaceAll(" ", '-')
-                req.user.urlUserName = urlUserName
-                if (!user.GitHub)
-                    return res.redirect('/auth/github')
-                return res.redirect(`/${req.user.urlUserName}/dashboard`)
+                return res.redirect(`/dashboard`)
             });
         })(req, res, next)
     }
