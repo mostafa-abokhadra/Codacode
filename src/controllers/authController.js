@@ -26,7 +26,7 @@ class authController {
         })(req, res, next)
     }
 
-    static async alreadyAuthenticated(username) {
+    static async alreadyGithubAuthenticated(username) {
         try {
             const authenticatedUsers = await prisma.user.findMany({
                 where: {
@@ -55,7 +55,7 @@ class authController {
             try {
                 if (err || !user)
                     req.user = {...req.user, info: 'error in github auth api call'}
-                else if (await authController.alreadyAuthenticated(user.username))
+                else if (await authController.alreadyGithubAuthenticated(user.username))
                     req.user = {...req.user, info: `github account belongs to another user`}
                 else {
                     const encryptedToken = await utils.encryptToken(user.token)
@@ -86,9 +86,7 @@ class authController {
 
     
     static async getLogin(req, res){
-        let message = req.session.info
-        req.session.info = null
-        return res.render('login', {message: message});
+        return res.render('login');
     }
 
     static async postLogin(req, res, next){

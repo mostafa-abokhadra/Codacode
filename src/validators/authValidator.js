@@ -15,16 +15,16 @@ const fullNameValidator = [
             throw new Error('first char must be a letter or number')
         return 1
     })
-    // .custom(async (value) => {
-    //     const user = await prisma.user.findFirst({
-    //         where: {fullName: value}
-    //     })
-    //     if (user)
-    //         throw new Error('name exists, try another name')
-    //     return 1
-    // })
 ]
 
+async function emailExist(value) {
+    const user = await prisma.user.findFirst({
+        where: {email: value}
+    })
+    if (!user)
+        return 0
+    return 1
+}
 const emailValidator = [
     body('email')
     .trim()
@@ -33,13 +33,24 @@ const emailValidator = [
     .normalizeEmail()
     .isEmail()
     .withMessage("invalid email address")
-    .custom(async (value) => {
-        const user = await prisma.user.findFirst({
-            where: {email: value}
-        })
-        if (user)
-            throw new Error('email exists, try to login')
-        return 1
+    .custom({req}, async (value) => {
+        if (req.url === '/auth/signup') {
+            if (await emailExist(value)) {
+                throw new Error('user found, please login')
+            }
+            return 1
+        } else {
+            if (await emailExist(value))
+                return 1
+            throw new Error('user not found')
+        }
+
+    //     const user = await prisma.user.findFirst({
+    //         where: {email: value}
+    //     })
+    //     if (user)
+    //         throw new Error('email exists, try to login')
+    //     return 1
     })
 ]
 
