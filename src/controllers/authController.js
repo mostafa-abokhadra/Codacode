@@ -26,10 +26,6 @@ class authController {
         })(req, res, next)
     }
 
-    static async getGitHubAuth(req, res, next) {
-        
-    }
-
     static async alreadyAuthenticated(username) {
         try {
             const authenticatedUsers = await prisma.user.findMany({

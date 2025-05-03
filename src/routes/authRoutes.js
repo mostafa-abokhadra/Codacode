@@ -30,7 +30,6 @@ router.get(
     passport.authenticate('github', {
         scope: ["repo"],
     }),
-    // authController.getGitHubAuth
 )
 
 router.get(
