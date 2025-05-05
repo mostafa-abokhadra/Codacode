@@ -195,34 +195,39 @@ background-color: rgba(0, 0, 0, 0.4);
 }
 
 /* Modal Content */
-.modal-content {
-background-color: #fff;
-margin: auto;
-padding: 20px;
-border: 1px solid #888;
-width: 80%;
-max-width: 500px;
-border-radius: 8px;
-box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-position: relative;
+#create-project-modal .modal-content {
+    background-color: #fff;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    height: 95%;
+    max-width: 500px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow-y: scroll;
 }
 
-/* Close Button */
-.close-btn {
-position: absolute;
-top: 10px;
-right: 20px;
-color: #aaa;
-font-size: 28px;
-font-weight: bold;
-cursor: pointer;
+#title-close-project {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+#title-close-project {
+    font-size: larger;
+    font-weight: bold;
+}
+#close-project-modal:hover,
+#close-project-modal:focus {
+    color: #bd0d0d;
+    cursor: pointer;
 }
 
-.close-btn:hover,
-.close-btn:focus {
-color: #000;
+#title-close-project-hr {
+    margin: 10px 0px 10px 0px;
 }
-
 /* Form Styling */
 .form-group {
 margin-bottom: 20px;
@@ -352,7 +357,7 @@ opacity: 1;
 transform: scale(1);
 transition-delay: 0.3s; /* Delay to sync with the underline animation */
 }
-#profile-link-media-768 {
+#portfolio-link-media-768 {
     display: none;
 }
 #logout-link-media-768 {
@@ -428,7 +433,7 @@ transition-delay: 0.3s; /* Delay to sync with the underline animation */
     /* nav .logout-link i {
         display:none;
     } */
-    #logout-link {
+    .logout-link {
         display: none;
     }
     #logout-link-media-768 {
@@ -436,10 +441,10 @@ transition-delay: 0.3s; /* Delay to sync with the underline animation */
     }
 }
 @media (max-width: 400px) {
-    #profile-link {
+    #portfolio-link {
         display: none;
     }
-    #profile-link-media-768 {
+    #portfolio-link-media-768 {
         display: inline-block;
     }
     /* #logout-link-media-768 {

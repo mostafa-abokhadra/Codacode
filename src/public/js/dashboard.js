@@ -1,5 +1,12 @@
-const toggleBtn = document.getElementById("toggle-btn");
-const sidebar = document.getElementById("sidebar");
+const logoutBtns = document.querySelectorAll('.logout-link')
+logoutBtns.forEach((logoutBtn) => {
+  logoutBtn.addEventListener('click', (e) => {
+    e.preventDefault()
+    localStorage.clear()
+    document.getElementById('logoutForm').submit()
+  })
+})
+
 let user;
 try {
   user = document.getElementById('username').attributes.user.value
@@ -8,15 +15,18 @@ try {
     console.log(error)
 }
 
+const toggleBtn = document.getElementById("toggle-btn");
+const sidebar = document.getElementById("sidebar");
 toggleBtn.addEventListener("click", () => {
   sidebar.classList.toggle("open");
 });
 
-const createBtn = document.querySelector(".dashboard-card button");
-const modal = document.getElementById("createProjectModal");
-const closeModalBtn = document.getElementById("closeModal");
+const createProjectBtn = document.getElementById("create-project-btn");
+const createProjectModal = document.getElementById("create-project-modal");
+const closeProjectModal = document.getElementById("close-project-modal");
 const rolesContainer = document.getElementById("rolesContainer");
 
+//////////////////
 const GithubAuthBtn = document.getElementById("githubAuthPopup");
 const openGithubAuthPopupButton = document.getElementById("openPopup");
 const closeGithubAuhtPopupButton = document.getElementById("closePopup");
@@ -31,24 +41,24 @@ closeGithubAuhtPopupButton.addEventListener("click", () => {
   GithubAuthBtn.classList.add("hidden");
 });
 
-// Open Modal
-createBtn.addEventListener("click", () => {
+// Open createProjectModal
+createProjectBtn.addEventListener("click", () => {
   if (!user.GitHub) {
     openGithubAuthPopupButton.click()
   } else {
-    modal.style.display = "block";
+    createProjectModal.style.display = "block";
   }
 });
 
-// Close Modal
-closeModalBtn.addEventListener("click", () => {
-  modal.style.display = "none";
+// Close createProjectModal
+closeProjectModal.addEventListener("click", () => {
+  createProjectModal.style.display = "none";
 });
 
-// Close Modal on Outside Click
+// Close createProjectModal on Outside Click
 window.addEventListener("click", (e) => {
-  if (e.target === modal) {
-    modal.style.display = "none";
+  if (e.target === createProjectModal) {
+    createProjectModal.style.display = "none";
   }
 });
 
@@ -182,7 +192,7 @@ async function createPost (dic) {
         })
         if (projectRes.ok) {
           const projectData = await projectRes.json()
-          closeModalBtn.click()
+          closeProjectModal.click()
           document.getElementById('formSuccessPopUp').classList.remove('hidden')
         } else {
           showErrorPopup()
