@@ -88,7 +88,7 @@
           <div class="dashboard-card">
             <i class="fas fa-users"></i>
             <h3>Start Collaboration</h3>
-            <button id="startCollaboration">Start</button>
+            <button id="start-collaboration">Start</button>
           </div>
         </div>
       </div>
@@ -100,11 +100,10 @@
           <h2>Create a Project</h2>
           <span id="close-project-modal">❌</span>
         </div>
-
         <hr id="title-close-project-hr" />
-        <form id="projectForm">
-          <div class="form-group titleDiv">
-            <label for="ideaBank">Project Title</label>
+        <form id="project-form">
+          <div class="form-group title-div">
+            <label for="title">Project Title</label>
             <input
               type="text"
               name="title"
@@ -119,8 +118,8 @@
             > -->
           </div>
 
-          <div class="form-group descriptionDiv">
-            <label for="projectDescription">Project Description</label>
+          <div class="form-group description-div">
+            <label for="description">Project Description</label>
             <textarea
               id="description"
               name="description"
@@ -129,29 +128,29 @@
             ></textarea>
           </div>
 
-          <div class="form-group langPrefDiv">
-            <label for="languagePreference">Language Preference</label>
+          <div class="form-group lang-pref-div">
+            <label for="lang-pref">Language Preference</label>
             <input
-              id="langPref"
+              id="lang-pref"
               type="text"
-              name="langPref"
+              name="lang-pref"
               placeholder="Your team speaking language"
             />
           </div>
 
-          <div class="form-group yourRoleDiv">
-            <label for="yourRole">Your Role</label>
+          <div class="form-group your-role-div">
+            <label for="your-role">Your Role</label>
             <input
               type="text"
-              name="yourRole"
-              id="yourRole"
-              placeholder="Enter your role"
+              name="your-role"
+              id="your-role"
+              placeholder="your role in project"
             />
           </div>
 
           <div class="form-group">
             <label>Roles Needed</label>
-            <div id="rolesContainer" class="roleInputDiv">
+            <div id="roles-container" class="role-input-div">
               <div class="role-input">
                 <input
                   type="text"
@@ -161,9 +160,9 @@
                 />
                 <input
                   type="number"
-                  name="numberNeeded"
+                  name="number-needed"
                   class="number-needed"
-                  placeholder="Number Needed"
+                  placeholder="Number needed"
                   min="1"
                 />
                 <button type="button" class="add-role-btn">+</button>
@@ -172,12 +171,12 @@
             </div>
           </div>
 
-          <div class="form-group repoLinkDiv">
+          <div class="form-group repo-link-div">
             <label for="repoLink">Repo Link</label>
             <input
               type="url"
               name="repo"
-              id="repoLink"
+              id="repo-link"
               placeholder="Prove you are serious by initiating your project repo and providing the link"
             />
           </div>

@@ -106,6 +106,7 @@ model GitHubCredential {
   accessToken String?
   githubUsername String?
 }
+
 model Post {
 	id Int @id @default(autoincrement())
   title String @db.VarChar(50)

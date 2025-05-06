@@ -24,7 +24,7 @@ toggleBtn.addEventListener("click", () => {
 const createProjectBtn = document.getElementById("create-project-btn");
 const createProjectModal = document.getElementById("create-project-modal");
 const closeProjectModal = document.getElementById("close-project-modal");
-const rolesContainer = document.getElementById("rolesContainer");
+const rolesContainer = document.getElementById("roles-container");
 
 //////////////////
 const GithubAuthBtn = document.getElementById("githubAuthPopup");
@@ -111,9 +111,9 @@ projectForm.addEventListener("submit", async (event) => {
 
   const title = document.getElementById("title").value
   const description = document.getElementById("description").value
-  const langPref = document.getElementById('langPref').value
-  const yourRole = document.getElementById("yourRole").value
-  const repo = document.getElementById("repoLink").value
+  const langPref = document.getElementById('lang-pref').value
+  const yourRole = document.getElementById("your-role").value
+  const repo = document.getElementById("repo-link").value
   const roles = JSON.stringify(rolesData)
 
   const postData = {
@@ -156,12 +156,12 @@ async function createPost (dic) {
         infoMessage.textContent = res.errors[i].msg
         infoMessage.style = "color: red; margin-top: 3px"
         infoMessage.className = 'error-message';
-        const repoLinkDiv = document.getElementsByClassName('repoLinkDiv')[0]
-        const titleDiv = document.getElementsByClassName('titleDiv')[0]
-        const descriptionDiv = document.getElementsByClassName('descriptionDiv')[0]
-        const langPrefDiv = document.getElementsByClassName("langPrefDiv")[0]
-        const yourRoleDiv = document.getElementsByClassName('yourRoleDiv')[0]
-        const roleInputDiv = document.getElementsByClassName('roleInputDiv')[0]
+        const repoLinkDiv = document.getElementsByClassName('repo-link-div')[0]
+        const titleDiv = document.getElementsByClassName('title-div')[0]
+        const descriptionDiv = document.getElementsByClassName(' description-div')[0]
+        const langPrefDiv = document.getElementsByClassName("lang-pref-div")[0]
+        const yourRoleDiv = document.getElementsByClassName('your-role-div')[0]
+        const roleInputDiv = document.getElementsByClassName('role-input-div')[0]
         if (res.errors[i].path === 'repo') {
           validateDivExistence(repoLinkDiv, infoMessage)
         } else if (res.errors[i].path === 'title') {
@@ -210,7 +210,7 @@ async function createPost (dic) {
     console.error("the errro", error)
   }
 }
-const startCollaboration = document.getElementById("startCollaboration")
+const startCollaboration = document.getElementById("start-collaboration")
 startCollaboration.addEventListener('click', (e) => {
   window.location.href = '/projects'
 })
