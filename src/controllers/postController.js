@@ -1,22 +1,19 @@
 const {PrismaClient} = require('@prisma/client')
-const { create } = require('domain')
 const prisma = new PrismaClient()
 const utils = require("../utils/utils")
 
 class projectPostController {
     static async createPost(req, res) {
         try {
-            const { title, description, langPref, yourRole, repo} = req.body
-            let {roles} = req.body;
-            if (typeof roles === 'string') {
+            const { title, description, langPref, yourRole, repo, roles} = req.body
+            if (typeof roles === 'string')
                 roles = JSON.parse(roles)
-            }
             const user = await prisma.user.findUnique({
-                where: {fullName: req.user.fullName},
-                include: {posts: true}
+                where: {id: req.user.id},
             })
             if (!user)
                 return res.status(500).json({"messasge": "can't fetch user from database"})
+
             const projectPost = await prisma.post.create({
                 data: {
                     title: title,
@@ -34,12 +31,9 @@ class projectPostController {
             if (!projectPost)
                 return res.status(500).json({"message": "can't create a post"})
             let createdRoles = [] // to store all roles created
-
             for(let i = 0; i < roles.length ; i++){
-
                 let role = roles[i].role
                 let numberNeeded = roles[i].numberNeeded
-
                 const createRole = await prisma.role.create({
                     data: {
                         position: role,
@@ -55,8 +49,7 @@ class projectPostController {
                     if (createdRoles) {
                         // checking if there is some role created and then an error occur for the subsequent roles
                         // in this case i will delete all roles created for this post from the database
-                        // cause project post is numberNeededt complete this way and already created roles don't belong to any post
-
+                        // cause project post is not completed this way and already created roles don't belong to any post
                         for(let i = 0; i < createdRoles.length; i++)
                         {
                             let deletedRole = await prisma.role.delete({
@@ -71,15 +64,27 @@ class projectPostController {
                             })
                         }
                     }
+                    // if no roles created and can't create a new role for some reason
+                    // the post created will be deleted cause its roles aren't created
+                    const deleteNotCompletedPost = await prisma.post.delete({
+                        where: {id: projectPost.id}
+                    })
+                    if (!deleteNotCompletedPost) {
+                        return res.status(500).json({
+                            'message': `can't delete garbage post`,
+                            'solve': 'clean it manually',
+                            'post to be cleared': projectPost
+                        })
+                    }
                     return res.status(500).json({"message": "can't create roles"})
                 }
                 createdRoles.push(createRole)
             }
-            const {password, ...updatedUser} = await utils.getUpdatedUser(user.email)
+            // const {password, ...updatedUser} = await utils.getUpdatedUser(user.email)
             // return res.redirect(307, `/${req.params.username}/posts/${projectPost.id}/projects`)
+            projectPost.roles = createdRoles
             return res.status(200).json({
                 "message": "post created successfully",
-                "user": updatedUser,
                 post: projectPost
             })
         } catch(error) {
@@ -88,6 +93,7 @@ class projectPostController {
         }
     }
 
+    /////////////////////////////////
     static async getPosts(req, res) {
         try {
             const {username} = req.param

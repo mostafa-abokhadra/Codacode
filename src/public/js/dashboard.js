@@ -26,22 +26,6 @@ const createProjectModal = document.getElementById("create-project-modal");
 const closeProjectModal = document.getElementById("close-project-modal");
 const rolesContainer = document.getElementById("roles-container");
 
-//////////////////
-const GithubAuthBtn = document.getElementById("githubAuthPopup");
-const openGithubAuthPopupButton = document.getElementById("openPopup");
-const closeGithubAuhtPopupButton = document.getElementById("closePopup");
-
-// Open the popup
-openGithubAuthPopupButton.addEventListener("click", () => {
-  GithubAuthBtn.classList.remove("hidden");
-});
-
-// Close the popup
-closeGithubAuhtPopupButton.addEventListener("click", () => {
-  GithubAuthBtn.classList.add("hidden");
-});
-
-// Open createProjectModal
 createProjectBtn.addEventListener("click", () => {
   if (!user.GitHub) {
     openGithubAuthPopupButton.click()
@@ -50,19 +34,16 @@ createProjectBtn.addEventListener("click", () => {
   }
 });
 
-// Close createProjectModal
 closeProjectModal.addEventListener("click", () => {
   createProjectModal.style.display = "none";
 });
 
-// Close createProjectModal on Outside Click
 window.addEventListener("click", (e) => {
   if (e.target === createProjectModal) {
     createProjectModal.style.display = "none";
   }
 });
 
-// Add or Remove Role Input Fields
 rolesContainer.addEventListener("click", (e) => {
   if (e.target.classList.contains("add-role-btn")) {
     const roleInputDiv = document.createElement("div");
@@ -84,8 +65,7 @@ rolesContainer.addEventListener("click", (e) => {
   }
 });
 
-// Format the roles data on form submission
-const projectForm = document.getElementById("projectForm");
+const projectForm = document.getElementById("project-form");
 
 projectForm.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -103,11 +83,11 @@ projectForm.addEventListener("submit", async (event) => {
   });
 
   // Replace the existing inputs with a hidden input containing the roles JSON
-  const rolesInput = document.createElement("input");
-  rolesInput.type = "hidden";
-  rolesInput.name = "roles";
-  rolesInput.value = JSON.stringify(rolesData);
-  projectForm.appendChild(rolesInput);
+  // const rolesInput = document.createElement("input");
+  // rolesInput.type = "hidden";
+  // rolesInput.name = "roles";
+  // rolesInput.value = JSON.stringify(rolesData);
+  // projectForm.appendChild(rolesInput);
 
   const title = document.getElementById("title").value
   const description = document.getElementById("description").value
@@ -127,25 +107,21 @@ projectForm.addEventListener("submit", async (event) => {
   createPost(postData)
 });
 
-async function validateDivExistence(elementDiv, infoMessage) {
-  if (elementDiv) {
-
-  
-      elementDiv.appendChild(infoMessage)
-
-  } else {
-    console.error("Element not found.");
-  }
-}
-
 async function createPost (dic) {
   try {
-    const formData = new URLSearchParams(dic).toString();
-    let res = await fetch(`/${user.fullName}/posts`, {
-      method: 'post',
-      body: formData,
+    // const formData = new URLSearchParams(dic).toString();
+    // let res = await fetch(`/${user.fullName}/posts`, {
+    //   method: 'post',
+    //   body: formData,
+    //   headers: {
+    //     'Content-Type': 'application/x-www-form-urlencoded',
+    //   }
+    // })
+    let res = await fetch(`/user/${user.id}/posts`, {
+      method: 'POST',
+      body: JSON.stringify(dic),
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
       }
     })
     res = await res.json()
@@ -210,6 +186,17 @@ async function createPost (dic) {
     console.error("the errro", error)
   }
 }
+
+async function validateDivExistence(elementDiv, infoMessage) {
+  if (elementDiv) {
+
+  
+      elementDiv.appendChild(infoMessage)
+
+  } else {
+    console.error("Element not found.");
+  }
+}
 const startCollaboration = document.getElementById("start-collaboration")
 startCollaboration.addEventListener('click', (e) => {
   window.location.href = '/projects'
@@ -244,3 +231,17 @@ portfolioLink.addEventListener('click', (event) => {
   event.preventDefault()
   window.location.href = "portofolio"
 })
+//////////////////
+const GithubAuthBtn = document.getElementById("githubAuthPopup");
+const openGithubAuthPopupButton = document.getElementById("openPopup");
+const closeGithubAuhtPopupButton = document.getElementById("closePopup");
+
+// Open the popup
+openGithubAuthPopupButton.addEventListener("click", () => {
+  GithubAuthBtn.classList.remove("hidden");
+});
+
+// Close the popup
+closeGithubAuhtPopupButton.addEventListener("click", () => {
+  GithubAuthBtn.classList.add("hidden");
+});
