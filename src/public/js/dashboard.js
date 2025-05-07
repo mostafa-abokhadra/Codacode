@@ -82,13 +82,6 @@ projectForm.addEventListener("submit", async (event) => {
     }
   });
 
-  // Replace the existing inputs with a hidden input containing the roles JSON
-  // const rolesInput = document.createElement("input");
-  // rolesInput.type = "hidden";
-  // rolesInput.name = "roles";
-  // rolesInput.value = JSON.stringify(rolesData);
-  // projectForm.appendChild(rolesInput);
-
   const title = document.getElementById("title").value
   const description = document.getElementById("description").value
   const langPref = document.getElementById('lang-pref').value
@@ -104,99 +97,104 @@ projectForm.addEventListener("submit", async (event) => {
     repo: repo,
     roles: roles
   }
+  console.log("1", postData)
   createPost(postData)
 });
 
-async function createPost (dic) {
+async function createPost(postData) {
   try {
-    // const formData = new URLSearchParams(dic).toString();
-    // let res = await fetch(`/${user.fullName}/posts`, {
-    //   method: 'post',
-    //   body: formData,
-    //   headers: {
-    //     'Content-Type': 'application/x-www-form-urlencoded',
-    //   }
-    // })
-    let res = await fetch(`/user/${user.id}/posts`, {
+    const response = await sendPostData(postData)
+    if (response) {
+      await createProjectFromPost(response)
+    } else {
+      console.error('an error occured while creating a post')
+      // showErrorPopup()
+    }
+  } catch(error) {
+    console.error('an error', error)
+  }
+}
+async function sendPostData(postData) {
+  try {
+    const res = await fetch(`/user/${user.id}/posts`, {
       method: 'POST',
-      body: JSON.stringify(dic),
+      body: JSON.stringify(postData),
       headers: {
         'Content-Type': 'application/json',
       }
     })
-    res = await res.json()
-    if (res.errors) {
-      document.querySelectorAll('.error-message').forEach((msg) => msg.remove());
-      for (let i = 0; i < res.errors.length; i++) {
-        const infoMessage = document.createElement('small')
-        infoMessage.textContent = res.errors[i].msg
-        infoMessage.style = "color: red; margin-top: 3px"
-        infoMessage.className = 'error-message';
-        const repoLinkDiv = document.getElementsByClassName('repo-link-div')[0]
-        const titleDiv = document.getElementsByClassName('title-div')[0]
-        const descriptionDiv = document.getElementsByClassName(' description-div')[0]
-        const langPrefDiv = document.getElementsByClassName("lang-pref-div")[0]
-        const yourRoleDiv = document.getElementsByClassName('your-role-div')[0]
-        const roleInputDiv = document.getElementsByClassName('role-input-div')[0]
-        if (res.errors[i].path === 'repo') {
-          validateDivExistence(repoLinkDiv, infoMessage)
-        } else if (res.errors[i].path === 'title') {
-            const anchor = titleDiv.querySelector('a')
-            const br = document.createElement('br')
-            if (anchor) {
-              anchor.before(infoMessage)
-              infoMessage.after(br)
-            }
-          // validateDivExistence(titleDiv, infoMessage)
-        } else if (res.errors[i].path === 'description') {
-          validateDivExistence(descriptionDiv, infoMessage)
-        } else if (res.errors[i].path === 'langPref') {
-          validateDivExistence(langPrefDiv, infoMessage)
-        } else if (res.errors[i].path === 'yourRole') {
-          validateDivExistence(yourRoleDiv, infoMessage)
-        } else if (res.errors[i].path === 'roles' ) {
-          validateDivExistence(roleInputDiv, infoMessage)
-        }
-      }
-    } else {
-      
-        // if (res.status == '500')
-        //   serverErrorPopUp.click()
-        // else {}
-        const projectRes = await fetch(`/${user.fullName}/posts/${res.post.id}/projects`, {
-          method: 'post'
-        })
-        if (projectRes.ok) {
-          const projectData = await projectRes.json()
-          closeProjectModal.click()
-          document.getElementById('formSuccessPopUp').classList.remove('hidden')
-        } else {
-          showErrorPopup()
-        }
-
+    const data = await res.json()
+    console.log("2", data)
+    if (data.errors) {
+      return createErrorsFeedback(data.errors)
     }
-
-    // if (res.errors[0].msg == "Repo URL Already Belong to Another Project")
-    // if (res.errors[0].msg == "Repo URL Already Belong to Another Project")
-    // console.log(res)
-    // console.log("the res", res)
-
-    // if 200 close form and popup created successfully
+    return data
   } catch(error) {
-    console.error("the errro", error)
+    console.log(error)
   }
 }
 
+function createErrorsFeedback(errors) {
+
+  document.querySelectorAll('.error-message').forEach((msg) => msg.remove());
+
+  const repoLinkDiv = document.getElementsByClassName('repo-link-div')[0]
+  const titleDiv = document.getElementsByClassName('title-div')[0]
+  const descriptionDiv = document.getElementsByClassName(' description-div')[0]
+  const langPrefDiv = document.getElementsByClassName("lang-pref-div")[0]
+  const yourRoleDiv = document.getElementsByClassName('your-role-div')[0]
+  const roleInputDiv = document.getElementsByClassName('role-input-div')[0]
+
+  for (let i = 0; i < errors.length; i++) {
+    const infoMessage = createErrorElement(errors[i].msg)
+    if (errors[i].path === 'repo') {
+      validateDivExistence(repoLinkDiv, infoMessage)
+    } else if (errors[i].path === 'title') { 
+      validateDivExistence(titleDiv, infoMessage)
+    } else if (errors[i].path === 'description') {
+      validateDivExistence(descriptionDiv, infoMessage)
+    } else if (errors[i].path === 'langPref') {
+      validateDivExistence(langPrefDiv, infoMessage)
+    } else if (errors[i].path === 'yourRole') {
+      validateDivExistence(yourRoleDiv, infoMessage)
+    } else if (errors[i].path === 'roles' ) {
+      validateDivExistence(roleInputDiv, infoMessage)
+    }
+  }
+  return 0
+}
+function createErrorElement(msg) {
+  const infoMessage = document.createElement('small')
+  infoMessage.textContent = msg
+  infoMessage.style = "color: red; margin-top: 3px; display: flex"
+  infoMessage.className = 'error-message';
+  return infoMessage
+}
 async function validateDivExistence(elementDiv, infoMessage) {
   if (elementDiv) {
-
-  
-      elementDiv.appendChild(infoMessage)
-
+    elementDiv.appendChild(infoMessage)
   } else {
     console.error("Element not found.");
   }
 }
+async function createProjectFromPost(postCreationResponse) {
+  try {
+    const response = await fetch(`/user/${user.id}/posts/${postCreationResponse.post.id}/project`, {
+      method: 'POST'
+    })
+    const data = await response.json()
+    if (!response.ok) {
+      console.log(data)
+      showErrorPopup()
+    } else {
+      closeProjectModal.click()
+      document.getElementById('formSuccessPopUp').classList.remove('hidden')
+    }
+  } catch(error) {
+    console.log('an error', error)
+  }
+}
+
 const startCollaboration = document.getElementById("start-collaboration")
 startCollaboration.addEventListener('click', (e) => {
   window.location.href = '/projects'

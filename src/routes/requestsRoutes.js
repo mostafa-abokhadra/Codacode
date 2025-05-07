@@ -8,7 +8,6 @@ const handleValidationErrors = require("../middlewares/validationErrorHandler")
 router.post(
     "/:username/roles/:roleId",
     checksession.ensureAuthenticated,
-    checksession.ensureValidUser,
     requestValidator.validateRoleId,
     handleValidationErrors,
     requestsController.postApplyRequest
@@ -18,7 +17,6 @@ router.post(
 router.get(
     "/requests",
     checksession.ensureAuthenticated,
-    //checksession.ensureValidUser,
     handleValidationErrors,
     requestsController.getSendToMeRequests
 )
@@ -27,7 +25,6 @@ router.get(
 router.get(
     '/pending',
     checksession.ensureAuthenticated,
-    // checksession.ensureValidUser,
     handleValidationErrors,
     requestsController.getPendingRequests
 )
@@ -36,7 +33,6 @@ router.get(
 router.delete(
     '/:username/requests/:requestId',
     checksession.ensureAuthenticated,
-    // checksession.ensureValidUser,
     requestValidator.validateRequestId,
     handleValidationErrors,
     requestsController.cancelRequest
@@ -46,7 +42,6 @@ router.delete(
 router.post(
     '/:username/requests/:requestId/accept',
     checksession.ensureAuthenticated,
-    // checksession.ensureValidUser,
     requestValidator.validateRequestId,
     handleValidationErrors,
     requestsController.acceptRequest

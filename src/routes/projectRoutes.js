@@ -1,4 +1,4 @@
-const { ensureAuthenticated, ensureValidUser } = require("../middlewares/checkSession")
+const { ensureAuthenticated} = require("../middlewares/checkSession")
 const projectController = require("../controllers/projectController")
 const projectValidator = require("../validators/projectValidator")
 
@@ -6,39 +6,35 @@ const projectValidator = require("../validators/projectValidator")
 const router = require("express").Router()
 
 router.post(
-    "/:username/posts/:postId/projects",
+    "/user/:user_id/posts/:post_id/project",
     ensureAuthenticated,
-    ensureValidUser,
     projectValidator.postIdValidator,    
     projectController.createProject
 )
 
-// getting my project (l am the owner)
+// getting my project (i am the owner)
 router.get(
-    '/:username/projects',
+    '/user/:user_id/projects',
     ensureAuthenticated,
-    ensureValidUser,
     projectController.getProjects
 )
 
 // getting projects that i particaipate in
 router.get(
-    "/:username/assigned/projects",
+    "/user/:user_id/assigned/projects",
     ensureAuthenticated,
-    ensureValidUser,
     projectController.getAssignedProjects
 )
 
 // getting a project by id
 router.get(
-    '/:username/projects/:projectId',
+    '/user/:user_id/projects/:project_id',
     ensureAuthenticated,
-    ensureValidUser,
     projectController.getProjectById
 )
 
 router.get(
-    "/:username/all/projects",
+    "/user/:user_id/all/projects",
     ensureAuthenticated,
     // ensureValidUser,
     projectController.getAllProjects
@@ -46,19 +42,19 @@ router.get(
 
 // get owner roles in a project
 router.get(
-    "/:username/projects/:projectId/roles",
+    "/user/:user_id/projects/:project_id/roles",
     ensureAuthenticated,
     projectController.getUserProjectsRoles
 )
 
 // get user roles in a project
 router.get(
-    "/:username/assignedProjects/:projectId/roles",
+    "/user/:user_id/assigned_projects/:project_id/roles",
     ensureAuthenticated,
     projectController.getUserAssignedProjectsRoles
 )
 router.get(
-    "/:username/projects/:projectId/team/avatars",
+    "/user/:user_id/projects/:project_id/team/avatars",
     ensureAuthenticated,
     projectController.getProjectTeamProfileAvatars
 )

@@ -12,7 +12,6 @@ const postController = require('../controllers/postController')
 router.post(
     '/user/:user_id/posts',
     checkSession.ensureAuthenticated,
-    // checkSession.ensureValidUser,
     postValidtor.titleValidator,
     postValidtor.descriptionValidator,
     postValidtor.rolesValidator,
@@ -41,7 +40,6 @@ router.get(
 router.put(
     '/user/:user_id/posts/:post_id',
     checkSession.ensureAuthenticated,
-    checkSession.ensureValidUser,
     postController.updatePost
 )
 
@@ -49,7 +47,6 @@ router.put(
 router.delete(
     '/user/:user_id/posts/:post_id',
     checkSession.ensureAuthenticated,
-    checkSession.ensureValidUser,
     postController.deletePost
 )
 

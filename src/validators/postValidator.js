@@ -5,9 +5,9 @@ const {URL} = require('url')
 const utils = require("../utils/utils")
 
 
-const validateGitHubUsername = async (username, repoOwner) => {
+const validateGitHubUsername = async (userId, repoOwner) => {
     const user = await prisma.user.findFirst({
-        where: { fullName: username },
+        where: { id: userId },
         include: { GitHub: true },
     });
 
@@ -19,6 +19,7 @@ const validateGitHubUsername = async (username, repoOwner) => {
     if (decryptedUsername !== repoOwner) {
         throw new Error("Mismatch between GitHub repo owner and authenticated user");
     }
+    return 1
 };
 
 const validateRepoUrl = async (url) => {
@@ -49,7 +50,6 @@ const validateRepoUrl = async (url) => {
             throw new Error('Failed to fetch the repository');
         }
     }
-
     return { owner, repo };
 };
 
@@ -58,33 +58,47 @@ const titleValidator = [
     .trim()
     .escape()
     .notEmpty().withMessage("title is required")
-    .isLength({max: 50}).withMessage("title is too long")
+    .isLength({min: 10}).withMessage('title must be 10 - 50 letters')
+    .isLength({max: 50}).withMessage("title must be 10 - 50 letters")
+    .custom((value) => {
+        if (Number(value))
+            throw new Error('title must be a string')
+        return 1
+    })
 ]
 const descriptionValidator = [
     body('description')
     .trim()
     .escape()
     .notEmpty().withMessage("description is required")
-    .isLength({max: 250}).withMessage("description shoud be less than 250 cahracter")
+    .isLength({min: 30}).withMessage('description length should be 30 - 250 letters')
+    .isLength({max: 250}).withMessage("description length should be 30 - 250 letters")
+    .custom((value) => {
+        if (Number(value))
+            throw new Error('description must be a string')
+        return 1
+    })
 ]
 const rolesValidator = [
     body('roles')
-    .notEmpty().withMessage("at least on role is required")
+    .notEmpty().withMessage("at least one role is required")
     .custom((arr) => {
         try {
-            if (typeof arr !== 'object')
+            if (typeof arr !== 'object') {
                 arr = JSON.parse(arr)
+            }
         } catch(error) {
-            console.log(error)
-            throw new Error("can't parse to json object")
+            throw new Error("can't parse roles to json object")
         }
         if (!Array.isArray(arr)) {
             throw new Error("roles must be an array")
         }
         if (arr.length === 0)
-            throw new Error("at least on role is required")
+            throw new Error("at least one role is required")
         for (let i = 0; i < arr.length; i++) {
-            if (typeof arr[i] !== 'object' || arr[i] === null) {
+            if (arr[i] !== null &&
+                typeof arr[i] !== 'object' && 
+                !Array.isArray(arr[i]) ) {
                 throw new Error("roles must be objects")
             }
             if (!('role' in arr[i]) || !('numberNeeded' in arr[i])) {
@@ -113,10 +127,8 @@ const repoUrlValidator = [
             })
             if (existingPost)
                 throw new Error("Repo URL Already Belong to Another Project")
-
             const { owner } = await validateRepoUrl(repoUrl);
-            const username = req.user.fullName;
-            await validateGitHubUsername(username, owner);
+            await validateGitHubUsername(req.user.id, owner);
             return true
 
         } catch(error) {
@@ -131,6 +143,11 @@ const yourRoleValidator = [
     .notEmpty().withMessage("your role is required")
     .isString().withMessage("your role must be descriptive")
     .isLength({max: 30}).withMessage("your role must be less than 30 characters long")
+    .custom((value) => {
+        if (Number(value))
+            throw new Error('your role must be a string')
+        return 1
+    })
 ]
 const langPrefValidator = [
     body('langPref')
@@ -138,6 +155,11 @@ const langPrefValidator = [
     .escape()
     .notEmpty().withMessage("language is required")
     .isLength({max: 20}).withMessage("language should be less than 20 character")
+    .custom((value) => {
+        if (Number(value))
+            throw new Error('lang pref must be a string')
+        return 1
+    })
 ]
 module.exports = {
     titleValidator,

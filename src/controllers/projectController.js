@@ -1,19 +1,17 @@
 const {PrismaClient} = require("@prisma/client")
 const prisma = new PrismaClient()
 const utils = require("../utils/utils")
-const { profile } = require("console")
 
 class projectController {
     static async createProject(req, res) {
         try {
-            const {username, postId} = req.params
-            // getting the post
+            const {post_id} = req.params
             const post = await prisma.post.findFirst({
                 where: {
                     user: {
-                        fullName: req.user.fullName
+                        id: req.user.id
                     },
-                    id: parseInt(postId),
+                    id: parseInt(post_id),
                 },
                 include: {user: true}
             })
@@ -72,15 +70,15 @@ class projectController {
             if (!project) {
                 return res.status(500).json({
                     "message": "can't create a project from the given post",
-                    "garbage team id": team.id
+                    "garbage team id": team.id,
+                    "garbage post id": post.id
                 })
             }
-            const user = await utils.getUpdatedUser(post.user.email)
-            if (user.hasOwnProperty('message'))
-                return res.status(500).json(user)
-            return res.status(200).json({
+            // const user = await utils.getUpdatedUser(post.user.email)
+            // if (user.hasOwnProperty('message'))
+            //     return res.status(500).json(user)
+            return res.status(201).json({
                 "message": "project created successfully",
-                user: user
             })
             // return res.redirect(`/${req.user.urlUserName}/posts`)
         } catch(error) {
