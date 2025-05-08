@@ -3,13 +3,21 @@ logoutBtns.forEach((logoutBtn) => {
   logoutBtn.addEventListener('click', (e) => {
     e.preventDefault()
     localStorage.clear()
-    document.getElementById('logoutForm').submit()
+    document.getElementById('logout-form').submit()
+  })
+})
+
+const portfolioLinks = document.querySelectorAll('.portfolio-link')
+portfolioLinks.forEach((portfolioLink) => {
+  portfolioLink.addEventListener('click', (event) => {
+    event.preventDefault()
+    window.location.href = "/portofolio"
   })
 })
 
 let user;
 try {
-  user = document.getElementById('username').attributes.user.value
+  user = document.getElementById('username').dataset.user
   user = JSON.parse(user)
 } catch(error) {
     console.log(error)
@@ -97,7 +105,6 @@ projectForm.addEventListener("submit", async (event) => {
     repo: repo,
     roles: roles
   }
-  console.log("1", postData)
   createPost(postData)
 });
 
@@ -108,7 +115,8 @@ async function createPost(postData) {
       await createProjectFromPost(response)
     } else {
       console.error('an error occured while creating a post')
-      // showErrorPopup()
+      createProjectModal.style.display = "none"
+      showErrorPopup()
     }
   } catch(error) {
     console.error('an error', error)
@@ -124,7 +132,6 @@ async function sendPostData(postData) {
       }
     })
     const data = await res.json()
-    console.log("2", data)
     if (data.errors) {
       return createErrorsFeedback(data.errors)
     }
@@ -177,6 +184,8 @@ async function validateDivExistence(elementDiv, infoMessage) {
     console.error("Element not found.");
   }
 }
+
+const successCreationPopup = document.getElementById('success-post-creation-feedback')
 async function createProjectFromPost(postCreationResponse) {
   try {
     const response = await fetch(`/user/${user.id}/posts/${postCreationResponse.post.id}/project`, {
@@ -184,11 +193,10 @@ async function createProjectFromPost(postCreationResponse) {
     })
     const data = await response.json()
     if (!response.ok) {
-      console.log(data)
       showErrorPopup()
     } else {
       closeProjectModal.click()
-      document.getElementById('formSuccessPopUp').classList.remove('hidden')
+      successCreationPopup.classList.remove('hidden')
     }
   } catch(error) {
     console.log('an error', error)
@@ -200,46 +208,31 @@ startCollaboration.addEventListener('click', (e) => {
   window.location.href = '/projects'
 })
 
-async function closeSuccessPopup() {
-  const popup = document.getElementById('formSuccessPopUp');
-
-  // Add a fading animation
-  popup.style.transition = 'opacity 0.5s';
-  popup.style.opacity = '0';
-
-  // Wait for the animation to complete
+const closeSuccessPopupBtn = document.getElementById('close-success-popoup-btn')
+closeSuccessPopupBtn.addEventListener('click', async (e) => {
+  successCreationPopup.style.transition = 'opacity 0.5s';
+  successCreationPopup.style.opacity = '0';
   await new Promise((resolve) => setTimeout(resolve, 500));
-
-  // Hide the popup
-  popup.style.display = 'none';
-}
-
-function showErrorPopup() {
-  document.getElementById('serverErrorPopup').classList.remove('hidden');
-}
-
-// Function to close the popup
-function closeErrorPopup() {
-  document.getElementById('serverErrorPopup').classList.add('hidden');
-}
-
-const portfolioLink = document.getElementById('portfolio-link')
-console.log(portfolioLink)
-portfolioLink.addEventListener('click', (event) => {
-  event.preventDefault()
-  window.location.href = "portofolio"
+  successCreationPopup.style.display = 'none';
 })
-//////////////////
-const GithubAuthBtn = document.getElementById("githubAuthPopup");
-const openGithubAuthPopupButton = document.getElementById("openPopup");
-const closeGithubAuhtPopupButton = document.getElementById("closePopup");
 
-// Open the popup
+const serverErrorPopup = document.getElementById('server-error-popup')
+function showErrorPopup() {
+  serverErrorPopup.classList.remove('hidden');
+}
+const closeServerErrorPopup = document.getElementById('close-server-error-popoup')
+closeServerErrorPopup.addEventListener('click', (e) => {
+  serverErrorPopup.classList.add('hidden');
+})
+
+const githubAuthPopup = document.getElementById("github-auth-popup");
+const openGithubAuthPopupButton = document.getElementById("github-auth-popup-btn");
+const closeGithubAuhtPopupButton = document.getElementById("close-github-auth-popup-btn");
+
 openGithubAuthPopupButton.addEventListener("click", () => {
-  GithubAuthBtn.classList.remove("hidden");
+  githubAuthPopup.classList.remove("hidden");
 });
 
-// Close the popup
 closeGithubAuhtPopupButton.addEventListener("click", () => {
-  GithubAuthBtn.classList.add("hidden");
+  githubAuthPopup.classList.add("hidden");
 });

@@ -27,7 +27,7 @@ class noAuthController {
         }
     }
 
-    static async getAllPosts(req, res) {
+    static async getProjects(req, res) {
         try {
             const posts = await prisma.post.findMany({
                 where: {
@@ -53,7 +53,7 @@ class noAuthController {
             if (!posts)
                 return res.status(203).json({"message": "no post to show"})
             if (req.user) {
-                const pending = await utils.getPendingRequests(req.user.fullName)
+                const pending = await utils.getPendingRequests(req.user.id)
                 return res.render('projects', {posts: posts, user: req.user, pending: pending})
             }
             return res.render('projects', {posts: posts, user: "", pending: ""})

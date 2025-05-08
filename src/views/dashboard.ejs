@@ -27,7 +27,7 @@
         username="<%= user.fullName %>"
         ><i class="fas fa-comments"></i> My Posts</a
       > -->
-      <a href="/portofolio" id="portfolio-link-media-768"
+      <a href="/portofolio" id="portfolio-link-media-768" class="portfolio-link"
         ><i class="fas fa-user"></i> Portofolio</a
       >
       <!-- <a href="/IdeaBank"><i class="fas fa-lightbulb"></i> Project Idea Bank</a> -->
@@ -45,7 +45,10 @@
           <span class="dashboard-logo" id="dashboardLogo">Dashboard</span>
         </span>
         <div>
-          <a id="portfolio-link" href="/portfolio"
+          <a
+            id="portfolio-link-media-1200"
+            href="/portfolio"
+            class="portfolio-link"
             ><i class="fas fa-user"></i> Portofolio</a
           >
           <a class="logout-link" href="/auth/logout">
@@ -53,7 +56,7 @@
           </a>
 
           <form
-            id="logoutForm"
+            id="logout-form"
             action="/auth/logout"
             method="POST"
             style="display: none"
@@ -68,7 +71,7 @@
           <span
             class="username"
             id="username"
-            user="<%= JSON.stringify(user) %>"
+            data-user="<%= JSON.stringify(user) %>"
           >
             <%= user.fullName %>
 
@@ -189,7 +192,7 @@
     <!-- form createion success Popup -->
     <div
       class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 hidden"
-      id="formSuccessPopUp"
+      id="success-post-creation-feedback"
       style="opacity: 1; transition: opacity 0.5s"
     >
       <div
@@ -200,7 +203,7 @@
           Your project was created successfully. Wait for developers to apply.
         </p>
         <button
-          onclick="closeSuccessPopup()"
+          id="close-success-popoup-btn"
           class="mt-6 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded"
         >
           Close
@@ -210,15 +213,13 @@
 
     <!-- github auth Popup -->
     <button
-      id="openPopup"
+      id="github-auth-popup-btn"
       class="bg-blue-500 text-white p-2 rounded"
       style="display: none"
-    >
-      Open Popup
-    </button>
+    ></button>
 
     <div
-      id="githubAuthPopup"
+      id="github-auth-popup"
       class="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50 hidden"
     >
       <div class="bg-white p-6 rounded-lg w-96">
@@ -237,19 +238,17 @@
         >
           Authenticate with GitHub
         </a>
-
-        <!-- Close Button -->
         <button
-          id="closePopup"
+          id="close-github-auth-popup-btn"
           class="bg-red-500 text-white py-2 px-4 rounded mt-4 w-full"
         >
           Close
         </button>
       </div>
     </div>
-    <!-- serverErrorPopup -->
+
     <div
-      id="serverErrorPopup"
+      id="server-error-popup"
       class="hidden fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50"
     >
       <div
@@ -260,7 +259,7 @@
           There was an issue with the server. Please try again later.
         </p>
         <button
-          onclick="closeErrorPopup()"
+          id="close-server-error-popoup"
           class="mt-6 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded"
         >
           Close

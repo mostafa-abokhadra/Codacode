@@ -1,4 +1,3 @@
-console.log(localStorage.getItem('urlUserName'))
 if (localStorage.getItem('urlUserName')) {
   const logoText = document.getElementById('logo-text')
   const signupBtn = document.getElementById('sign-up-btn')

@@ -441,7 +441,7 @@ transition-delay: 0.3s; /* Delay to sync with the underline animation */
     }
 }
 @media (max-width: 400px) {
-    #portfolio-link {
+    #portfolio-link-media-1200 {
         display: none;
     }
     #portfolio-link-media-768 {

@@ -3,9 +3,10 @@ const noAuthController = require("../controllers/noAuthContoller")
 
 // router.get("/IdeaBank", noAuthController.getIdeas)
 
+router.get("/projects", noAuthController.getProjects)
+
 router.get("/portofolio", noAuthController.getUserPortofolio)
 
-router.get("/projects", noAuthController.getAllPosts)
-
 router.get('/about', noAuthController.getAbout)
+
 module.exports = router

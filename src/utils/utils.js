@@ -148,10 +148,10 @@ async function getSendToMeRequests(username) {
         return {"error": "an error occur in utils"}
     }
 }
-async function getPendingRequests(username) {
+async function getPendingRequests(userId) {
     try {
         const user = await prisma.user.findFirst({
-            where: {fullName: username},
+            where: {id: userId},
             include: {pending:{
                 include: {
                     role: {
