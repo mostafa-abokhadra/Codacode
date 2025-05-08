@@ -9,9 +9,11 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <link rel="stylesheet" href="/css/dashboard.css" />
+    <link rel="stylesheet" href = "/css/feedback.css"/>
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body>
+    </div>
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
       <a href="/dashboard">
@@ -38,6 +40,7 @@
 
     <!-- Main Content -->
     <div class="main-content">
+
       <!-- Navbar -->
       <div class="navbar">
         <span class="toggle-btn" id="toggle-btn"
@@ -66,6 +69,14 @@
 
       <!-- Content Section -->
       <div class="content">
+        <% if (user.info) { %>
+          <div class="feedback-banner" id="feedbackBanner">
+            <div class="feedback-content">
+                <p><%- user.info %></p>
+                <button class="close-btn">&times;</button>
+            </div>
+          </div>
+        <% } %>
         <h1 class="welcome-message">
           Welcome
           <span
@@ -267,5 +278,6 @@
       </div>
     </div>
     <script src="/js/dashboard.js"></script>
+    <script src="/js/feedback.js"></script>
   </body>
 </html>
