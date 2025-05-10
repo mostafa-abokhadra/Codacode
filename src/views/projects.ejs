@@ -81,6 +81,9 @@
           user="<%= user ? JSON.stringify(user) : '' %>"
           pending="<%= JSON.stringify(pending) %>"
         >
+        <%= JSON.stringify(posts) %>
+        <%= JSON.stringify(pending) %>
+        <%= JSON.stringify(user) %>
           <!--  -->
           <button 
           id="createNewProjectBtn"

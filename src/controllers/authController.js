@@ -166,22 +166,19 @@ class authController {
         })(req, res, next);
         
     }
+
     static async logout(req, res) {
-        req.logout((err) => {
+        req.logout(function(err) {
             if (err) {
                 return res.status(500).json({"message": "logout failed"});
             }
             
             req.session.destroy(function(err) {
-                if (err) {
-                    return res.status(500).json({ error: 'Session destruction failed' });
-                }
-                
                 res.clearCookie('codacodeCookie', {
                     path: '/',
                     httpOnly: true,
-                    // secure: process.env.NODE_ENV === 'production', // Should be enabled in production
-                    // sameSite: 'lax' // Recommended for CSRF protection
+                    // secure: process.env.NODE_ENV === 'production',
+                    // sameSite: 'lax'
                 });
                 
                 return res.status(200).json({ 

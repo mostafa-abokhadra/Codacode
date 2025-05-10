@@ -3,13 +3,13 @@ const prisma = new PrismaClient()
 const utils = require('../utils/utils')
 
 class noAuthController {
-    static async getIdeas(req, res) {
-        try {
-            return res.render('ideasBank')
-        } catch(error) {
-            return res.status(500).json({"message": "an error has occured"})
-        }
-    }
+    // static async getIdeas(req, res) {
+    //     try {
+    //         return res.render('ideasBank')
+    //     } catch(error) {
+    //         return res.status(500).json({"message": "an error has occured"})
+    //     }
+    // }
     static async getAbout(req, res) {
         try {
             return res.render('about')
@@ -39,19 +39,31 @@ class noAuthController {
                 },
                 include: {
                     roles: {
-                        include: {
-                            requests: true
+                        select: {
+                            id: true,
+                            position: true,
+                            needed: true,
+                            applied: true,
+                            status: true
                         }
                     },
                     user: {
-                        include: {
-                            profile: true
+                        select: {
+                            id: true,
+                            fullName: true,
+                            profile: {
+                                select: {
+                                    id: true,
+                                    image: true,
+                                }
+                            }
                         }
                     }
                 }
             })
             if (!posts)
                 return res.status(203).json({"message": "no post to show"})
+
             if (req.user) {
                 const pending = await utils.getPendingRequests(req.user.id)
                 return res.render('projects', {posts: posts, user: req.user, pending: pending})
