@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Projects</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/css/projects.css"/>
     <link rel="stylesheet" href="/css/nav.css">
@@ -63,23 +63,22 @@
             >Guide</a
         > -->
         <a href="/about">About</a>
-        <a href="/auth/signup">Sign Up</a>
-        <a href="/auth/login">Login</a>
+        <a href="/auth/signup" class="mobile-auth">Sign Up</a>
+        <a href="/auth/login" class="mobile-auth">Login</a>
       </div>
     </nav>
 
     <!-- main content -->
     <div
-      class=""
       style="background-color: #eff6ff var(--tw-gradient-from-position)"
     >
       <div class="p-4 space-y-6 max-w-3xl">
         <div
           class="bg-white shadow-md rounded-lg p-4"
           id="posts-container"
-          posts="<%= JSON.stringify(posts) %>"
-          user="<%= user ? JSON.stringify(user) : '' %>"
-          pending="<%= JSON.stringify(pending) %>"
+          data-posts="<%= JSON.stringify(posts) %>"
+          data-user="<%= user ? JSON.stringify(user) : '' %>"
+          data-pending="<%= JSON.stringify(pending) %>"
         >
         <%= JSON.stringify(posts) %>
         <%= JSON.stringify(pending) %>
@@ -419,7 +418,7 @@
         modal.classList.toggle("hidden");
       }
     </script>
-    <script src="/js/posts.js"></script>
+    <script src="/js/projects.js"></script>
     <script src="/js/dashboard.js"></script>
   </body>
 </html>

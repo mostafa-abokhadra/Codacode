@@ -1,30 +1,17 @@
-if (localStorage.getItem('urlUserName')) {
-  const logoText = document.getElementById('logo-text')
-  const signupBtn = document.getElementById('sign-up-btn')
-  const loginBtn = document.getElementById('login-btn')
-  const mobileSignupBtn = document.getElementById('mobile-signup-btn')
-  const mobileloginBtn = document.getElementById('mobile-login-btn')
-  mobileSignupBtn.classList.add('hidden')
-  mobileloginBtn.classList.add('hidden')
-  logoText.textContent = "Dashboard"
-  signupBtn.classList.add('hidden')
-  loginBtn.classList.add('hidden')
-}
-const posts = document.getElementById('posts-container');
+const postsContainer = document.getElementById('posts-container');
+const Posts = postsContainer.dataset.postsContainer
+const user = postsContainer.dataset.user
+const pending = postsContainer.dataset.pending
 
-let user;
-try {
-  user = JSON.parse(posts.attributes.user.value)
-} catch(error) {
-  console.error("can't parse user data", error)
+if (user) {
+  document.querySelectorAll('auth-btn').forEach((btn) => {
+    btn.classList.add('hidden')
+  })
+  document.querySelectorAll('mobile-auth').forEach((btn) => {
+    btn.classList.add('hidden')
+  })
 }
 
-let pending;
-try {
-  pending = JSON.parse(posts.attributes.pending.value)
-} catch(error) {
-  console.error("cant't parse user pending requests", error)
-}
 
 const createButton = async (role) => {
   try {
@@ -50,9 +37,9 @@ const createButton = async (role) => {
   }
 };
 
-if (posts) {
+if (postsContainer) {
   try {
-    const userPosts = JSON.parse(posts.attributes.posts.value)
+    const userPosts = JSON.parse(postsContainer.attributes.postsContainer.value)
     if (!userPosts) {
       const noProjects = document.getElementById('no-projects')
       noProjects.classList.remove('hidden')
@@ -61,7 +48,7 @@ if (posts) {
       for (let i = userPosts.length - 1; i >= 0 ; i--) {
           userPosts[i].createdAt = userPosts[i].createdAt.split('T')
           const post = generatePost(userPosts[i]);
-          posts.appendChild(post);
+          postsContainer.appendChild(post);
       }
   });
   } catch(error) {
@@ -184,13 +171,13 @@ closeGithubAuhtPopupButton.addEventListener("click", () => {
           if (!user.GitHub) {
             openGithubAuthPopupButton.click()
           } else {
-            let userPosts = await fetch(`${user.fullName}/posts`)
+            let userPosts = await fetch(`${user.fullName}/postsContainer`)
             if (!userPosts.ok)
-              console.error("can't fetch user posts")
+              console.error("can't fetch user postsContainer")
             else {
               userPosts = await userPosts.json()
             }
-            let flag = userPosts.posts.some((post) =>{return post.id === Number(btn.attributes.postId.value)})
+            let flag = userPosts.postsContainer.some((post) =>{return post.id === Number(btn.attributes.postId.value)})
             if (flag)
               myPostApplyHandler()
             else {
@@ -351,7 +338,7 @@ async function validateDivExistence(elementDiv, infoMessage) {
 async function createPost (dic) {
   try {
     const formData = new URLSearchParams(dic).toString();
-    let res = await fetch(`/${user.fullName}/posts`, {
+    let res = await fetch(`/${user.fullName}/postsContainer`, {
       method: 'post',
       body: formData,
       headers: {
@@ -393,7 +380,7 @@ async function createPost (dic) {
         }
       }
     } else {
-        const projectRes = await fetch(`/${user.fullName}/posts/${res.post.id}/projects`, {
+        const projectRes = await fetch(`/${user.fullName}/postsContainer/${res.post.id}/projects`, {
           method: 'post'
         })
         if (projectRes.ok) {
