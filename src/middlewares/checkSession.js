@@ -15,7 +15,7 @@ async function ensureAuthenticated (req, res, next) {
 // }
 function redirectToDashboardIfAuthenticated(req, res, next) {
     if (req.isAuthenticated())
-        res.redirect(`/${req.user.urlUserName}/dashboard`)
+        res.redirect(`/dashboard`)
     return next()
 }
 module.exports = {

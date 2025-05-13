@@ -1,60 +1,46 @@
 const postsContainer = document.getElementById('posts-container');
-const Posts = postsContainer.dataset.postsContainer
-const user = postsContainer.dataset.user
-const pending = postsContainer.dataset.pending
-
-if (user) {
-  document.querySelectorAll('auth-btn').forEach((btn) => {
-    btn.classList.add('hidden')
-  })
-  document.querySelectorAll('mobile-auth').forEach((btn) => {
-    btn.classList.add('hidden')
-  })
-}
-
-
-const createButton = async (role) => {
-  try {
-      const pending = await getPendingReq();
-      // Determine if the button should be disabled
-      const isDisabled = !pending.some(req => req.role_id === role.id);
-      // Create button HTML dynamically
-      const buttonHTML = `
-          <button
-              id="apply"
-              ${isDisabled ? 'disabled' : ''}
-              roleId="${role.id}"
-              class="apply-btn bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700">
-              Apply
-          </button>
-      `;
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = buttonHTML;
-      const elem = tempDiv.firstChild; // This will be the <button> element
-      return elem
-  } catch (error) {
-      console.error("Failed to fetch pending requests:", error);
-  }
-};
+let posts;
+const user = JSON.parse(postsContainer.dataset.user)
+const pending = JSON.parse(postsContainer.dataset.pending)
 
 if (postsContainer) {
-  try {
-    const userPosts = JSON.parse(postsContainer.attributes.postsContainer.value)
-    if (!userPosts) {
+    posts = JSON.parse(postsContainer.dataset.posts)
+    if (!posts) {
       const noProjects = document.getElementById('no-projects')
       noProjects.classList.remove('hidden')
+    } else {
+      document.addEventListener("DOMContentLoaded", () => {
+          for (let i =0 ; i < posts.length ; i++) {
+              posts[i].createdAt = posts[i].createdAt.split('T')
+              const post = generatePost(posts[i]);
+              postsContainer.appendChild(post);
+          }});
     }
-    document.addEventListener("DOMContentLoaded", () => {
-      for (let i = userPosts.length - 1; i >= 0 ; i--) {
-          userPosts[i].createdAt = userPosts[i].createdAt.split('T')
-          const post = generatePost(userPosts[i]);
-          postsContainer.appendChild(post);
-      }
-  });
-  } catch(error) {
-    console.error("an error: ", error)
-  }
 }
+
+if (user) {
+  document.querySelectorAll('.auth-btn').forEach((btn) => {
+    btn.classList.add('hidden')
+  })
+  document.querySelectorAll('.mobile-auth').forEach((btn) => {
+    btn.classList.add('hidden')
+  })
+}
+
+function createApplyButton(role) {
+    // Determine if the button should be disabled
+      const isDisabled = !pending.pending.some(req => req.role_id === role.id);
+      const applyButton = `
+          <button
+            id="apply"
+            ${isDisabled ? 'disabled' : ''}
+            roleId="${role.id}"
+            class="apply-btn bg-green-600 text-white px-4 py-1 rounded hover:bg-green-700">
+            Apply
+          </button>
+      `;
+      return applyButton
+};
 
 // document.querySelectorAll(".apply-btn").forEach((button) => {
 //     button.addEventListener("click", () => {
