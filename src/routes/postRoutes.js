@@ -10,7 +10,7 @@ const postController = require('../controllers/postController')
 // creating a new post
 // create roles of that post
 router.post(
-    '/user/:user_id/posts',
+    '/users/:user_id/posts',
     checkSession.ensureAuthenticated,
     postValidtor.titleValidator,
     postValidtor.descriptionValidator,

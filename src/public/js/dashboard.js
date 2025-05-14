@@ -14,10 +14,11 @@ portfolioLinks.forEach((portfolioLink) => {
     window.location.href = "/portofolio"
   })
 })
-
+const serverErrorPopup = document.getElementById('server-error-popup')
 let user;
 try {
-  user = document.getElementById('username').dataset.user
+  const userElement = document.getElementById('username')
+  user = userElement.dataset.user
   user = JSON.parse(user)
 } catch(error) {
     console.log(error)
@@ -115,8 +116,8 @@ async function createPost(postData) {
       await createProjectFromPost(response)
     } else {
       console.error('an error occured while creating a post')
-      createProjectModal.style.display = "none"
-      showErrorPopup()
+      // createProjectModal.style.display = "none"
+      // showErrorPopup()
     }
   } catch(error) {
     console.error('an error', error)
@@ -124,7 +125,7 @@ async function createPost(postData) {
 }
 async function sendPostData(postData) {
   try {
-    const res = await fetch(`/user/${user.id}/posts`, {
+    const res = await fetch(`/users/${user.id}/posts`, {
       method: 'POST',
       body: JSON.stringify(postData),
       headers: {
@@ -216,9 +217,9 @@ closeSuccessPopupBtn.addEventListener('click', async (e) => {
   successCreationPopup.style.display = 'none';
 })
 
-const serverErrorPopup = document.getElementById('server-error-popup')
 function showErrorPopup() {
   serverErrorPopup.classList.remove('hidden');
+
 }
 const closeServerErrorPopup = document.getElementById('close-server-error-popoup')
 closeServerErrorPopup.addEventListener('click', (e) => {

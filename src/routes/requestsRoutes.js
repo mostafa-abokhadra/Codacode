@@ -6,7 +6,7 @@ const handleValidationErrors = require("../middlewares/validationErrorHandler")
 
 // apply to a position
 router.post(
-    "/:username/roles/:roleId",
+    "/user/:user_id/posts/:post_id/roles/:role_id",
     checksession.ensureAuthenticated,
     requestValidator.validateRoleId,
     handleValidationErrors,

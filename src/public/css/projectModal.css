@@ -1,0 +1,106 @@
+#create-project-modal {
+    display: none;
+    position: fixed;
+    z-index: 1200;
+    padding-top: 60px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+#create-project-modal .modal-content {
+    background-color: #fff;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    height: 95%;
+    max-width: 500px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow-y: scroll;
+}
+
+#title-close-project {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+}
+#title-close-project {
+    font-size: larger;
+    font-weight: bold;
+}
+#close-project-modal:hover,
+#close-project-modal:focus {
+    color: #bd0d0d;
+    cursor: pointer;
+}
+
+#title-close-project-hr {
+    margin: 10px 0px 10px 0px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.role-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.role-input select,
+.role-input input {
+    flex: 1;
+}
+
+.add-role-btn,
+.remove-role-btn {
+    background-color: rgb(34 197 94 / var(--tw-bg-opacity, 1));
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.add-role-btn:hover,
+.remove-role-btn:hover {
+    background-color: #2e7d32;
+}
+
+.project-submit-btn {
+    background-color: rgb(34 197 94 / var(--tw-bg-opacity, 1));
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.submit-btn:hover {
+    background-color: #2e7d32;
+}

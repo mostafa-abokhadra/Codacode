@@ -1,14 +1,17 @@
 const {PrismaClient} = require("@prisma/client")
 const prisma = new PrismaClient()
 const utils = require('../utils/utils')
-const { checkExact } = require("express-validator")
 class requestsController {
 
     static async postApplyRequest(req, res) {
         try {
-            const {username, roleId} = req.params
+            console.log(req.params)
+            const {user_id, post_id, role_id} = req.params
             const role = await prisma.role.findFirst({
-                where: {id: parseInt(roleId)},
+                where: {
+                    id: parseInt(role_id), 
+                    post_id: parseInt(post_id)
+                },
                 include: {
                     post: {
                         include: {
@@ -19,14 +22,14 @@ class requestsController {
                 }
             })
             if (!role)
-                return res.status(404).json({"message": "can't find role"})
+                return res.status(400).json({"message": "can't find role"})
             if (role.post.user.id === req.user.id)
-                return res.status(501).json({"message": "can't apply to your own porject"})
+                return res.status(400).json({"message": "can't apply to your own porject"})
             const userApplied = await prisma.user.findFirst({
-                where: {fullName: username}
+                where: {id: parseInt(user_id)}
             })
             if (!userApplied)
-                return res.status(404).json({"message": "user wants to apply not found"})
+                return res.status(400).json({"message": "user not found"})
             let exist = false;
             for (let i = 0; i < role.requests.length; i++) {
                 if (req.user.id === role.requests[i].userApplied_id) {
@@ -51,11 +54,11 @@ class requestsController {
             const updateRole = await prisma.role.update({
                 where: {id: role.id},
                 data: {
-                    requests:{
-                        connect: {
-                            id: createRequest.id
-                        }
-                    },
+                    // requests:{
+                    //     connect: {
+                    //         id: createRequest.id
+                    //     }
+                    // },
                     applied: parseInt(role.applied) + 1
                 }
             })
@@ -65,9 +68,9 @@ class requestsController {
                 return res.status(500).json({"message": "can't update the role request"})
             }
             // const updatedUser = await utils.getUpdatedUser(userApplied.email)
+            console.log(createRequest)
             return res.status(201).json({
                 "message": "request to role sent successfully",
-                // user: updatedUser,
                 request: createRequest
             })
         } catch(error) {

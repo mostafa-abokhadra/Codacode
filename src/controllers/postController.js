@@ -96,11 +96,10 @@ class projectPostController {
     /////////////////////////////////
     static async getPosts(req, res) {
         try {
-            const {username} = req.param
             const posts = await prisma.post.findMany({
                 where: {
                     user: {
-                        fullName: req.user.fullName
+                        id: req.user.id
                     }
                 },
                 include: {

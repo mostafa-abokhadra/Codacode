@@ -9,7 +9,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <link rel="stylesheet" href="/css/dashboard.css" />
-    <link rel="stylesheet" href = "/css/feedback.css"/>
+    <link rel="stylesheet" href = "/css/projectModal.css"/>
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body>
@@ -37,11 +37,9 @@
         <i class="fas fa-sign-out-alt"></i> Logout
       </a>
     </div>
-
-    <!-- Main Content -->
+    
     <div class="main-content">
 
-      <!-- Navbar -->
       <div class="navbar">
         <span class="toggle-btn" id="toggle-btn"
           ><i class="fas fa-bars"></i>
@@ -69,14 +67,7 @@
 
       <!-- Content Section -->
       <div class="content">
-        <% if (user.info) { %>
-          <div class="feedback-banner" id="feedbackBanner">
-            <div class="feedback-content">
-                <p><%- user.info %></p>
-                <button class="close-btn">&times;</button>
-            </div>
-          </div>
-        <% } %>
+
         <h1 class="welcome-message">
           Welcome
           <span
@@ -195,7 +186,7 @@
             />
           </div>
 
-          <button type="submit" class="submit-btn">Submit</button>
+          <button type="submit" class="project-submit-btn">Submit</button>
         </form>
       </div>
     </div>
@@ -266,7 +257,7 @@
         class="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full text-center"
       >
         <h2 class="text-xl font-semibold text-red-600">Server Error</h2>
-        <p class="mt-4 text-gray-700">
+        <p id="info-message-of-error" class="mt-4 text-gray-700">
           There was an issue with the server. Please try again later.
         </p>
         <button
@@ -278,6 +269,5 @@
       </div>
     </div>
     <script src="/js/dashboard.js"></script>
-    <script src="/js/feedback.js"></script>
   </body>
 </html>

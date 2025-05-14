@@ -53,10 +53,12 @@ class authController {
     static async getGitHubRedirect(req, res, next){
         passport.authenticate('github', async(err, user, info)=> {
             try {
-                if (err || !user)
-                    req.user = {...req.user, info: 'error in github auth api call'}
-                else if (await authController.alreadyGithubAuthenticated(user.username))
+                if (err || !user) {
+                    req.user = {...req.user, info:'github authentication is needed, you can authenticate by applying to a project or creating your own'}
+                }
+                else if (await authController.alreadyGithubAuthenticated(user.username)) {
                     req.user = {...req.user, info: `github account belongs to another user`}
+                }
                 else {
                     const encryptedToken = await utils.encryptToken(user.token)
                     const encryptedGitHubUsername = await utils.encryptToken(user.username)
@@ -70,8 +72,9 @@ class authController {
                             accessToken: encryptedToken,
                             githubUsername: encryptedGitHubUsername
                         }})
-                    if (!githubCredentials)
+                    if (!githubCredentials) {
                         req.user = {...req.user, info: `can't create github credentials`}
+                    }
                 }
                 req.logIn(req.user, req.user, (err) => {
                     if (err)

@@ -1,11 +1,17 @@
 const postsContainer = document.getElementById('posts-container');
+
 let posts;
-const user = JSON.parse(postsContainer.dataset.user)
-const pending = JSON.parse(postsContainer.dataset.pending)
+let user;
+let pending;
+
+if (postsContainer.dataset.user) 
+  user = JSON.parse(postsContainer.dataset.user)
+if (postsContainer.dataset.pending) 
+  pending = JSON.parse(postsContainer.dataset.pending)
 
 if (postsContainer) {
     posts = JSON.parse(postsContainer.dataset.posts)
-    if (!posts) {
+    if (posts.length === 0) {
       const noProjects = document.getElementById('no-projects')
       noProjects.classList.remove('hidden')
     } else {
@@ -42,36 +48,12 @@ function createApplyButton(role) {
       return applyButton
 };
 
-// document.querySelectorAll(".apply-btn").forEach((button) => {
-//     button.addEventListener("click", () => {
-//       button.classList.add("hidden");
-//       const cancelButton = button.nextElementSibling;
-//       cancelButton.classList.remove("hidden");
-//     });
-//   });
 
-// document.querySelectorAll(".cancel-btn").forEach((button) => {
-//   button.addEventListener("click", () => {
-//     button.classList.add("hidden");
-//     const applyButton = button.previousElementSibling;
-//     applyButton.classList.remove("hidden");
-//   });
-// });
-
-const GithubAuthBtn = document.getElementById("githubAuthPopup");
-const openGithubAuthPopupButton = document.getElementById("openPopup");
-const closeGithubAuhtPopupButton = document.getElementById("closePopup");
-
-// Open the popup
-openGithubAuthPopupButton.addEventListener("click", () => {
-  GithubAuthBtn.classList.remove("hidden");
-});
-
-// Close the popup
-closeGithubAuhtPopupButton.addEventListener("click", () => {
-  GithubAuthBtn.classList.add("hidden");
-});
-
+const githubAuthPopup = document.getElementById("github-auth-popup");
+const closeGithubPopup = document.getElementById("close-github-popup");
+closeGithubPopup.addEventListener('click', (e) => {
+  githubAuthPopup.classList.add('hidden')
+})
   function generatePost(postData) {
     const postCard = document.createElement("div");
     postCard.className = "bg-white p-4 rounded-lg shadow-md mb-4";
@@ -112,8 +94,7 @@ closeGithubAuhtPopupButton.addEventListener("click", () => {
             </button>
           </div>
         `
-        )
-        .join("")}
+        ).join("")}
       </div>
       <h2 class="text-xl font-bold mt-4">GitHub Repo</h2>
       <div class="mt-4">
@@ -121,134 +102,74 @@ closeGithubAuhtPopupButton.addEventListener("click", () => {
           Repository Link
         </a>
       </div>
-      <div id="popup" class="popup-overlay">
-        <div class="popup-content">
-            <button class="popup-close" onclick="closePopup()">×</button>
-            <h2>Success!</h2>
-            <p>
-                You’ve successfully applied to the role! Stay updated by tracking your 
-                application status in the <a href="#" class="pending-link">Pending Requests</a> page.
-            </p>
-        </div>
-    </div>
-    <button style="display: none" id="openSuccessPopUp" onclick="openPopup()">Show Popup</button>
     
-    <div id="myPostModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
-    <div class="bg-white rounded-lg shadow-lg max-w-sm w-full p-6 text-center">
-      <h2 class="text-lg font-bold text-gray-800">Wait... what?! 🤔</h2>
-      <p class="mt-2 text-gray-600">You can't apply to your own project!  
-        That's like high-fiving yourself in public. wait for developers to apply!</p>
-      <button 
-        onclick="myPostApplyHandler()" 
-        class="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
-        Got it!
-      </button>
-    </div>
-  </div>
     `;
 
-    // Handle Apply/Cancel button logic
     const applyButtons = postCard.querySelectorAll(".apply-btn");
     applyButtons.forEach((btn) => {
       btn.addEventListener("click", async () => {
         try {
           if (!user)
             window.location.href = "/auth/signup"
-          if (!user.GitHub) {
-            openGithubAuthPopupButton.click()
+          else if (!user.GitHub) {
+            githubAuthPopup.classList.remove('hidden')
           } else {
-            let userPosts = await fetch(`${user.fullName}/postsContainer`)
-            if (!userPosts.ok)
-              console.error("can't fetch user postsContainer")
-            else {
+            let userPosts = await fetch(`/user/${user.id}/posts`)
+            if (!userPosts.ok) {
+              console.error("can't fetch user posts")
+              showErrorPopup()
+            } else 
               userPosts = await userPosts.json()
-            }
-            let flag = userPosts.postsContainer.some((post) =>{return post.id === Number(btn.attributes.postId.value)})
+            let flag = userPosts.posts.some((post) =>{return post.id === Number(btn.attributes.postId.value)})
             if (flag)
-              myPostApplyHandler()
+              myPostFunnyMessage.classList.remove('hidden')
             else {
-              let res = await fetch(`/${user.fullName}/roles/${btn.attributes.roleId.value}`, {method: 'post'})
-              // await res.json()
-              res = await res.json()
-              btn.setAttribute('requestId', `${res.request.id}`)
-              const openPopUp = document.getElementById('openSuccessPopUp')
-              openPopUp.click()
-              btn.disabled = true
+              let res = await fetch(
+                `/user/${user.id}/posts/${btn.attributes.postId.value}/roles/${btn.attributes.roleId.value}`,
+                {method: 'post'}
+              )
+              if (!res.ok)
+                showErrorPopup()
+              else {
+                const data = await res.json()
+                btn.setAttribute('requestId', `${data.request.id}`)
+                btn.disabled = true
+                applySuccessPopup.style.display = "flex"
+              }
             } 
           }
-          // if (res.status == '201') {
-          //   btn.textContent = "Cancel";
-          //   btn.classList.remove("bg-green-600", "hover:bg-green-700");
-          //   btn.classList.add("bg-red-600", "hover:bg-red-700");
-          //   btn.setAttribute('requestsId', `${res.request.id}`);
-          //   btn.removeEventListener("click", applyHandler);
-          //   btn.addEventListener("click", cancelHandler);
-          // }
         } catch(error) {
           console.error(error)
         }
       });
-  
-      // const applyHandler = () => {
-      //   btn.textContent = "Cancel";
-      //   btn.classList.remove("bg-green-600", "hover:bg-green-700");
-      //   btn.classList.add("bg-red-600", "hover:bg-red-700");
-      //   btn.removeEventListener("click", applyHandler);
-      //   btn.addEventListener("click", cancelHandler);
-      // };
-  
-      // const cancelHandler = async () => {
-      //   try {
-      //     const res = await fetch(`${user.fullName}/requests/${}`)
-      //     console.log(await res.json())
-      //   } catch(error) {
-      //     console.error(error)
-      //   }
-      //   btn.textContent = "Apply";
-      //   btn.classList.remove("bg-red-600", "hover:bg-red-700");
-      //   btn.classList.add("bg-green-600", "hover:bg-green-700");
-      //   btn.removeEventListener("click", cancelHandler);
-      //   btn.addEventListener("click", applyHandler);
-      // };
-  
-      // btn.addEventListener("click", applyHandler);
     });
     return postCard;
   }
 //
-const createNewProjectBtn = document.getElementById('createNewProjectBtn')
-if (createNewProjectBtn) {
-
-}
+const createNewProjectBtn = document.getElementById('create-new-project')
+const createProjectModal = document.getElementById("create-project-modal")
 createNewProjectBtn.addEventListener('click', (event) => {
   if (!user) {
     window.location.href = '/auth/login'
   } else if (!user.GitHub) {
-    const githubAuthPopup = document.getElementById('githubAuthPopup')
     githubAuthPopup.classList.remove('hidden')
-
-    
-    const rolesContainer = document.getElementById("rolesContainer");
-    
   } else {
-    const createProjectModal = document.getElementById("createProjectModal")
-    createProjectModal.setAttribute('style', 'display: block')
+    createProjectModal.style.display = 'block'
   }
 })
 
-const closeCreateProjectModalBtn = document.getElementById("closeModal");
-closeCreateProjectModalBtn.addEventListener("click", () => {
+const closeProjectModal = document.getElementById("close-project-modal");
+closeProjectModal.addEventListener("click", () => {
   createProjectModal.style.display = "none";
 });
 
-// Close Modal on Outside Click
 window.addEventListener("click", (e) => {
   if (e.target === createProjectModal) {
     createProjectModal.style.display = "none";
   }
 });
 
-const rolesContainer = document.getElementById("rolesContainer");
+const rolesContainer = document.getElementById("roles-container");
 rolesContainer.addEventListener("click", (e) => {
   if (e.target.classList.contains("add-role-btn")) {
     const roleInputDiv = document.createElement("div");
@@ -270,8 +191,8 @@ rolesContainer.addEventListener("click", (e) => {
   }
 });
 
-// Format the roles data on form submission
-const projectForm = document.getElementById("projectForm");
+
+const projectForm = document.getElementById("project-form");
 
 projectForm.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -287,13 +208,6 @@ projectForm.addEventListener("submit", async (event) => {
       rolesData.push({ role, numberNeeded });
     }
   });
-
-  // Replace the existing inputs with a hidden input containing the roles JSON
-  const rolesInput = document.createElement("input");
-  rolesInput.type = "hidden";
-  rolesInput.name = "roles";
-  rolesInput.value = JSON.stringify(rolesData);
-  projectForm.appendChild(rolesInput);
 
   const title = document.getElementById("title").value
   const description = document.getElementById("description").value
@@ -320,89 +234,117 @@ async function validateDivExistence(elementDiv, infoMessage) {
     console.error("Element not found.");
   }
 }
+function createErrorElement(error) {
+  const infoMessage = document.createElement('small')
+  infoMessage.textContent = error.msg
+  infoMessage.style = "color: red; margin-top: 3px"
+  infoMessage.className = 'error-message';
+  return infoMessage
+}
 
-async function createPost (dic) {
+async function createPost(postData) {
   try {
-    const formData = new URLSearchParams(dic).toString();
-    let res = await fetch(`/${user.fullName}/postsContainer`, {
-      method: 'post',
-      body: formData,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      }
-    })
-    res = await res.json()
-    if (res.errors) {
-      document.querySelectorAll('.error-message').forEach((msg) => msg.remove());
-      for (let i = 0; i < res.errors.length; i++) {
-        const infoMessage = document.createElement('small')
-        infoMessage.textContent = res.errors[i].msg
-        infoMessage.style = "color: red; margin-top: 3px"
-        infoMessage.className = 'error-message';
-        const repoLinkDiv = document.getElementsByClassName('repoLinkDiv')[0]
-        const titleDiv = document.getElementsByClassName('titleDiv')[0]
-        const descriptionDiv = document.getElementsByClassName('descriptionDiv')[0]
-        const langPrefDiv = document.getElementsByClassName("langPrefDiv")[0]
-        const yourRoleDiv = document.getElementsByClassName('yourRoleDiv')[0]
-        const roleInputDiv = document.getElementsByClassName('roleInputDiv')[0]
-        if (res.errors[i].path === 'repo') {
-          validateDivExistence(repoLinkDiv, infoMessage)
-        } else if (res.errors[i].path === 'title') {
-            const anchor = titleDiv.querySelector('a')
-            const br = document.createElement('br')
-            if (anchor) {
-              anchor.before(infoMessage)
-              infoMessage.after(br)
-            }
-          // validateDivExistence(titleDiv, infoMessage)
-        } else if (res.errors[i].path === 'description') {
-          validateDivExistence(descriptionDiv, infoMessage)
-        } else if (res.errors[i].path === 'langPref') {
-          validateDivExistence(langPrefDiv, infoMessage)
-        } else if (res.errors[i].path === 'yourRole') {
-          validateDivExistence(yourRoleDiv, infoMessage)
-        } else if (res.errors[i].path === 'roles' ) {
-          validateDivExistence(roleInputDiv, infoMessage)
-        }
-      }
+    const response = await sendPostData(postData)
+    if (response) {
+      await createProjectFromPost(response)
     } else {
-        const projectRes = await fetch(`/${user.fullName}/postsContainer/${res.post.id}/projects`, {
-          method: 'post'
-        })
-        if (projectRes.ok) {
-          const projectData = await projectRes.json()
-          closeCreateProjectModalBtn.click()
-          document.getElementById('formSuccessPopUp').classList.remove('hidden')
-        } else {
-          showErrorPopup()
-        }
+      console.error('an error occured while creating a post')
     }
   } catch(error) {
-    console.error("the errro", error)
+    console.error('an error', error)
   }
 }
+async function sendPostData(postData) {
+  try {
+    const res = await fetch(`/user/${user.id}/posts`, {
+      method: 'POST',
+      body: JSON.stringify(postData),
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    const data = await res.json()
+    if (data.errors) {
+      return createErrorsFeedback(data.errors)
+    }
+    return data
+  } catch(error) {
+    console.log(error)
+  }
+}
+function createErrorsFeedback(errors) {
 
-async function closeSuccessPopup() {
-  const popup = document.getElementById('formSuccessPopUp');
+  document.querySelectorAll('.error-message').forEach((msg) => msg.remove());
 
-  // Add a fading animation
-  popup.style.transition = 'opacity 0.5s';
-  popup.style.opacity = '0';
+  const repoLinkDiv = document.getElementsByClassName('repo-link-div')[0]
+  const titleDiv = document.getElementsByClassName('title-div')[0]
+  const descriptionDiv = document.getElementsByClassName(' description-div')[0]
+  const langPrefDiv = document.getElementsByClassName("lang-pref-div")[0]
+  const yourRoleDiv = document.getElementsByClassName('your-role-div')[0]
+  const roleInputDiv = document.getElementsByClassName('role-input-div')[0]
 
-  // Wait for the animation to complete
+  for (let i = 0; i < errors.length; i++) {
+    const infoMessage = createErrorElement(errors[i].msg)
+    if (errors[i].path === 'repo') {
+      validateDivExistence(repoLinkDiv, infoMessage)
+    } else if (errors[i].path === 'title') { 
+      validateDivExistence(titleDiv, infoMessage)
+    } else if (errors[i].path === 'description') {
+      validateDivExistence(descriptionDiv, infoMessage)
+    } else if (errors[i].path === 'langPref') {
+      validateDivExistence(langPrefDiv, infoMessage)
+    } else if (errors[i].path === 'yourRole') {
+      validateDivExistence(yourRoleDiv, infoMessage)
+    } else if (errors[i].path === 'roles' ) {
+      validateDivExistence(roleInputDiv, infoMessage)
+    }
+  }
+  return 0
+}
+
+async function createProjectFromPost(postCreationResponse) {
+  try {
+    const response = await fetch(
+      `/user/${user.id}/posts/${postCreationResponse.post.id}/project`, {
+      method: 'POST'
+    })
+    const data = await response.json()
+    if (!response.ok) {
+      showErrorPopup()
+    } else {
+      closeProjectModal.click()
+      successCreationPopup.classList.remove('hidden')
+    }
+  } catch(error) {
+    console.log('an error', error)
+  }
+}
+const sucessPopup = document.getElementById('form-success-popup');
+const closeSuccessPopup = document.getElementById('close-success-popup')
+
+closeSuccessPopup.addEventListener('click', async function closeSuccessPopup() {
+  sucessPopup.style.transition = 'opacity 0.5s';
+  sucessPopup.style.opacity = '0';
   await new Promise((resolve) => setTimeout(resolve, 500));
-
-  location.reload();
-
-  // popup.style.display = 'none';
-}
-
+  sucessPopup.style.display = 'none';
+})
+const serverErrorPopup = document.getElementById('server-error-poupup')
 function showErrorPopup() {
-  document.getElementById('serverErrorPopup').classList.remove('hidden');
+  serverErrorPopup.classList.remove('hidden');
 }
 
-// Function to close the popup
-function closeErrorPopup() {
-  document.getElementById('serverErrorPopup').classList.add('hidden');
-}
+const closeServerErrorPopup = document.getElementById('close-server-error')
+closeServerErrorPopup.addEventListener('click', (e) => {
+  serverErrorPopup.classList.add('hidden');
+})
 
+const applySuccessPopup = document.getElementById('apply-success-feedback')
+document.getElementById('close-apply-success-popup').addEventListener('click', (e) => {
+  applySuccessPopup.style.display = "none"
+})
+
+const closeFunnyMessage = document.getElementById('close-funny-messsage')
+const myPostFunnyMessage = document.getElementById('my-post-funny-feedback')
+closeFunnyMessage.addEventListener('click', (e) => {
+  myPostFunnyMessage.classList.add("hidden")
+})

@@ -1,7 +1,7 @@
 const {param} = require('express-validator')
 
 const validateRoleId = [
-    param('roleId').notEmpty().withMessage("roleId is required")
+    param('role_id').notEmpty().withMessage("roleId is required")
     .isInt({gt: 0}).withMessage("roleId must be a postive integer")
 ]
 
