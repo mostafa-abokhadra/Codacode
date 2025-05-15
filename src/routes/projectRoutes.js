@@ -34,7 +34,7 @@ router.get(
 )
 
 router.get(
-    "/user/:user_id/all/projects",
+    "/users/:user_id/all/projects",
     ensureAuthenticated,
     // ensureValidUser,
     projectController.getAllProjects
@@ -42,19 +42,19 @@ router.get(
 
 // get owner roles in a project
 router.get(
-    "/user/:user_id/projects/:project_id/roles",
+    "/users/:user_id/projects/:project_id/roles",
     ensureAuthenticated,
     projectController.getUserProjectsRoles
 )
 
 // get user roles in a project
 router.get(
-    "/user/:user_id/assigned_projects/:project_id/roles",
+    "/users/:user_id/assigned_projects/:project_id/roles",
     ensureAuthenticated,
     projectController.getUserAssignedProjectsRoles
 )
 router.get(
-    "/user/:user_id/projects/:project_id/team/avatars",
+    "/users/:user_id/projects/:project_id/team/avatars",
     ensureAuthenticated,
     projectController.getProjectTeamProfileAvatars
 )

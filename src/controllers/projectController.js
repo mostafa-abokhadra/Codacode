@@ -197,9 +197,9 @@ class projectController {
 
     static async getAllProjects(req, res) {
         try {
-            const {username} = req.params
+            const {user_id} = req.params
             const user = await prisma.user.findFirst({
-                where: {fullName: req.user.fullName},
+                where: {id: parseInt(user_id)},
                 select: {
                     id: true,
                     fullName: true,
@@ -235,18 +235,13 @@ class projectController {
                         } 
                     }
                 },
-                // include: {
-                //     Projects: { include: { team: { include: { group: {include: {messages: true} },  members: true } } } },
-                //     assignedProjects: { include: { team: { include: { group: {include: {messages: true}}, members: true} } } }
-                // }
             })
             if (!user)
-                return res.status(401).json({"message": "can't find user projects"})
-            // return res.status(200).json({
-            //     "message": "projects retrieved successfully",
-            //     projects: user.Projects, assigned: user.assignedProjects
-            // })
-            user.urlUserName = req.user.urlUserName
+                return res.status(403).json({"message": "no project were found"})
+            return res.status(200).json({
+                "message": "projects retrieved successfully",
+                projects: user.Projects, assignedProjects: user.assignedProjects
+            })
             return res.render('userProjects', {user: user})
         } catch(error) {
             console.log(error)
