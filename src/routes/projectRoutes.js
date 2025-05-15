@@ -1,4 +1,4 @@
-const { ensureAuthenticated} = require("../middlewares/checkSession")
+const { ensureAuthenticated, ensureValidUser} = require("../middlewares/checkSession")
 const projectController = require("../controllers/projectController")
 const projectValidator = require("../validators/projectValidator")
 
@@ -13,11 +13,11 @@ router.post(
 )
 
 // getting my project (i am the owner)
-router.get(
-    '/user/:user_id/projects',
-    ensureAuthenticated,
-    projectController.getProjects
-)
+// router.get(
+//     '/user/:user_id/projects',
+//     ensureAuthenticated,
+//     projectController.getProjects
+// )
 
 // getting projects that i particaipate in
 router.get(
@@ -58,13 +58,15 @@ router.get(
     ensureAuthenticated,
     projectController.getProjectTeamProfileAvatars
 )
+
+router.get(
+    "/users/:user_id/projects",
+    ensureAuthenticated,
+    ensureValidUser,
+    projectController.getMyProject
+)
+
 // still not sure if i will implement these routes beneath
 // router.put("/:username/project/:projectId")
 // router.delete("/:username/project/:projectId")
-
-router.get(
-    "/myProjcets",
-    ensureAuthenticated,
-    projectController.getMyProject
-)
 module.exports = router

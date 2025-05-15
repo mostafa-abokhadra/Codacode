@@ -6,100 +6,77 @@ async function getAllProjects() {
         const response = await fetch( `/users/${user.id}/all/projects`)
         if (!response.ok)
             document.getElementById('no-projects-found').classList.remove('hidden')
-        else {
-
-        }
+        else
+            return await response.json()
     } catch(error) {
         console.error('an error', error)
     }
 }
-// /users/:user_id/all/projects
-async function getUserAssignedProjectRoles(projectId) {
-    const response = await fetch(`/${user.urlUserName}/assignedProjects/${projectId}/roles`)
-    if (!response.ok) {
-
-    } else {
-        return await response.json()
+async function cardCreation(data) {
+    let cardCounter = 0;
+    let projectCard;
+    for (let i = 0; i < data.user.Projects.length; i++ ) {
+        const avatars = await getProjectTeamProfileAvatars(data.user.Projects[i].id)
+        // const roles =  await getUserProjectRoles(data.Projects[i].id)
+        projectCard = createProjectCard(data.user.Projects[i], avatars, /*roles,*/ ++cardCounter)
     }
-}
-async function getUserProjectRoles(projectId) {
-    const response = await fetch(`/${user.urlUserName}/projects/${projectId}/roles`)
-    if (!response.ok) {
-
-    } else {
-        const data = await response.json()
-        if (data.length === 0)
-            return null
-        return data
+    for (let i = 0; i < data.user.assignedProjects.length; i++ ) {
+        const avatars = await getProjectTeamProfileAvatars(data.user.assignedProjects[i].id)
+        // const roles =  await getUserAssignedProjectRoles(user.assignedProjects[i].id)
+        projectCard = createProjectCard(data.user.assignedProjects[i], avatars, /*roles,*/ ++cardCounter)
     }
+    userProjectsContainer.append(projectCard)
+    cardCounter = 0
 }
 async function getProjectTeamProfileAvatars(projectId) {
     const response = await fetch(`/users/${user.id}/projects/${projectId}/team/avatars`)
-    if (!response.ok) {
-
+    if (response.status === 204) {
+        console.log('204')
+    } else if(response.status === 400) {
+        console.log("server error")
     } else {
         const data = await response.json()
-        if (data.length === 0)
-            return null
         return data
     }
 }
-function createAvatarElements(avatars) {
-    if (avatars.length > 3)
-        avatars.length = 3
-    return avatars
-    .map((avatar) => `<img 
-                        src="${avatar}"
-                        class="w-10 h-10 rounded-full border-2 border-indigo-200 shadow-lg"
-                        alt="Avatar" />`)
-    .join('');
-}
+// async function getUserProjectRoles(projectId) {
+//     const response = await fetch(`/${user.urlUserName}/projects/${projectId}/roles`)
+//     if (!response.ok) {
 
-async function cardCreation() {
-    let cardCounter = 0;
-    if (projects.length + assignedProjects.length === 0)
-        ocument.getElementById('no-projects-found').classList.remove('hidden')
+//     } else {
+//         const data = await response.json()
+//         if (data.length === 0)
+//             return null
+//         return data
+//     }
+// }
+// async function getUserAssignedProjectRoles(projectId) {
+//     const response = await fetch(`/${user.urlUserName}/assignedProjects/${projectId}/roles`)
+//     if (!response.ok) {
 
-    for (let i = 0; i < projects.length; i++ ) {
-        const avatars = await getProjectTeamProfileAvatars(projects[i].id)
-        const roles =  await getUserProjectRoles(user.Projects[i].id)
-        const projectCard = createProjectCard(user.Projects[i], avatars, roles, ++cardCounter)
-        userProjectsContainer.append(projectCard)
-    }
-    for (let i = 0; i < user.assignedProjects.length; i++ ) {
-        const avatars = await getProjectTeamProfileAvatars(user.assignedProjects[i].id)
-        if (!avatars) {
-        }
-        const roles =  await getUserAssignedProjectRoles(user.assignedProjects[i].id)
-        const projectCard = createProjectCard(user.assignedProjects[i], avatars, roles, ++cardCounter)
-        userProjectsContainer.append(projectCard)
-    }
-    cardCounter = 0
-}
+//     } else {
+//         return await response.json()
+//     }
+// }
 
-function createProjectCard(projectCardData, avatars, roles, cardNum) {
+
+function createProjectCard(projectCardData, avatars, /*roles,*/ cardNum) {
+
     const repoUrlSegements = projectCardData.repo.split('/')
     const repoName = repoUrlSegements[repoUrlSegements.length - 1]
     const repoOwner = repoUrlSegements[repoUrlSegements.length - 2]
+
     const projectCard = document.createElement('div')
-    projectCard.id = "project-card"
-    projectCard.className = `bg-white shadow-2xl rounded-xl overflow-hidden mb-5 ml-5`
+    projectCard.className = `project-card bg-white shadow-2xl rounded-xl overflow-hidden mb-5 ml-5`
     projectCard.style = "height: fit-content; width: 45%;"
-    projectCard.setAttribute('projectCardNumber', `${cardNum}`)
+    projectCard.setAttribute("project-card-num", `${cardNum}`)
     projectCard.innerHTML = 
         `
             <div class="p-8 project-card-${projectCardData.id}">
                 <h2 class="text-2xl font-bold text-indigo-600 mb-4">
                     ${projectCardData.post.title}
                 </h2>
-                <p class="text-gray-800 mb-4 text-sm">
-                    your Role in the Project:
-                    <span class="font-medium text-indigo-500">
-                        ${Array.isArray(roles.Roles)? roles.Roles: roles.role}
-                    </span>
-                </p>
-                
-                View Project
+                View Project 
                 <a
                     href="${projectCardData.repo}"
                     style="text-decoration:none;"
@@ -112,11 +89,11 @@ function createProjectCard(projectCardData, avatars, roles, cardNum) {
                         ${createAvatarElements(avatars.avatars)}
                     </div>
                     <span class="text-sm text-gray-600 ml-4 font-medium"
-                        >${avatars.length > 3 ? `+${(avatars.length - 3) + 1} more`: ''} 
+                        >${avatars.length > 3 ? `+ ${(avatars.length - 3)}`: ''} 
                     </span>
 
                     <button
-                        id="teamChatBtn"
+                        id="team-chat-btn"
                         projectCardNumber=${cardNum}
                         class="ml-auto text-indigo-600 hover:text-indigo-800 font-bold text-sm focus:outline-none"
                         onclick="openChat(${cardNum}, ${projectCardData.id})">
@@ -200,7 +177,17 @@ function createProjectCard(projectCardData, avatars, roles, cardNum) {
         `
     return projectCard
 }
-
+function createAvatarElements(avatars) {
+    if (avatars.length > 3)
+        avatars.length = 3
+    return avatars.map((avatar) => {
+        `<img 
+            src="${avatar}"
+            class="w-10 h-10 rounded-full border-2 border-indigo-200 shadow-lg"
+            alt="Avatar"
+        />`
+    }).join('');
+}
 async function fetchCommits(cardNum, repoOwner, repoName) {
 
     const dropdown = document.getElementById(`fetch-commits-${cardNum}-dropdown`);
@@ -211,7 +198,6 @@ async function fetchCommits(cardNum, repoOwner, repoName) {
             const response = await fetch(
                 `https://api.github.com/repos/${repoOwner}/${repoName}/commits`
             );
-
             const data = await response.json();
             dropdown.innerHTML = data
                 .slice(0, 5)
@@ -304,9 +290,9 @@ function openChat(cardNum, projectId) {
         sendMessage(cardNum, projectId)
     })
 }
-async function retrieveMessages(project) {
+async function retrieveMessages(projectId) {
     try {
-        const response = await fetch(`/${user.urlUserName}/projects/${project}/messages`)
+        const response = await fetch(`/users/${user.id}/projects/${projectId}/messages`)
         if (!response.ok) {
             console.error('invalid response', response.status)
         } else {
@@ -336,28 +322,23 @@ function createChatInterface(data) {
             // Create the user profile photo element
             const profilePhoto = document.createElement("img");
         
-            profilePhoto.src = data.messages[i].user.profile.image || "default-profile.png";
-            profilePhoto.alt = `${data.messages[i].user.fullName}'s profile photo`;
+            profilePhoto.src = data.messages[i].user.profile.image || "/imgs/User_default_Icon.png";
+            // profilePhoto.alt = `${data.messages[i].user.fullName}'s profile photo`;
             profilePhoto.classList.add("profile-photo");
             // Create the message content container
 
             const messageContent = document.createElement("div");
             messageContent.classList.add("message-content");
             
-            // Add the username
             const username = document.createElement("span");
             username.classList.add("username");
             username.textContent = data.messages[i].user.fullName;
             
-
-            // Add the message text
             const messageText = document.createElement("p");
             messageText.classList.add("message-text");
             messageText.textContent = data.messages[i].content;
 
-            console.log(user.id, data.messages[i].user.id)
             if (user.id === data.messages[i].user.id) {
-                console.log('got here 2')
                 messageWrapper.style = 'direction: rtl'
                 messageText.style='direction: ltr'
             }
@@ -406,4 +387,8 @@ function closeChat(cardNum, projectId) {
     card.classList.remove("hidden");
 } 
 
-(async()=>await cardCreation())()
+(async() => {
+    const data = await getAllProjects()
+    console.log(data)
+    await cardCreation(data)
+})()

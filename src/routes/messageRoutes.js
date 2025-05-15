@@ -3,7 +3,7 @@ const ensureAuthenticated = require('../middlewares/checkSession').ensureAuthent
 const messageController = require('../controllers/messagesController')
 
 router.get(
-    '/:username/projects/:projectId/messages',
+    '/users/:user_id/projects/:project_id/messages',
     ensureAuthenticated,
     messageController.getProjectMessages
 )

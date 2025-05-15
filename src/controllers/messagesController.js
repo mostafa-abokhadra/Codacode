@@ -59,13 +59,13 @@ class messageController {
     }
     static async getProjectMessages(req, res) {
         try {
-            const {projectId} = req.params
+            const {project_id} = req.params
             const messages = await prisma.message.findMany({
                 where: {
                     group: {
                         team: {
                             project: {
-                                id: parseInt(projectId)
+                                id: parseInt(project_id)
                             }
                         }
                     }
@@ -87,11 +87,10 @@ class messageController {
                 }
             })
             if (messages.length === 0)
-                return res.status(404).json({"message": `no messages found`})
+                return res.status(204).json({"message": `no messages found`})
             return res.status(200).json({"info": 'messages retrieved successfully', messages: messages})
         } catch(error) {
             console.log(error)
-            console.error("An Unexpected Error Occur", error)
             return res.status(500).json({"message": 'an error has occured'})
         }
     }

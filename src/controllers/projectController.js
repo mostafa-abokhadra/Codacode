@@ -238,7 +238,10 @@ class projectController {
             })
             if (!user)
                 return res.status(403).json({"message": "no project were found"})
-            return res.status(200).json({"info": "projects retrieved successfully", user: user})
+            return res.status(200).json({
+                "info": "projects retrieved successfully",
+                user: user
+            })
         } catch(error) {
             console.log(error)
             return res.status(500).json({"message": "an error has occured"})
@@ -292,12 +295,10 @@ class projectController {
 
     static async getProjectTeamProfileAvatars(req, res) {
         try {
-            const {user} = req
-            const {username, projectId} = req.params
-
+            const {project_id} = req.params
             const team = await prisma.team.findFirst({
                 where: {
-                    project_id: parseInt(projectId)
+                    project_id: parseInt(project_id)
                 },
                 include: {
                     members: {
@@ -312,15 +313,15 @@ class projectController {
                 return res.status(404).json({"message": "team not found"})
 
             const profileAvatars = team.members.map((member) => {
-                return member.profile?.image
+                return member.profile.image
             }).filter(Boolean)
 
-            if (profileAvatars.length === 0)
-                return res.status(404).json({"message": "no profile avatars found for team members"})
+            if (profileAvatars.length === 0) // this probaply won't happen as a default photo is assigned to user once signedIn
+                return res.status(204).json({"message": "no profile avatars found for team members"})
 
             return res.status(200).json({avatars: profileAvatars})
         } catch(error) {
-            console.error("Error fetching Team Profile Pictures:", error)
+            console.log("Error fetching Team Profile Pictures:", error)
             return res.status(500).json({"message": "An unexpected error occurred"})
         }
     }
