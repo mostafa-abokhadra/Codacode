@@ -238,11 +238,7 @@ class projectController {
             })
             if (!user)
                 return res.status(403).json({"message": "no project were found"})
-            return res.status(200).json({
-                "message": "projects retrieved successfully",
-                projects: user.Projects, assignedProjects: user.assignedProjects
-            })
-            return res.render('userProjects', {user: user})
+            return res.status(200).json({"info": "projects retrieved successfully", user: user})
         } catch(error) {
             console.log(error)
             return res.status(500).json({"message": "an error has occured"})
@@ -356,6 +352,9 @@ class projectController {
             console.error(error)
             return res.status(500).json({"message": "An unexpected Error occur"})
         }
+    }
+    static async getMyProject(req, res) {
+        return res.render('userProjects', {user: req.user})
     }
 }
 

@@ -62,4 +62,9 @@ router.get(
 // router.put("/:username/project/:projectId")
 // router.delete("/:username/project/:projectId")
 
+router.get(
+    "/myProjcets",
+    ensureAuthenticated,
+    projectController.getMyProject
+)
 module.exports = router

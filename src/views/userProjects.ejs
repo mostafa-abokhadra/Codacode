@@ -11,131 +11,65 @@
     <link rel="stylesheet" href="/css/dashboard.css" />
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <style>
-    messages.css
-
-/* General message container */
-
-#messages {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      padding: 10px;
-    }
-
-    /* Individual message wrapper */
-    .message-wrapper {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 5px;
-    }
-
-    /* Profile photo styling */
-    .profile-photo {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
-    /* Message content styling */
-    .message-content {
-      display: flex;
-      flex-direction: column;
-      background-color: #f1f1f1;
-      border-radius: 10px;
-      padding: 10px;
-      max-width: 70%;
-    }
-
-    /* Username styling */
-    .username {
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-
-    /* Message text styling */
-    .message-text {
-      margin: 0;
-      font-size: 14px;
-      color: #333;
-    }
-  </style>
   <body>
     <!-- Sidebar -->
-
     <div class="sidebar" id="sidebar">
-      <a href="/<%=user.urlUserName%>/dashboard">
-        <h2 class="font-bold">Dashboard</h2>
+      <a href="/dashboard">
+        <h2>Dashboard</h2>
       </a>
-      <a href="/<%= user.urlUserName %>/all/projects"
-        ><i class="fas fa-folder"></i> My Projects</a
-      >
-      <a href="/<%= user.urlUserName %>/pending"
-        ><i class="fas fa-clock"></i> Pending</a
-      >
+      <a href="/all/projects"><i class="fas fa-folder"></i> My Projects</a>
+      <a href="/pending"><i class="fas fa-clock"></i> Pending</a>
       <!-- <a href="#"><i class="fas fa-tasks"></i> Assigned Projects</a> -->
-      <a href="/<%= user.urlUserName %>/requests"
-        ><i class="fas fa-envelope"></i> Requests</a
-      >
+      <a href="/requests"><i class="fas fa-envelope"></i> Requests</a>
       <!-- <a
         href="/<%= user.urlUserName %>/posts"
         id="postsLink"
         username="<%= user.fullName %>"
         ><i class="fas fa-comments"></i> My Posts</a
       > -->
-      <a href="/<%= user.urlUserName %>/portofolio" id="profile-link-media-768"
+      <a href="/portofolio" id="portfolio-link-media-768" class="portfolio-link"
         ><i class="fas fa-user"></i> Portofolio</a
       >
-      <a href="/IdeaBank"><i class="fas fa-lightbulb"></i> Project Idea Bank</a>
-      <a
-        id="logout-link-media-768"
-        href="#"
-        onclick="document.getElementById('logoutForm').submit();"
-      >
+      <!-- <a href="/IdeaBank"><i class="fas fa-lightbulb"></i> Project Idea Bank</a> -->
+      <a id="logout-link-media-768" class="logout-link" href="/auth/logout">
         <i class="fas fa-sign-out-alt"></i> Logout
       </a>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
-      <!-- Navbar -->
       <div class="navbar">
         <span class="toggle-btn" id="toggle-btn"
           ><i class="fas fa-bars"></i>
           <span class="dashboard-logo" id="dashboardLogo">Dashboard</span>
         </span>
         <div>
-          <a href="/<%= user.urlUserName %>/portofolio" id="profile-link"
+          <a
+            id="portfolio-link-media-1200"
+            href="/portfolio"
+            class="portfolio-link"
             ><i class="fas fa-user"></i> Portofolio</a
           >
-          <a
-            id="logout-link"
-            href="#"
-            onclick="document.getElementById('logoutForm').submit();"
-          >
+          <a class="logout-link" href="/auth/logout">
             <i class="fas fa-sign-out-alt"></i> Logout
           </a>
 
           <form
-            id="logoutForm"
+            id="logout-form"
             action="/auth/logout"
             method="POST"
             style="display: none"
-          >
-            <!-- Form data if needed -->
-          </form>
+          ></form>
         </div>
       </div>
+
       <!-- content -->
       <div
-        id="userProjectsContainer"
-        user="<%= JSON.stringify(user) %>"
+        id="user-projects-container"
+        data-user="<%= JSON.stringify(user) %>"
         class="flex bg-gradient-to-r flex-wrap from-blue-50 to-indigo-100 flex min-h-screen p-8"
         style="flex-wrap: wrap"
       >
-        <div id="noProjectsFound" class="mt-8 flex justify-center hidden">
+        <div id="no-projects-found" class="mt-8 flex justify-center hidden">
           <div
             class="bg-white rounded-lg shadow p-6 text-center"
             style="height: fit-content"
@@ -148,7 +82,6 @@
       </div>
     </div>
     <script src="/socket.io/socket.io.js"></script>
-
     <script src="/js/userProjects.js"></script>
     <!-- <script src="/js/dashboard.js"></script> -->
   </body>

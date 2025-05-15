@@ -1,6 +1,19 @@
-const userProjectsContainer = document.getElementById('userProjectsContainer')
-const user = JSON.parse(userProjectsContainer.attributes.user.value)
+const userProjectsContainer = document.getElementById('user-projects-container')
+const user = JSON.parse(userProjectsContainer.dataset.user)
 
+async function getAllProjects() {
+    try {
+        const response = await fetch( `/users/${user.id}/all/projects`)
+        if (!response.ok)
+            document.getElementById('no-projects-found').classList.remove('hidden')
+        else {
+
+        }
+    } catch(error) {
+        console.error('an error', error)
+    }
+}
+// /users/:user_id/all/projects
 async function getUserAssignedProjectRoles(projectId) {
     const response = await fetch(`/${user.urlUserName}/assignedProjects/${projectId}/roles`)
     if (!response.ok) {
@@ -21,7 +34,7 @@ async function getUserProjectRoles(projectId) {
     }
 }
 async function getProjectTeamProfileAvatars(projectId) {
-    const response = await fetch(`/${user.urlUserName}/projects/${projectId}/team/avatars`)
+    const response = await fetch(`/users/${user.id}/projects/${projectId}/team/avatars`)
     if (!response.ok) {
 
     } else {
@@ -44,13 +57,11 @@ function createAvatarElements(avatars) {
 
 async function cardCreation() {
     let cardCounter = 0;
-    if (user.Projects.length + user.assignedProjects.length === 0) {
-        const noProject = document.getElementById('noProjectsFound')
-        noProject.classList.remove('hidden')
-    }
+    if (projects.length + assignedProjects.length === 0)
+        ocument.getElementById('no-projects-found').classList.remove('hidden')
 
-    for (let i = 0; i < user.Projects.length; i++ ) {
-        const avatars = await getProjectTeamProfileAvatars(user.Projects[i].id)
+    for (let i = 0; i < projects.length; i++ ) {
+        const avatars = await getProjectTeamProfileAvatars(projects[i].id)
         const roles =  await getUserProjectRoles(user.Projects[i].id)
         const projectCard = createProjectCard(user.Projects[i], avatars, roles, ++cardCounter)
         userProjectsContainer.append(projectCard)
