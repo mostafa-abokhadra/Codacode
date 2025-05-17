@@ -88,10 +88,10 @@ async function deleteGarbageRequest(requestId) {
         }
     }
 }
-async function getSendToMeRequests(username) {
+async function getSendToMeRequests(userId) {
     try {
         const user = await prisma.user.findFirst({
-                where: {fullName: username},
+                where: {id: userId},
                 include: {
                     posts: {
                         include: {
@@ -224,26 +224,23 @@ async function decryptToken(encryptedToken) {
 
 
 const addCollaborator = async (ownerUsername, inviteeUsername, ownerToken, repo) => {
-    console.log(ownerUsername, inviteeUsername, ownerToken, repo)
 
-    const response = await fetch(
-        `https://api.github.com/repos/${ownerUsername}/${repo}/collaborators/${inviteeUsername}`, {
-        method: 'PUT',
-        headers: {
-            Authorization: `token ${ownerToken}`,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ permission: 'push' }) // Optional permission
-    });
-
-    if (response.ok) {
-        console.log('sent successfuly')
-        return {"message": `Collaboration request sent to ${inviteeUsername} Successfully`}
-      
-    } else {
-        const error = await response.json();
-        console.error('Error:', error.message);
-        return {"error": "an error occured while sending collab request"}
+    try {
+        const response = await fetch(
+            `https://api.github.com/repos/${ownerUsername}/${repo}/collaborators/${inviteeUsername}`, {
+            method: 'PUT',
+            headers: {
+                Authorization: `token ${ownerToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ permission: 'push' }) // Optional permission
+        });
+        const data = await response.json()
+        if (!response.ok) 
+            return {"error": "an error occured while sending collab request", data: data}
+        return {"error": "an error occured while sending collab request", data: data}
+    } catch(error) {
+        return {"github api error": error}
     }
 };
 

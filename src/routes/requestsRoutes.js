@@ -4,6 +4,31 @@ const router = require("express").Router()
 const requestValidator = require("../validators/requestsValidators")
 const handleValidationErrors = require("../middlewares/validationErrorHandler")
 
+// get send to me requests
+router.get(
+    "/requests",
+    checksession.ensureAuthenticated,
+    handleValidationErrors,
+    requestsController.getSendToMeRequests
+)
+
+// accept a reqeust send to me
+router.post(
+    '/users/:user_id/requests/:request_id/accept',
+    checksession.ensureAuthenticated,
+    // requestValidator.validateRequestId,
+    handleValidationErrors,
+    requestsController.acceptRequest
+)
+
+router.delete(
+    "/users/:user_id/requests/:request_id/reject",
+    checksession.ensureAuthenticated,
+    // requestValidator.validateRequestId,
+    handleValidationErrors,
+    requestsController.rejectRequest
+)
+
 // apply to a position
 router.post(
     "/user/:user_id/posts/:post_id/roles/:role_id",
@@ -13,13 +38,6 @@ router.post(
     requestsController.postApplyRequest
 )
 
-// get send to me requests
-router.get(
-    "/requests",
-    checksession.ensureAuthenticated,
-    handleValidationErrors,
-    requestsController.getSendToMeRequests
-)
 
 // get pending requests
 router.get(
@@ -38,22 +56,8 @@ router.delete(
     requestsController.cancelRequest
 )
 
-// accept a reqeust send to me
-router.post(
-    '/:username/requests/:requestId/accept',
-    checksession.ensureAuthenticated,
-    requestValidator.validateRequestId,
-    handleValidationErrors,
-    requestsController.acceptRequest
-)
 
-router.delete(
-    "/:username/requests/:requestId/reject",
-    checksession.ensureAuthenticated,
-    requestValidator.validateRequestId,
-    handleValidationErrors,
-    requestsController.rejectRequest
-)
+
 
 // don't show
 router.put(

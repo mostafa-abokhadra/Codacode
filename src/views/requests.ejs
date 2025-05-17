@@ -9,120 +9,12 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <link rel="stylesheet" href="/css/dashboard.css" />
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f4;
-      }
-
-      #requests-container {
-        display: flex;
-        flex-wrap: wrap;
-        /* justify-content: center; */
-        gap: 20px;
-        padding: 20px;
-        /* height: 100vh; */
-      }
-
-      .card {
-        height: fit-content;
-        background-color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 400px;
-        padding: 20px;
-      }
-
-      .card-header {
-        display: flex;
-        align-items: center;
-        margin-bottom: 15px;
-      }
-
-      .user-image {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background-color: #ddd;
-        margin-right: 15px;
-      }
-
-      .user-info {
-        display: flex;
-        flex-direction: column;
-      }
-
-      .username {
-        font-size: 1.2rem;
-        font-weight: bold;
-        color: #333;
-      }
-
-      .date {
-        font-size: 0.9rem;
-        color: #777;
-      }
-
-      .card-content {
-        margin-bottom: 15px;
-        font-size: 1rem;
-        color: #555;
-      }
-
-      .card-footer {
-        display: flex;
-        justify-content: space-between;
-      }
-
-      .button {
-        padding: 10px 15px;
-        border: none;
-        border-radius: 5px;
-        font-size: 1rem;
-        cursor: pointer;
-        color: #fff;
-        transition: background-color 0.3s ease;
-      }
-
-      .accept {
-        background-color: #28a745;
-      }
-
-      .accept:hover {
-        background-color: #218838;
-      }
-
-      .reject {
-        background-color: #dc3545;
-      }
-
-      .reject:hover {
-        background-color: #c82333;
-      }
-
-      @media (min-width: 768px) {
-        .card {
-          flex: 0 1 calc(50% - 20px);
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="/css/request.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script
       src="https://kit.fontawesome.com/2157171c32.js"
       crossorigin="anonymous"
     ></script>
-    <style>
-      #email:hover {
-        color: rgb(168, 0, 0);
-      }
-    </style>
     <script>
       tailwind.config = {
         theme: {
@@ -148,98 +40,71 @@
   </head>
   <body>
     <!-- Sidebar -->
-
     <div class="sidebar" id="sidebar">
-      <a href="/<%=user.urlUserName%>/dashboard">
-        <h2 class="font-bold">Dashboard</h2>
+      <a href="/dashboard">
+        <h2>Dashboard</h2>
       </a>
-      <a href="/<%= user.urlUserName %>/all/projects"
+      <a href="/users/<%= user.id %>/projects"
         ><i class="fas fa-folder"></i> My Projects</a
       >
-      <a href="/<%= user.urlUserName %>/pending"
-        ><i class="fas fa-clock"></i> Pending</a
-      >
+      <a href="/pending"><i class="fas fa-clock"></i> Pending</a>
       <!-- <a href="#"><i class="fas fa-tasks"></i> Assigned Projects</a> -->
-      <a href="/<%= user.urlUserName %>/requests"
-        ><i class="fas fa-envelope"></i> Requests</a
-      >
+      <a href="/requests"><i class="fas fa-envelope"></i> Requests</a>
       <!-- <a
         href="/<%= user.urlUserName %>/posts"
         id="postsLink"
         username="<%= user.fullName %>"
         ><i class="fas fa-comments"></i> My Posts</a
       > -->
-      <a href="/<%= user.urlUserName %>/portofolio" id="profile-link-media-768"
+      <a href="/portofolio" id="portfolio-link-media-768" class="portfolio-link"
         ><i class="fas fa-user"></i> Portofolio</a
       >
-      <a href="/IdeaBank"><i class="fas fa-lightbulb"></i> Project Idea Bank</a>
-      <a
-        id="logout-link-media-768"
-        href="#"
-        onclick="document.getElementById('logoutForm').submit();"
-      >
+      <!-- <a href="/IdeaBank"><i class="fas fa-lightbulb"></i> Project Idea Bank</a> -->
+      <a id="logout-link-media-768" class="logout-link" href="/auth/logout">
         <i class="fas fa-sign-out-alt"></i> Logout
       </a>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
-      <!-- Navbar -->
       <div class="navbar">
         <span class="toggle-btn" id="toggle-btn"
           ><i class="fas fa-bars"></i>
           <span class="dashboard-logo" id="dashboardLogo">Dashboard</span>
         </span>
         <div>
-          <a href="/<%= user.urlUserName %>/portofolio" id="profile-link"
+          <a
+            id="portfolio-link-media-1200"
+            href="/portfolio"
+            class="portfolio-link"
             ><i class="fas fa-user"></i> Portofolio</a
           >
-          <a
-            id="logout-link"
-            href="#"
-            onclick="document.getElementById('logoutForm').submit();"
-          >
+          <a class="logout-link" href="/auth/logout">
             <i class="fas fa-sign-out-alt"></i> Logout
           </a>
 
           <form
-            id="logoutForm"
+            id="logout-form"
             action="/auth/logout"
             method="POST"
             style="display: none"
-          >
-            <!-- Form data if needed -->
-          </form>
+          ></form>
         </div>
       </div>
 
       <div
         id="requests-container"
         class="flex bg-gradient-to-r flex-wrap from-blue-50 to-indigo-100 flex min-h-screen p-8"
-        requests="<%= JSON.stringify(requests) %>"
-        user="<%= JSON.stringify(user) %>"
+        data-requests="<%= JSON.stringify(requests) %>"
+        data-user="<%= JSON.stringify(user) %>"
       >
         <!-- userPortfolioPopUp -->
         <div
           id="user-portfolio"
           class="hidden fixed flex flex-wrap items-center justify-center bg-green bg-opacity-800"
-          style="
-            transition: 1s;
-            box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
-            border-radius: 5px;
-            z-index: 1200;
-            overflow-y: scroll;
-            background: white;
-            position: relative;
-            height: 90vh;
-          "
         ></div>
         <!-- No Requests Message -->
-        <div id="noRequests" class="mt-8 flex justify-center hidden">
-          <div
-            class="bg-white rounded-lg shadow p-6 text-center"
-            style="height: fit-content"
-          >
+        <div id="no-requests" class="mt-8 flex justify-center hidden">
+          <div class="bg-white rounded-lg shadow p-6 text-center">
             <p class="text-lg font-medium text-gray-800">
               You have no requests yet. Wait for developers to apply to your
               projects.
@@ -251,7 +116,7 @@
 
     <!-- serverErrorPopup -->
     <div
-      id="serverErrorPopup"
+      id="server-error-poupp"
       class="hidden fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50"
     >
       <div
@@ -262,7 +127,7 @@
           There was an issue with the server. or user has cancelled the reqeust.
         </p>
         <button
-          onclick="closeErrorPopup()"
+          id="close-server-error"
           class="mt-6 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded"
         >
           Close
@@ -272,7 +137,7 @@
 
     <!-- accept success Popup Container -->
     <div
-      id="acceptSuccessPopup"
+      id="accept-success-popup"
       class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden"
     >
       <div class="bg-white rounded-lg shadow-lg p-6 w-11/12 max-w-md">
@@ -288,7 +153,7 @@
         </p>
         <div class="flex justify-end gap-4">
           <button
-            id="closeAcceptSuccessPopup"
+            id="close-accept-popup"
             class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded text-gray-800"
           >
             Close
@@ -299,20 +164,20 @@
 
     <!-- confirm reject popup -->
     <div
-      id="confirmRejectPopup"
+      id="confirm-reject-popup"
       class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden"
     >
       <div class="bg-white p-6 rounded-lg shadow-lg text-center">
         <p class="mb-4 text-gray-800">Are you sure you want to reject?</p>
         <div class="flex justify-center space-x-4">
           <button
-            id="confirmRejectButton"
+            id="confirm-reject-btn"
             class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 focus:outline-none"
           >
             reject
           </button>
           <button
-            id="closeConfirmRejectPopup"
+            id="close-confirm-reject-popup"
             class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 focus:outline-none"
           >
             Close
@@ -323,5 +188,6 @@
     <!--  -->
     <!-- <script src="/js/dashboard.js"></script> -->
     <script src="/js/requests.js"></script>
+    <script src="/js/dashboard.js"></script>
   </body>
 </html>

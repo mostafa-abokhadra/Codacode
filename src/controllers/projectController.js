@@ -292,7 +292,30 @@ class projectController {
             return res.status(500).json({ "message": "An unexpected error occurred" });
         }
     }
+    static async getUserProjectsRoles(req, res) {
+        try {
+            const {user_id, project_id} = req.params
+            // sending the user role form the post if he is the owner
+            const project = await prisma.project.findFirst({
+                where: {
+                    id: parseInt(project_id),
+                    owner: {
+                        id: req.user.id
+                    }
+                },
+                include: {
+                    post: true
+                }
+            })
+            if (!project)
+                return res.status(404).json({"message": "user have no project with given id"})
+            return res.status(200).json({"role": project.post.myRole})
 
+        } catch(error) {
+            console.error(error)
+            return res.status(500).json({"message": "An unexpected Error occur"})
+        }
+    }
     static async getProjectTeamProfileAvatars(req, res) {
         try {
             const {project_id} = req.params
@@ -326,34 +349,6 @@ class projectController {
         }
     }
 
-    static async getUserProjectsRoles(req, res) {
-        try {
-            const {username, projectId} = req.params
-            const {user} = req
-
-            // sending the user role form the post if he is the owner
-            const project = await prisma.project.findFirst({
-                where: {
-                    id: parseInt(projectId),
-                    owner: {
-                        fullName: user.fullName
-                    }
-                },
-                include: {
-                    post: true
-                }
-            })
-
-            if (!project)
-                return res.status(404).json({"message": "user have no project with given id"})
-            
-            return res.status(200).json({"role": project.post.myRole})
-
-        } catch(error) {
-            console.error(error)
-            return res.status(500).json({"message": "An unexpected Error occur"})
-        }
-    }
     static async getMyProject(req, res) {
         return res.render('userProjects', {user: req.user})
     }
