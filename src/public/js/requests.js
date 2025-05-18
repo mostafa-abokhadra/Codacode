@@ -2,10 +2,9 @@ const requestsContainer = document.getElementById('requests-container');
 const requests = JSON.parse(requestsContainer.dataset.requests)
 const user = JSON.parse(requestsContainer.dataset.user)
 
-if (requests.requests.length === 0) {
-    const noReq = document.getElementById('no-requests')
+const noReq = document.getElementById('no-requests')
+if (requests.requests.length === 0)
     noReq.classList.remove('hidden')
-}
 
 function createAccepteAndRejectedCard(cardData) {
     const card = document.createElement('div')
@@ -20,7 +19,7 @@ function createAccepteAndRejectedCard(cardData) {
     }
     card.innerHTML = 
     `
-    <div class="card">
+  
         <div style="display: flex; justify-content: space-between;">
             <a  href="#" class="card-header" style="width: 87%;">
                 <div
@@ -41,7 +40,7 @@ function createAccepteAndRejectedCard(cardData) {
             <span style="transition: 0.3s; font-size: 30px;">Status: </span>
             <button id="${status}" class="button ${status}" requestid="${cardData.id}" disabled style="background-color: ${statusColor}">${cardData.status}</button>
         </div>
-    </div>
+  
     `
     return card
 }
@@ -157,8 +156,13 @@ for (let i = 0; i < hideRequestCard.length; i++) {
             )
             if (!response.ok)
                 document.getElementById('server-error-popup').classList.remove('hidden')
-            else 
-                hideRequestCard[i].parentElement.parentElement.parentElement.remove()
+            else {
+                if (document.querySelectorAll('.card').length === 1) {
+                    hideRequestCard[i].parentElement.parentElement.remove()
+                    noReq.classList.remove('hidden')
+                } else 
+                    hideRequestCard[i].parentElement.parentElement.remove()
+            }
         }
     })
 }
