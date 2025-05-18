@@ -359,9 +359,9 @@ class requestsController {
 
     static async updateShowStatus(req, res) {
         try {
-            const {username, requestId} = req.params
+            const {user_id, request_id} = req.params
             const request = await prisma.request.update({
-                where: {id: parseInt(requestId)},
+                where: {id: parseInt(request_id)},
                 data: {
                     show: false
                 }

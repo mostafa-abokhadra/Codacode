@@ -21,19 +21,19 @@ function createAccepteAndRejectedCard(cardData) {
     card.innerHTML = 
     `
     <div class="card">
-    <div style="display: flex; justify-content: space-between;">
-        <a  href="#" class="card-header" style="width: 87%;">
-            <div
-                class="user-image"
-                style="background-image: url(${cardData.userApplied.profile.image}); background-size: cover;">
-            </div>
-            <div class="user-info">
-                <div class="username">${cardData.userApplied.fullName}</div>
-                <div class="date">some date</div>
-            </div>
-        </a>
-        <button id="hide-request-card-btn" class="hide-request-card" requestId="${cardData.id}">❌</button>
-    </div>
+        <div style="display: flex; justify-content: space-between;">
+            <a  href="#" class="card-header" style="width: 87%;">
+                <div
+                    class="user-image"
+                    style="background-image: url(${cardData.userApplied.profile.image}); background-size: cover;">
+                </div>
+                <div class="user-info">
+                    <div class="username">${cardData.userApplied.fullName}</div>
+                    <div class="date">some date</div>
+                </div>
+            </a>
+            <button id="hide-request-card-btn" class="hide-request-card" requestId="${cardData.id}">❌</button>
+        </div>
         <div class="card-content">
             Applied to <b>${cardData.role.position}</b> position to your <a href="#"><b>${cardData.role.post.title}</b></a> project
         </div>
@@ -144,23 +144,25 @@ confirmRejectButton.addEventListener('click', async(event) => {
     }
 })
 
-/////
 const hideRequestCard = document.querySelectorAll('.hide-request-card')
 for (let i = 0; i < hideRequestCard.length; i++) {
     hideRequestCard[i].addEventListener('click', async (event)=> {
-        console.log(hideRequestCard[i])
         const requestId = hideRequestCard[i].attributes.requestId.value
         if (requestId) {
-            const res = await fetch(
-                `/${user.urlUserName}/requests/${requestId}/show`,
+            const response = await fetch(
+                `/users/${user.id}/requests/${requestId}/show`,
                 {
-                    method: 'put'
+                    method: 'PUT'
                 }
             )
-            window.location.reload()
+            if (!response.ok)
+                document.getElementById('server-error-popup').classList.remove('hidden')
+            else 
+                hideRequestCard[i].parentElement.parentElement.parentElement.remove()
         }
     })
 }
+////////
 const userPortfolioPopupContainer = document.getElementById('user-portfolio')
 
 try {

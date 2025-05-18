@@ -61,9 +61,9 @@ router.delete(
 
 // don't show
 router.put(
-    '/:username/requests/:requestId/show',
+    '/users/:user_id/requests/:request_id/show',
     checksession.ensureAuthenticated,
-    requestValidator.validateRequestId,
+    // requestValidator.validateRequestId,
     handleValidationErrors,
     requestsController.updateShowStatus
 )
