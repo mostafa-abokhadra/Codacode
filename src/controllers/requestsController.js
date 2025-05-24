@@ -12,6 +12,7 @@ class requestsController {
             return res.render('requests', {requests: sendToMe, user: req.user})
             // return res.status(200).json(sendToMe)
         } catch(error) {
+            console.log(error)
             return res.status(500).json({"meessage": "an error occured, check the console"})
         }
     }
@@ -302,7 +303,7 @@ class requestsController {
 
     static async getPendingRequests(req, res) {
         try {
-            const pending = await utils.getPendingRequests(req.user.fullName)
+            const pending = await utils.getPendingRequests(req.user.id)
             if (pending.hasOwnProperty("error"))
                 return res.status(500).json(pending)
             return res.render('pending', {user: req.user, pending: pending})

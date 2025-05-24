@@ -167,7 +167,7 @@ async function getPendingRequests(userId) {
         return {"message": "pending requests retrieved successfully", pending: user.pending}
     } catch(error) {
         console.log(error)
-        return {"error": "an error occured"}
+        return {"error": "an error occured", error: error}
     }
 }
 

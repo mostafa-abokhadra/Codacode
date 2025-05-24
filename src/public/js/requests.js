@@ -19,7 +19,6 @@ function createAccepteAndRejectedCard(cardData) {
     }
     card.innerHTML = 
     `
-  
         <div style="display: flex; justify-content: space-between;">
             <a  href="#" class="card-header" style="width: 87%;">
                 <div
@@ -51,7 +50,7 @@ function createCard(cardData) {
     // card.setAttribute('style', `position: absolute;`)
     card.innerHTML = 
     `
-        <a id="user-applied-portfolio" data-user-applied="${cardData.userApplied.fullName}" class="card-header">
+        <a class="user-applied-portfolio" data-user-applied="${cardData.userApplied.id}" class="card-header">
             <div class="user-image" style="background-image: url(${cardData.userApplied.profile.image}); background-size: cover;">
             </div>
             <div class="user-info">
@@ -167,20 +166,17 @@ for (let i = 0; i < hideRequestCard.length; i++) {
     })
 }
 ////////
-const userPortfolioPopupContainer = document.getElementById('user-portfolio')
+const userPortfolioPopupContainer = document.getElementById('user-portfolio-popup')
 
 try {
-    const usersAppliedPortfolioLInks = document.querySelectorAll('#user-applied-portfolio')
+    const usersAppliedPortfolioLInks = document.querySelectorAll('.user-applied-portfolio')
     if (usersAppliedPortfolioLInks) {
-        usersAppliedPortfolioLInks.forEach((link) => {
-            link.addEventListener('click', async (clickEvent) => {
-                const userPortfolioPopupContainer = document.getElementById('user-portfolio')
+        usersAppliedPortfolioLInks.forEach((userPortfolioLink) => {
+            userPortfolioLink.addEventListener('click', async (e) => {
                 if (userPortfolioPopupContainer.firstChild) {
                     userPortfolioPopupContainer.firstChild.remove()
                 }
-            
-                const userAppliedName = link.dataset.userApplied
-                await getUserAppliedPortfolio(userAppliedName)
+                await getUserAppliedPortfolio(userPortfolioLink.dataset.userApplied)
                 window.scrollTo({ top: 0, behavior: "smooth" });
                 // userPortfolioPopupContainer.scrollTo({ top: 0, behavior: "smooth" });
                 
@@ -193,53 +189,43 @@ try {
 
 
 
-async function getUserAppliedPortfolio(userAppliedName) {
+async function getUserAppliedPortfolio(userAppliedId) {
     try {
-        const userPortfolio = await fetch(`/${userAppliedName}/portfolio`)
-
-        if (userPortfolio.ok) {
-            const portfolioData = await userPortfolio.json()
+        const userPortfolio = await fetch(`/users/${userAppliedId}/portfolio`)
+        const portfolioData = await userPortfolio.json()
+        if (!userPortfolio.ok)
+            serverErrorPopup.classList.remove('hidden')
+        else{
             if (userPortfolioPopupContainer) {
-                // userPortfolioPopup.addEventListener("click", (event) => {
-                //     if (event.target === userPortfolioPopup) {
-                //         userPortfolioPopup.classList.add("hidden");
-                //     }
-                // });
                 let educationCards = null, experienceCards = null, skillCards = null, socialmediaLinks = null
                 if (portfolioData.portfolio.education.length > 0) 
                     educationCards = createEducationCard(portfolioData.portfolio.education)
                 if (portfolioData.portfolio.projects.length > 0) 
                     experienceCards = createExperienceCard(portfolioData.portfolio.projects)
-                if (portfolioData.portfolio.skills.length > 0) {
+                if (portfolioData.portfolio.skills.length > 0)
                     skillCards = createSkillCard(portfolioData.portfolio.skills)
-                }
-                if (portfolioData.portfolio.contact) {
+                if (portfolioData.portfolio.contact)
                     socialmediaLinks = createSocialMediaLinks(portfolioData.portfolio.contact)
-                }
-
                 createUserAppliedPortfolioPopup(portfolioData, educationCards, experienceCards, skillCards, socialmediaLinks)
-                const closeBtn = document.getElementById('closeUserPortfolioPopup')
-                closeBtn.addEventListener('click', (e) => {
+                const closePortfolioPopup = document.getElementById('closeUserPortfolioPopup')
+                closePortfolioPopup.addEventListener('click', (e) => {
                     if (userPortfolioPopupContainer.firstChild) {
                         userPortfolioPopupContainer.firstChild.remove()
+                        document.getElementById('user-portfolio-popup-parent').style.display = "flex"
                         userPortfolioPopupContainer.classList.add('hidden')
                     }
                 })
+                document.getElementById('user-portfolio-popup-parent').style.display = "flex"
                 userPortfolioPopupContainer.classList.remove('hidden')
                 // userPortfolioPopupContainer.addEventListener("click", (e) => {
                 //     if (e.target === userPortfolioPopupContainer) {
                 //         userPortfolioPopupContainer.classList.add("hidden");
                 //     }
                 // });
-
-            } else {
-
-            }
-        } else {
-            console.error(`An Error Occured With Status Code: ${userPortfolio.status}`)
-        }
+                }
+        } 
     } catch(error) {
-
+        console.error('an error occured:', error)
     }
 }
 

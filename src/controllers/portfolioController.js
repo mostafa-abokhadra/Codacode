@@ -13,7 +13,7 @@ class portfolioController {
             const portfolio = await prisma.profile.findFirst({
                 where: {
                     user: {
-                        fullName: req.params.username
+                        id: parseInt(req.params.user_id)
                     }
                 },
                 include: {

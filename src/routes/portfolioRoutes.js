@@ -7,7 +7,7 @@ const handleValidationError = require('../middlewares/validationErrorHandler')
 // getting authenticated user portfolio
 // getting userApplied to projects portfolio
 router.get(
-    '/portfolio',
+    '/users/:user_id/portfolio',
     ensureAuthenticated,
     portfolioController.getPortfolio
 )
