@@ -9,115 +9,101 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <link rel="stylesheet" href="/css/dashboard.css" />
+    <link rel="stylesheet" href="/css/pending.css" />
+
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body>
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
-      <a href="/<%=user.urlUserName%>/dashboard">
-        <h2 class="font-bold">Dashboard</h2>
+      <a href="/dashboard">
+        <h2>Dashboard</h2>
       </a>
-      <a href="/<%= user.urlUserName %>/all/projects"
+      <a href="/users/<%= user.id %>/projects"
         ><i class="fas fa-folder"></i> My Projects</a
       >
-      <a href="/<%= user.urlUserName %>/pending"
-        ><i class="fas fa-clock"></i> Pending</a
-      >
+      <a href="/pending"><i class="fas fa-clock"></i> Pending</a>
       <!-- <a href="#"><i class="fas fa-tasks"></i> Assigned Projects</a> -->
-      <a href="/<%= user.urlUserName %>/requests"
-        ><i class="fas fa-envelope"></i> Requests</a
-      >
+      <a href="/requests"><i class="fas fa-envelope"></i> Requests</a>
       <!-- <a
         href="/<%= user.urlUserName %>/posts"
         id="postsLink"
         username="<%= user.fullName %>"
         ><i class="fas fa-comments"></i> My Posts</a
       > -->
-      <a href="/<%= user.urlUserName %>/portofolio" id="profile-link-media-768"
+      <a href="/portofolio" id="portfolio-link-media-768" class="portfolio-link"
         ><i class="fas fa-user"></i> Portofolio</a
       >
-      <a href="/IdeaBank"><i class="fas fa-lightbulb"></i> Project Idea Bank</a>
-      <a
-        id="logout-link-media-768"
-        href="#"
-        onclick="document.getElementById('logoutForm').submit();"
-      >
+      <!-- <a href="/IdeaBank"><i class="fas fa-lightbulb"></i> Project Idea Bank</a> -->
+      <a id="logout-link-media-768" class="logout-link">
         <i class="fas fa-sign-out-alt"></i> Logout
       </a>
     </div>
 
-    <!-- Main Content -->
-    <div class="main-content" style="background-color: #f4f4f4">
-      <!-- Navbar -->
+    <div class="main-content">
       <div class="navbar">
         <span class="toggle-btn" id="toggle-btn"
           ><i class="fas fa-bars"></i>
           <span class="dashboard-logo" id="dashboardLogo">Dashboard</span>
         </span>
         <div>
-          <a href="/<%= user.urlUserName %>/portofolio" id="profile-link"
+          <a
+            id="portfolio-link-media-1200"
+            href="/portfolio"
+            class="portfolio-link"
             ><i class="fas fa-user"></i> Portofolio</a
           >
-          <a
-            id="logout-link"
-            href="#"
-            onclick="document.getElementById('logoutForm').submit();"
-          >
+          <a class="logout-link" href="/auth/logout">
             <i class="fas fa-sign-out-alt"></i> Logout
           </a>
 
           <form
-            id="logoutForm"
+            id="logout-form"
             action="/auth/logout"
             method="POST"
             style="display: none"
-          >
-            <!-- Form data if needed -->
-          </form>
+          ></form>
         </div>
       </div>
 
-      <div class="p-8">
-        <div id="cardsContainer" class="container mx-auto px-4">
-          <!--  -->
+      <div id="cardsContainer" class="container mx-auto px-4 p-8">
+        <!--  -->
+        <div
+          id="cards-grid"
+          data-user="<%= JSON.stringify(user) %>"
+          data-pending="<%= JSON.stringify(pending) %>"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          <!-- no pedingRequest element -->
+
           <div
-            id="cardsGrid"
-            user="<%= JSON.stringify(user) %>"
-            pending="<%= JSON.stringify(pending) %>"
-            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            id="no-pending-requests"
+            class="bg-white rounded-lg shadow p-6 w-11/12 max-w-md text-center hidden"
           >
-            <!-- no pedingRequest element -->
-            <div id="noPendingRequests" class="mt-8 flex justify-center hidden">
-              <div
-                class="bg-white rounded-lg shadow p-6 w-11/12 max-w-md text-center"
-              >
-                <p class="text-lg font-medium text-gray-800">
-                  you have no pending requests
-                </p>
-              </div>
-            </div>
-            <!--  -->
+            <p class="text-lg font-medium text-gray-800">
+              you have no pending requests
+            </p>
           </div>
-          <!--  -->
         </div>
       </div>
     </div>
+
     <!-- confirm cancellation popup -->
     <div
-      id="confirmCancelPopup"
+      id="confirm-cancel-popup"
       class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden"
     >
       <div class="bg-white p-6 rounded-lg shadow-lg text-center">
         <p class="mb-4 text-gray-800">Are you sure you want to cancel?</p>
         <div class="flex justify-center space-x-4">
           <button
-            id="confirmCancelButton"
+            id="confirm-cancel-btn"
             class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 focus:outline-none"
           >
             Cancel
           </button>
           <button
-            id="closeConfirmCancelPopup"
+            id="close-confirm-cancel"
             class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 focus:outline-none"
           >
             Close
@@ -147,8 +133,9 @@
         </button>
       </div>
     </div>
-
-    <!-- <script src="/js/dashboard.js"></script> -->
     <script src="/js/pending.js"></script>
+    <script src="/js/logout.js"></script>
+
+    <script src="/js/dashboard.js"></script>
   </body>
 </html>

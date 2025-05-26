@@ -51,7 +51,7 @@ router.get(
 router.delete(
     '/users/:user_id/requests/:request_id',
     checksession.ensureAuthenticated,
-    requestValidator.validateRequestId,
+    // requestValidator.validateRequestId,
     handleValidationErrors,
     requestsController.cancelRequest
 )
@@ -69,9 +69,9 @@ router.put(
 )
 
 router.put(
-    '/:username/requests/:requestId/showInPending',
+    '/users/:user_id/requests/:request_id/showInPending',
     checksession.ensureAuthenticated,
-    requestValidator.validateRequestId,
+    // requestValidator.validateRequestId,
     handleValidationErrors,
     requestsController.updateShowInPending
 )

@@ -44,9 +44,10 @@ function createAccepteAndRejectedCard(cardData) {
     return card
 }
 
-function createCard(cardData) {
+function createCard(cardData, cardNum) {
     const card = document.createElement('div')
     card.className = "card"
+    card.id = `card-${cardNum}`
     // card.setAttribute('style', `position: absolute;`)
     card.innerHTML = 
     `
@@ -62,8 +63,8 @@ function createCard(cardData) {
             Applied to <b>${cardData.role.position}</b> position to your <a href="#"><b>${cardData.role.post.title}</b></a> project
         </div>
         <div class="card-footer">
-            <button id="accept" class="button accept" requestId="${cardData.id}">accept</button>
-            <button id="reject" class="button reject" requestId="${cardData.id}">Reject</button>
+            <button id="accept" card=${card.id} class="button accept" requestId="${cardData.id}">accept</button>
+            <button id="reject" card=${card.id} class="button reject" requestId="${cardData.id}">Reject</button>
         </div>
     `;
     return card
@@ -74,7 +75,7 @@ for (let i = 0; i < requests.requests.length; i++) {
         requests.requests[i].status == 'rejected') {
             card = createAccepteAndRejectedCard(requests.requests[i])
         } else {
-            card = createCard(requests.requests[i])
+            card = createCard(requests.requests[i], i + 1)
         }
     requestsContainer.appendChild(card)
 }
@@ -91,7 +92,14 @@ for (let i = 0; i < acceptRequestButtons.length; i++) {
             })
         if (!res.ok) 
             document.getElementById('server-error-popup').classList.remove('hidden')
-        acceptSuccessPopup.classList.remove('hidden')
+        const cardNum = acceptRequestButtons[i].attributes.card.value
+        
+        document.getElementById('close-accept-popup').addEventListener('click', (e) => {
+            acceptSuccessPopup.classList.add('hidden')
+            document.getElementById(cardNum).remove()
+            if(requestsContainer.childElementCount === 1)
+                noReq.classList.remove('hidden')
+        })
     })
 }
 
@@ -99,10 +107,11 @@ for (let i = 0; i < acceptRequestButtons.length; i++) {
 const acceptSuccessPopup = document.getElementById('accept-success-popup');
 // const closeAcceptPopup = document.getElementById('close-accept-popup');
 
-document.getElementById('close-accept-popup').addEventListener('click', (e) => {
-    acceptSuccessPopup.classList.add('hidden');
-    window.location.reload()
-});
+// document.getElementById('close-accept-popup').addEventListener('click', (e) => {
+//     acceptSuccessPopup.classList.add('hidden');
+
+//     // window.location.reload()
+// });
 
 const rejectRequestButtons = document.querySelectorAll('.reject')
 const confirmRejectPopup = document.getElementById('confirm-reject-popup')

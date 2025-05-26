@@ -286,8 +286,6 @@ class requestsController {
                 const deleteGarbageRequest = await utils.deleteGarbageRequest(createRequest.id)
                 return res.status(500).json({"message": "can't update the role request"})
             }
-            // const updatedUser = await utils.getUpdatedUser(userApplied.email)
-            console.log(createRequest)
             return res.status(201).json({
                 "message": "request to role sent successfully",
                 request: createRequest
@@ -375,12 +373,12 @@ class requestsController {
     }
     static async updateShowInPending(req, res) {
         try {
-            const {username, requestId} = req.params
+            const {user_id, request_id} = req.params
             const request = await prisma.request.findFirst({
                 where: {
-                    id: parseInt(requestId),
+                    id: parseInt(request_id),
                     userApplied: {
-                        fullName: req.user.fullName
+                        id: req.user.id
                     }
                 }
             })

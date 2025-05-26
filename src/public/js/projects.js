@@ -114,7 +114,7 @@ closeGithubPopup.addEventListener('click', (e) => {
           else if (!user.GitHub) {
             githubAuthPopup.classList.remove('hidden')
           } else {
-            let userPosts = await fetch(`/user/${user.id}/posts`)
+            let userPosts = await fetch(`/users/${user.id}/posts`)
             if (!userPosts.ok) {
               console.error("can't fetch user posts")
               showErrorPopup()
@@ -191,7 +191,6 @@ rolesContainer.addEventListener("click", (e) => {
   }
 });
 
-
 const projectForm = document.getElementById("project-form");
 
 projectForm.addEventListener("submit", async (event) => {
@@ -211,9 +210,9 @@ projectForm.addEventListener("submit", async (event) => {
 
   const title = document.getElementById("title").value
   const description = document.getElementById("description").value
-  const langPref = document.getElementById('langPref').value
-  const yourRole = document.getElementById("yourRole").value
-  const repo = document.getElementById("repoLink").value
+  const langPref = document.getElementById('lang-pref').value
+  const yourRole = document.getElementById("your-role").value
+  const repo = document.getElementById("repo-link").value
   const roles = JSON.stringify(rolesData)
 
   const postData = {
@@ -236,7 +235,7 @@ async function validateDivExistence(elementDiv, infoMessage) {
 }
 function createErrorElement(error) {
   const infoMessage = document.createElement('small')
-  infoMessage.textContent = error.msg
+  infoMessage.textContent = error
   infoMessage.style = "color: red; margin-top: 3px"
   infoMessage.className = 'error-message';
   return infoMessage
@@ -256,7 +255,7 @@ async function createPost(postData) {
 }
 async function sendPostData(postData) {
   try {
-    const res = await fetch(`/user/${user.id}/posts`, {
+    const res = await fetch(`/users/${user.id}/posts`, {
       method: 'POST',
       body: JSON.stringify(postData),
       headers: {
@@ -264,6 +263,7 @@ async function sendPostData(postData) {
       }
     })
     const data = await res.json()
+    console.log(data)
     if (data.errors) {
       return createErrorsFeedback(data.errors)
     }
@@ -286,6 +286,7 @@ function createErrorsFeedback(errors) {
   for (let i = 0; i < errors.length; i++) {
     const infoMessage = createErrorElement(errors[i].msg)
     if (errors[i].path === 'repo') {
+      console.log('here')
       validateDivExistence(repoLinkDiv, infoMessage)
     } else if (errors[i].path === 'title') { 
       validateDivExistence(titleDiv, infoMessage)
@@ -301,11 +302,18 @@ function createErrorsFeedback(errors) {
   }
   return 0
 }
+async function validateDivExistence(elementDiv, infoMessage) {
+  if (elementDiv) {
+    elementDiv.appendChild(infoMessage)
+  } else {
+    console.error("Element not found.");
+  }
+}
 
 async function createProjectFromPost(postCreationResponse) {
   try {
     const response = await fetch(
-      `/user/${user.id}/posts/${postCreationResponse.post.id}/project`, {
+      `/users/${user.id}/posts/${postCreationResponse.post.id}/project`, {
       method: 'POST'
     })
     const data = await response.json()
@@ -313,7 +321,7 @@ async function createProjectFromPost(postCreationResponse) {
       showErrorPopup()
     } else {
       closeProjectModal.click()
-      successCreationPopup.classList.remove('hidden')
+      sucessPopup.classList.remove('hidden')
     }
   } catch(error) {
     console.log('an error', error)
@@ -327,8 +335,9 @@ closeSuccessPopup.addEventListener('click', async function closeSuccessPopup() {
   sucessPopup.style.opacity = '0';
   await new Promise((resolve) => setTimeout(resolve, 500));
   sucessPopup.style.display = 'none';
+  window.location.reload()
 })
-const serverErrorPopup = document.getElementById('server-error-poupup')
+const serverErrorPopup = document.getElementById('server-error-popup')
 function showErrorPopup() {
   serverErrorPopup.classList.remove('hidden');
 }

@@ -184,10 +184,11 @@ class authController {
                     // sameSite: 'lax'
                 });
                 
-                return res.status(200).json({ 
-                    success: true, 
-                    message: 'Logged out successfully' 
-                });
+                // return res.status(200).json({ 
+                //     success: true, 
+                //     message: 'Logged out successfully' 
+                // });
+                return res.redirect('/')
             });
         });
     }

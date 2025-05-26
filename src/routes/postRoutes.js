@@ -25,27 +25,27 @@ router.post(
 // getting all user post
 // getting roles as well
 router.get(
-    '/user/:user_id/posts',
+    '/users/:user_id/posts',
     postController.getPosts
 )
 
 // get specific post by id
 // get it's roles as well
 router.get(
-    "/user/:user_id/posts/:post_id",
+    "/users/:user_id/posts/:post_id",
     postController.getPostById
 )
 
 // update a post
 router.put(
-    '/user/:user_id/posts/:post_id',
+    '/users/:user_id/posts/:post_id',
     checkSession.ensureAuthenticated,
     postController.updatePost
 )
 
 // delete a project post
 router.delete(
-    '/user/:user_id/posts/:post_id',
+    '/users/:user_id/posts/:post_id',
     checkSession.ensureAuthenticated,
     postController.deletePost
 )

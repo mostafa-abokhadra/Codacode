@@ -6,7 +6,7 @@ const projectValidator = require("../validators/projectValidator")
 const router = require("express").Router()
 
 router.post(
-    "/user/:user_id/posts/:post_id/project",
+    "/users/:user_id/posts/:post_id/project",
     ensureAuthenticated,
     projectValidator.postIdValidator,    
     projectController.createProject
@@ -21,14 +21,14 @@ router.post(
 
 // getting projects that i particaipate in
 router.get(
-    "/user/:user_id/assigned/projects",
+    "/users/:user_id/assigned/projects",
     ensureAuthenticated,
     projectController.getAssignedProjects
 )
 
 // getting a project by id
 router.get(
-    '/user/:user_id/projects/:project_id',
+    '/users/:user_id/projects/:project_id',
     ensureAuthenticated,
     projectController.getProjectById
 )

@@ -1,16 +1,9 @@
-const cardsGrid = document.getElementById('cardsGrid')
-let user, pending;
-try {
-    user =  cardsGrid.attributes.user.value 
-    pending = cardsGrid.attributes.pending.value
-    user =  JSON.parse(user)
-    pending =  JSON.parse(pending)
-} catch(error) {
-    console.error(error)
-}
+const cardsGrid = document.getElementById('cards-grid')
+let user = JSON.parse(cardsGrid.dataset.user), pending = JSON.parse(cardsGrid.dataset.pending);
+console.log(user, pending)
+const noPendingRequests = document.getElementById("no-pending-requests")
 
 function displayNoPendingRequestElement(){
-    const noPendingRequests = document.getElementById("noPendingRequests")
     noPendingRequests.classList.remove('hidden')
 }
 if (pending.pending.length === 0) {
@@ -33,7 +26,7 @@ function createAcceptedRejectedCard(cardData, i) {
             ${cardData.role.post.title}
         </h2>
         <button
-            id="removePendingCard"
+            class="remove-pending-card"
             requestId="${cardData.id}"
             style="font-size: 15px; font-weight: bold;">
                 &#10060;
@@ -48,7 +41,7 @@ function createAcceptedRejectedCard(cardData, i) {
     `
     const checkYourProjectsHint = document.createElement('a')
     if (cardData.status === 'accepted') {
-        checkYourProjectsHint.setAttribute('href', `/${user.urlUserName}/all/projects`)
+        checkYourProjectsHint.setAttribute('href', `/users/${user.id}/projects`)
         checkYourProjectsHint.textContent = 'check your projects'
         checkYourProjectsHint.style = 'color: rgb(34 197 94 / var(--tw-bg-opacity, 1)); font-weight: bold;'
     } else {
@@ -77,9 +70,9 @@ function createPendingCard(cardData, i) {
     </p>
     <div class="flex justify-end">
         <button
-            id="cancelBtn"
-            class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 focus:outline-none"
+            class="cancel-btn bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 focus:outline-none"
             requestId="${cardData.id}"
+            cardNum=${card.id}
         >
             Cancel
         </button>
@@ -108,51 +101,75 @@ for (let i = 0; i < pending.pending.length; i++) {
     
 }
 
-const removePendingCardBtn = document.querySelectorAll('#removePendingCard')
+const removePendingCardBtn = document.querySelectorAll('.remove-pending-card')
 removePendingCardBtn.forEach((btn)=>{
     btn.addEventListener('click', async (event) => {
         const requestId = btn.attributes.requestId.value
         const res = await fetch(
-            `/${user.urlUserName}/requests/${requestId}/showInPending`,
+            `/users/${user.id}/requests/${requestId}/showInPending`,
             {
                 method: 'put'
             }
         )
-        if (res.ok) {
-            window.location.reload()
+        if (!res.ok) {
+            serverErrorPopup.classList.remove('hidden')
+        } else {
+            btn.parentElement.parentElement.remove()
+            if (cardsGrid.childElementCount === 1)
+                displayNoPendingRequestElement()
         }
     })
 })
 
-const confirmCancelPopup = document.getElementById("confirmCancelPopup")
-const cancelBtn = document.querySelectorAll('#cancelBtn')
+const confirmCancelPopup = document.getElementById("confirm-cancel-popup")
+const cancelBtn = document.querySelectorAll('.cancel-btn')
 
 for (let i = 0; i < cancelBtn.length; i++) {
     cancelBtn[i].addEventListener('click', async(event) => {
         confirmCancelPopup.setAttribute('requestId', cancelBtn[i].attributes.requestId.value)
+        confirmCancelPopup.setAttribute('cardNum', cancelBtn[i].attributes.cardNum.value)
         confirmCancelPopup.classList.remove('hidden')
     })
 }
-const confirmCancelButton = document.querySelectorAll("#confirmCancelButton")
-const closeConfirmCancelPopup = document.querySelectorAll("#closeConfirmCancelPopup")
+const confirmCancelButton = document.getElementById("confirm-cancel-btn")
+const closeConfirmCancelPopup = document.getElementById("close-confirm-cancel")
+confirmCancelButton.addEventListener('click', (e) => {
+    const thirdParent = confirmCancelButton.parentElement
+        ?.parentElement
+        ?.parentElement;
 
-for (let i = 0; i < confirmCancelButton.length; i++) {
-    confirmCancelButton[i].addEventListener('click', (evenet) => {
-        const thirdParent = confirmCancelButton[i].parentElement
-            ?.parentElement
-            ?.parentElement;
-
-        if (thirdParent && thirdParent.id === "confirmCancelPopup") {
-            const requestId = thirdParent.getAttribute('requestId');
-            if (requestId) {
-                cancelRequest(requestId);
-            } else {
-                console.error('requestId not found');
-            }
+    if (thirdParent && thirdParent.id === "confirm-cancel-popup") {
+        const requestId = thirdParent.getAttribute('requestId');
+        const cardNum = thirdParent.getAttribute('cardNum')
+        if (requestId) {
+            cancelRequest(requestId, cardNum);
         } else {
-            console.error('Third parent not found or incorrect element');
+            console.error('requestId not found');
         }
-    })
+    } else {
+        console.error('Third parent not found or incorrect element');
+    }
+})
+closeConfirmCancelPopup.addEventListener('click', (e) => {
+    confirmCancelPopup.classList.add('hidden')
+})
+async function cancelRequest(requestId, cardNum) {
+    try {
+        const response = await fetch(`/users/${user.id}/requests/${requestId}`, {
+            method: 'delete'
+        })
+        if (!response.ok) {
+            closeConfirmCancelPopup.click()
+            serverErrorPopup.classList.remove('hidden')
+        } else if(response.ok && response.status === 204) {
+            closeConfirmCancelPopup.click()
+            document.getElementById(cardNum).remove()
+            if (cardsGrid.childElementCount === 1) 
+                displayNoPendingRequestElement()
+        }
+    } catch(error) {
+        console.error(error)
+    }
 }
 for (let i = 0; i < closeConfirmCancelPopup.length; i++) {
     closeConfirmCancelPopup[i].addEventListener('click', async(e) => {
@@ -161,20 +178,6 @@ for (let i = 0; i < closeConfirmCancelPopup.length; i++) {
 }
 const serverErrorPopup = document.getElementById('serverErrorPopup')
 function closeErrorPopup() {
-    // serverErrorPopup.classList.add('hidden');
-    window.location.reload()
-}
-async function cancelRequest(requestId) {
-    try {
-        const response = await fetch(`/${user.urlUserName}/requests/${requestId}`, {
-            method: 'delete'
-        })
-        if (!response.ok) {
-            serverErrorPopup.classList.remove('hidden')
-        } else if(response.ok && response.status === 204) {
-            window.location.reload()
-        }
-    } catch(error) {
-        console.error(error)
-    }
+    serverErrorPopup.classList.add('hidden');
+    // window.location.reload()
 }

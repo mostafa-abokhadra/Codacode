@@ -18,8 +18,12 @@ const serverErrorPopup = document.getElementById('server-error-popup')
 let user;
 try {
   const userElement = document.getElementById('username')
-  user = userElement.dataset.user
-  user = JSON.parse(user)
+  if (userElement){
+    if (userElement.dataset.user) {
+      user = userElement.dataset.user
+      user = JSON.parse(user)
+    }
+  }
 } catch(error) {
     console.log(error)
 }
@@ -35,6 +39,7 @@ const createProjectModal = document.getElementById("create-project-modal");
 const closeProjectModal = document.getElementById("close-project-modal");
 const rolesContainer = document.getElementById("roles-container");
 
+if (createProjectBtn) {
 createProjectBtn.addEventListener("click", () => {
   if (!user.GitHub) {
     openGithubAuthPopupButton.click()
@@ -42,73 +47,76 @@ createProjectBtn.addEventListener("click", () => {
     createProjectModal.style.display = "block";
   }
 });
-
-closeProjectModal.addEventListener("click", () => {
-  createProjectModal.style.display = "none";
-});
+}
+if (closeProjectModal) {
+  closeProjectModal.addEventListener("click", () => {
+    createProjectModal.style.display = "none";
+  });
+}
 
 window.addEventListener("click", (e) => {
   if (e.target === createProjectModal) {
     createProjectModal.style.display = "none";
   }
 });
-
-rolesContainer.addEventListener("click", (e) => {
-  if (e.target.classList.contains("add-role-btn")) {
-    const roleInputDiv = document.createElement("div");
-    roleInputDiv.classList.add("role-input");
-    roleInputDiv.innerHTML = `
-      <input type="text" name="role" class="role-field" placeholder="Enter role needed" />
-      <input type="number" name="numberNeeded" class="number-needed" placeholder="Number Needed" min="1" />
-      <button type="button" class="add-role-btn">+</button>
-      <button type="button" class="remove-role-btn">-</button>
-    `;
-    rolesContainer.appendChild(roleInputDiv);
-  }
-
-  if (e.target.classList.contains("remove-role-btn")) {
-    const roleInput = e.target.closest(".role-input");
-    if (rolesContainer.children.length > 1) {
-      rolesContainer.removeChild(roleInput);
+if(rolesContainer) {
+  rolesContainer.addEventListener("click", (e) => {
+    if (e.target.classList.contains("add-role-btn")) {
+      const roleInputDiv = document.createElement("div");
+      roleInputDiv.classList.add("role-input");
+      roleInputDiv.innerHTML = `
+        <input type="text" name="role" class="role-field" placeholder="Enter role needed" />
+        <input type="number" name="numberNeeded" class="number-needed" placeholder="Number Needed" min="1" />
+        <button type="button" class="add-role-btn">+</button>
+        <button type="button" class="remove-role-btn">-</button>
+      `;
+      rolesContainer.appendChild(roleInputDiv);
     }
-  }
-});
 
-const projectForm = document.getElementById("project-form");
-
-projectForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  document.querySelectorAll('.error-message').forEach((msg) => msg.remove());
-  const roleFields = document.querySelectorAll(".role-field");
-  const numberFields = document.querySelectorAll(".number-needed");
-  const rolesData = [];
-
-  roleFields.forEach((roleField, index) => {
-    const role = roleField.value;
-    const numberNeeded = numberFields[index].value;
-    if (role && numberNeeded) {
-      rolesData.push({ role, numberNeeded });
+    if (e.target.classList.contains("remove-role-btn")) {
+      const roleInput = e.target.closest(".role-input");
+      if (rolesContainer.children.length > 1) {
+        rolesContainer.removeChild(roleInput);
+      }
     }
   });
+}
+const projectForm = document.getElementById("project-form");
 
-  const title = document.getElementById("title").value
-  const description = document.getElementById("description").value
-  const langPref = document.getElementById('lang-pref').value
-  const yourRole = document.getElementById("your-role").value
-  const repo = document.getElementById("repo-link").value
-  const roles = JSON.stringify(rolesData)
+if (projectForm) {
+  projectForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    document.querySelectorAll('.error-message').forEach((msg) => msg.remove());
+    const roleFields = document.querySelectorAll(".role-field");
+    const numberFields = document.querySelectorAll(".number-needed");
+    const rolesData = [];
 
-  const postData = {
-    title: title,
-    description: description,
-    langPref: langPref,
-    yourRole: yourRole,
-    repo: repo,
-    roles: roles
-  }
-  createPost(postData)
-});
+    roleFields.forEach((roleField, index) => {
+      const role = roleField.value;
+      const numberNeeded = numberFields[index].value;
+      if (role && numberNeeded) {
+        rolesData.push({ role, numberNeeded });
+      }
+    });
 
+    const title = document.getElementById("title").value
+    const description = document.getElementById("description").value
+    const langPref = document.getElementById('lang-pref').value
+    const yourRole = document.getElementById("your-role").value
+    const repo = document.getElementById("repo-link").value
+    const roles = JSON.stringify(rolesData)
+
+    const postData = {
+      title: title,
+      description: description,
+      langPref: langPref,
+      yourRole: yourRole,
+      repo: repo,
+      roles: roles
+    }
+    createPost(postData)
+  });
+}
 async function createPost(postData) {
   try {
     const response = await sendPostData(postData)
@@ -205,35 +213,43 @@ async function createProjectFromPost(postCreationResponse) {
 }
 
 const startCollaboration = document.getElementById("start-collaboration")
-startCollaboration.addEventListener('click', (e) => {
-  window.location.href = '/projects'
-})
+if (startCollaboration) {
+  startCollaboration.addEventListener('click', (e) => {
+    window.location.href = '/projects'
+  })
+}
 
 const closeSuccessPopupBtn = document.getElementById('close-success-popoup-btn')
-closeSuccessPopupBtn.addEventListener('click', async (e) => {
-  successCreationPopup.style.transition = 'opacity 0.5s';
-  successCreationPopup.style.opacity = '0';
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  successCreationPopup.style.display = 'none';
-})
+if (closeSuccessPopupBtn) {
+  closeSuccessPopupBtn.addEventListener('click', async (e) => {
+    successCreationPopup.style.transition = 'opacity 0.5s';
+    successCreationPopup.style.opacity = '0';
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    successCreationPopup.style.display = 'none';
+  })
+}
 
 function showErrorPopup() {
   serverErrorPopup.classList.remove('hidden');
 
 }
 const closeServerErrorPopup = document.getElementById('close-server-error-popoup')
-closeServerErrorPopup.addEventListener('click', (e) => {
-  serverErrorPopup.classList.add('hidden');
-})
-
+if (closeServerErrorPopup) {
+  closeServerErrorPopup.addEventListener('click', (e) => {
+    serverErrorPopup.classList.add('hidden');
+  })
+}
 const githubAuthPopup = document.getElementById("github-auth-popup");
 const openGithubAuthPopupButton = document.getElementById("github-auth-popup-btn");
 const closeGithubAuhtPopupButton = document.getElementById("close-github-auth-popup-btn");
 
-openGithubAuthPopupButton.addEventListener("click", () => {
-  githubAuthPopup.classList.remove("hidden");
-});
-
-closeGithubAuhtPopupButton.addEventListener("click", () => {
-  githubAuthPopup.classList.add("hidden");
-});
+if (openGithubAuthPopupButton) {
+  openGithubAuthPopupButton.addEventListener("click", () => {
+    githubAuthPopup.classList.remove("hidden");
+  });
+}
+if (closeGithubAuhtPopupButton) {
+  closeGithubAuhtPopupButton.addEventListener("click", () => {
+    githubAuthPopup.classList.add("hidden");
+  });
+}
