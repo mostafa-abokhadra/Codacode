@@ -314,10 +314,10 @@ class requestsController {
 
     static async cancelRequest(req, res) {
         try {
-            const {username, requestId} = req.params
+            const {user_id, request_id} = req.params
             const checkRequest = await prisma.request.findFirst({
                 where: {
-                    id: parseInt(requestId),
+                    id: parseInt(request_id),
                     userApplied_id: req.user.id,
                     status: 'waiting'
                 }
@@ -326,7 +326,7 @@ class requestsController {
                 return res.status(403).json({"message": "request doesn't exist for given user or status cahnged"})
             const request = await prisma.request.delete({
                 where: {
-                    id: parseInt(requestId),
+                    id: parseInt(request_id),
                     userApplied_id: req.user.id
                 },
                 include: {
