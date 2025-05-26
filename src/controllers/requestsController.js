@@ -1,7 +1,6 @@
 const {PrismaClient} = require("@prisma/client")
 const prisma = new PrismaClient()
 const utils = require('../utils/utils')
-const { request } = require("http")
 class requestsController {
 
         static async getSendToMeRequests(req, res) {

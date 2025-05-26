@@ -49,7 +49,7 @@ router.get(
 
 // cancel sended request
 router.delete(
-    '/:username/requests/:requestId',
+    '/users/:user_id/requests/:request_id',
     checksession.ensureAuthenticated,
     requestValidator.validateRequestId,
     handleValidationErrors,
