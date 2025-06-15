@@ -4,10 +4,15 @@ const user = JSON.parse(userProjectsContainer.dataset.user)
 async function getAllProjects() {
     try {
         const response = await fetch( `/users/${user.id}/all/projects`)
-        if (!response.ok)
+        const data = await response.json()
+        if (!response.ok ||
+            data.user.Projects.length + data.user.assignedProjects.length === 0
+        ) {
             document.getElementById('no-projects-found').classList.remove('hidden')
+            return 0
+        }
         else
-            return await response.json()
+            return data
     } catch(error) {
         console.error('an error', error)
     }
@@ -389,6 +394,6 @@ function closeChat(cardNum, projectId) {
 
 (async() => {
     const data = await getAllProjects()
-    console.log(data)
-    await cardCreation(data)
+    if (data)
+        await cardCreation(data)
 })()
