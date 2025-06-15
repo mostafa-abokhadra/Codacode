@@ -7,8 +7,8 @@ const app = express()
 const {createServer} = require('http')
 const server = createServer(app)
 const socketHandler = require('./socket')
-const io = require('socket.io')(server)
-socketHandler(io)
+const wsServer = require('socket.io')(server)
+socketHandler(wsServer)
 
 const flash = require('express-flash');
 const passport = require('passport')

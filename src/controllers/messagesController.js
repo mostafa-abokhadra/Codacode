@@ -4,7 +4,6 @@ const prisma = new PrismaClient()
 class messageController {
     static async createMessage(userId, message, projectId) {
         try {
-
             const project = await prisma.project.findFirst({
                 where: {id: parseInt(projectId)},
                 include: {
@@ -37,6 +36,7 @@ class messageController {
                 include: {
                     user: {
                         select: {
+                            id: true,
                             fullName: true,
                             profile: {
                                 select: {

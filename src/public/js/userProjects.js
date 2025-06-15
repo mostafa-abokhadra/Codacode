@@ -234,42 +234,34 @@ socket.on("sendMessage", (data) => {
         const messageWrapper = document.createElement("div");
         messageWrapper.classList.add("message-wrapper");
 
-
         // Create the user profile photo element
         const profilePhoto = document.createElement("img");
         profilePhoto.src = userSentMessage.profile.image || "default-profile.png";
         profilePhoto.alt = `${userSentMessage.fullName}'s profile photo`;
         profilePhoto.classList.add("profile-photo");
 
-        // Create the message content container
         const messageContent = document.createElement("div");
         messageContent.classList.add("message-content");
 
-        // Add the username
         const username = document.createElement("span");
         username.classList.add("username");
         username.textContent = userSentMessage.fullName;
 
-        // Add the message text
         const messageText = document.createElement("p");
         messageText.classList.add("message-text");
         messageText.textContent = message;
 
         if (user.id === userSentMessage.id) {
-            console.log('got here')
-                messageWrapper.style = 'direction: rtl'
-                messageText.style='direction: ltr'
+            messageWrapper.style = 'direction: rtl'
+            messageText.style='direction: ltr'
         }
 
-        // Append the username and message text to the message content container
         messageContent.appendChild(username);
         messageContent.appendChild(messageText);
 
-        // Append the profile photo and message content to the wrapper
         messageWrapper.appendChild(profilePhoto);
         messageWrapper.appendChild(messageContent);
 
-        // Append the wrapper to the messages container
         messageList.appendChild(messageWrapper);
     } else {
         console.error("Message list not found for card:", project);
@@ -294,6 +286,12 @@ function openChat(cardNum, projectId) {
     newSendMessageButton.addEventListener("click", (e) => {
         sendMessage(cardNum, projectId)
     })
+    document.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' &&
+            document.querySelector(`.cardSendBtn${projectId}`).previousElementSibling.value.trim())
+            sendMessage(cardNum, projectId)
+            messageList.scrollTo(0, document.body.scrollHeight);
+    })
 }
 async function retrieveMessages(projectId) {
     try {
@@ -304,7 +302,9 @@ async function retrieveMessages(projectId) {
             const data = await response.json()
             createChatInterface(data)
         }
+        console.log(response)
     } catch(error) {
+        console.log(error)
         console.error('An expected error has occured while fetching messages')
     }
 }
@@ -343,7 +343,9 @@ function createChatInterface(data) {
             messageText.classList.add("message-text");
             messageText.textContent = data.messages[i].content;
 
+
             if (user.id === data.messages[i].user.id) {
+
                 messageWrapper.style = 'direction: rtl'
                 messageText.style='direction: ltr'
             }

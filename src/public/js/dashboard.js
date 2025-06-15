@@ -197,7 +197,7 @@ async function validateDivExistence(elementDiv, infoMessage) {
 const successCreationPopup = document.getElementById('success-post-creation-feedback')
 async function createProjectFromPost(postCreationResponse) {
   try {
-    const response = await fetch(`/user/${user.id}/posts/${postCreationResponse.post.id}/project`, {
+    const response = await fetch(`/users/${user.id}/posts/${postCreationResponse.post.id}/project`, {
       method: 'POST'
     })
     const data = await response.json()
