@@ -179,5 +179,5 @@ for (let i = 0; i < closeConfirmCancelPopup.length; i++) {
 const serverErrorPopup = document.getElementById('serverErrorPopup')
 function closeErrorPopup() {
     serverErrorPopup.classList.add('hidden');
-    // window.location.reload()
+    window.location.reload()
 }

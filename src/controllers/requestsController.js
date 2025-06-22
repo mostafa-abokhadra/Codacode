@@ -18,6 +18,7 @@ class requestsController {
 
         static async acceptRequest(req, res) {
         try {
+            console.log('do i get here')
             const {user_id, request_id} = req.params
             const theRequest = await prisma.request.findFirst({
                 where: {id: parseInt(request_id)},
@@ -152,9 +153,10 @@ class requestsController {
             const result = await utils.addCollaborator(ownerUsername, inviteeUsername, ownerToken, repo)
 
             if (result.hasOwnProperty("error")) {
-                return res.json(500).json({...result, "message": "ask project owner to add you to the project repo"})
+                return res.status(500).json({...result, "message": "ask project owner to add you to the project repo"})
             }
             const currentRequestsAfterAccept = await utils.getSendToMeRequests(req.user.id) 
+
             return res.status(200).json({
                 "message": "you have accepted request successfully",
                 "info": result.message,

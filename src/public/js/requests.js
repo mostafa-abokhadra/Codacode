@@ -90,20 +90,24 @@ for (let i = 0; i < acceptRequestButtons.length; i++) {
             {
                 method: 'post'
             })
-        if (!res.ok) 
+        if (!res.ok)
             serverErrorPopup.classList.remove('hidden')
+
         const cardNum = acceptRequestButtons[i].attributes.card.value
+        acceptSuccessPopup.classList.remove('hidden')
+
         document.getElementById('close-accept-popup').addEventListener('click', (e) => {
             acceptSuccessPopup.classList.add('hidden')
-            document.getElementById(cardNum).remove()
-            if(requestsContainer.childElementCount === 1)
-                noReq.classList.remove('hidden')
+            window.location.reload()
+            // document.getElementById(cardNum).remove()
+            // if(requestsContainer.childElementCount === 1)
+            //     noReq.classList.remove('hidden')
         })
     })
 }
 
-
 const acceptSuccessPopup = document.getElementById('accept-success-popup');
+
 // const closeAcceptPopup = document.getElementById('close-accept-popup');
 
 // document.getElementById('close-accept-popup').addEventListener('click', (e) => {
@@ -125,9 +129,9 @@ for (let i = 0; i < rejectRequestButtons.length; i++) {
 const confirmRejectButton = document.getElementById('confirm-reject-btn')
 const closeConfirmRejectPopup = document.getElementById('close-confirm-reject-popup')
 
-closeConfirmRejectPopup.addEventListener('click', async(event) => {
-    confirmRejectButton.parentElement.parentElement.parentElement.classList.add('hidden')
-})
+// closeConfirmRejectPopup.addEventListener('click', async(event) => {
+//     confirmRejectButton.parentElement.parentElement.parentElement.classList.add('hidden')
+// })
 confirmRejectButton.addEventListener('click', async(event) => {
     const thirdParent = confirmRejectButton.parentElement
     ?.parentElement
@@ -144,7 +148,7 @@ confirmRejectButton.addEventListener('click', async(event) => {
                 closeConfirmRejectPopup.click()
                 serverErrorPopup.classList.remove('hidden')
             } else {
-                
+                window.location.reload()
             }
         }
     }

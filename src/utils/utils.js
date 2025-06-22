@@ -238,7 +238,7 @@ const addCollaborator = async (ownerUsername, inviteeUsername, ownerToken, repo)
         const data = await response.json()
         if (!response.ok) 
             return {"error": "an error occured while sending collab request", data: data}
-        return {"error": "an error occured while sending collab request", data: data}
+        return {"info": "collab request sent successfully", data: data}
     } catch(error) {
         return {"github api error": error}
     }
