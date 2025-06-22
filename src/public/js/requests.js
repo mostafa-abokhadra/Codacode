@@ -91,9 +91,8 @@ for (let i = 0; i < acceptRequestButtons.length; i++) {
                 method: 'post'
             })
         if (!res.ok) 
-            document.getElementById('server-error-popup').classList.remove('hidden')
+            serverErrorPopup.classList.remove('hidden')
         const cardNum = acceptRequestButtons[i].attributes.card.value
-        
         document.getElementById('close-accept-popup').addEventListener('click', (e) => {
             acceptSuccessPopup.classList.add('hidden')
             document.getElementById(cardNum).remove()
@@ -145,7 +144,7 @@ confirmRejectButton.addEventListener('click', async(event) => {
                 closeConfirmRejectPopup.click()
                 serverErrorPopup.classList.remove('hidden')
             } else {
-                window.location.reload()
+                
             }
         }
     }
@@ -475,7 +474,8 @@ function createSocialMediaLinkElement(socialmedia, icon) {
     linkElement.appendChild(logoElement)
     return linkElement
 }
-
+const serverErrorPopup = document.getElementById('server-error-popup')
 document.getElementById('close-server-error').addEventListener('click', (e) => {
-    serverErrorPopup.classList.remove('hidden')
+    serverErrorPopup.classList.add('hidden')
+    window.location.reload()
 })

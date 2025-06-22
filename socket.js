@@ -34,7 +34,7 @@ module.exports = async (wsServer) => {
         })
 
         socket.on('disconnect', async () => {
-            console.log('User disconnected:');
+            //
         });
     });
 };
